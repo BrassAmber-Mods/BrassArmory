@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smithing",
+  "group" : "Brass Armory-Mace",
+  "base": {
+    "item": "brass_armory:diamond_mace"
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "item": "brass_armory:netherite_mace"
+  }
+}

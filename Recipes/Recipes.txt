@@ -1,0 +1,12 @@
+https://tekkitclassic.fandom.com/wiki/Balkon%27s_Weapon_Mod
+
+-all recipes will remain the same as the wiki
+================================
+OBSELETE CONTENT
+-ignore crossbow
+-ignore crossbow bolt
+-ignore fire rod
+-ignore javelin
+================================
+-dynamite replaced with bomb
+now uses 1 iron to replace bottom paper

@@ -1,0 +1,45 @@
+{
+  "item.brass_armory.gold_spear" : "Gold Spear",
+  "item.brass_armory.wood_spear" : "Wooden Spear",
+  "item.brass_armory.stone_spear" : "Stone Spear",
+  "item.brass_armory.iron_spear" : "Iron Spear",
+  "item.brass_armory.diamond_spear" : "Diamond Spear",
+  "item.brass_armory.netherite_spear" : "Netherite Spear",
+
+  "item.brass_armory.gold_dagger" : "Gold Dagger",
+  "item.brass_armory.wood_dagger" : "Wooden Dagger",
+  "item.brass_armory.stone_dagger" : "Stone Dagger",
+  "item.brass_armory.iron_dagger" : "Iron Dagger",
+  "item.brass_armory.diamond_dagger" : "Diamond Dagger",
+  "item.brass_armory.netherite_dagger" : "Netherite Dagger",
+
+  "item.brass_armory.gold_battleaxe" : "Gold BattleAxe",
+  "item.brass_armory.wood_battleaxe" : "Wooden BattleAxe",
+  "item.brass_armory.stone_battleaxe" : "Stone BattleAxe",
+  "item.brass_armory.iron_battleaxe" : "Iron BattleAxe",
+  "item.brass_armory.diamond_battleaxe" : "Diamond BattleAxe",
+  "item.brass_armory.netherite_battleaxe" : "Netherite BattleAxe",
+
+  "item.brass_armory.gold_halberd" : "Gold Halberd",
+  "item.brass_armory.wood_halberd" : "Wooden Halberd",
+  "item.brass_armory.stone_halberd" : "Stone Halberd",
+  "item.brass_armory.iron_halberd" : "Iron Halberd",
+  "item.brass_armory.diamond_halberd" : "Diamond Halberd",
+  "item.brass_armory.netherite_halberd" : "Netherite Halberd",
+
+  "item.brass_armory.gold_mace" : "Gold Mace",
+  "item.brass_armory.wood_mace" : "Wooden Mace",
+  "item.brass_armory.stone_mace" : "Stone Mace",
+  "item.brass_armory.iron_mace" : "Iron Mace",
+  "item.brass_armory.diamond_mace" : "Diamond Mace",
+  "item.brass_armory.netherite_mace" : "Netherite Mace",
+
+  "item.brass_armory.gold_flail" : "Gold Flail",
+  "item.brass_armory.wood_flail" : "Wooden Flail",
+  "item.brass_armory.stone_flail" : "Stone Flail",
+  "item.brass_armory.iron_flail" : "Iron Flail",
+  "item.brass_armory.diamond_flail" : "Diamond Flail",
+  "item.brass_armory.netherite_flail" : "Netherite Flail",
+
+  "itemGroup.brass_armory": "Brass Armory"
+}

@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-Halberd",
+  "pattern": [
+    " PP",
+    " IP",
+    "I  "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "brass_armory:diamond_halberd",
+    "count": 1
+  }
+}

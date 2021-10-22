@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smithing",
+  "group" : "Brass Armory-Spear",
+  "base": {
+    "item": "brass_armory:diamond_spear"
+  },
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "result": {
+    "item": "brass_armory:netherite_spear"
+  }
+}

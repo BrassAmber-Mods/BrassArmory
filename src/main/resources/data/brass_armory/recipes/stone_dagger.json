@@ -1,0 +1,22 @@
+{
+  "type" : "minecraft:crafting_shapeless",
+  "group" : "Brass Armory-Dagger",
+
+  "ingredients": [
+    [
+      {
+        "item": "minecraft:cobblestone"
+      },
+      {
+        "item": "minecraft:basalt"
+      }
+    ],
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "result": {
+    "item": "brass_armory:stone_dagger",
+    "count": 1
+  }
+}

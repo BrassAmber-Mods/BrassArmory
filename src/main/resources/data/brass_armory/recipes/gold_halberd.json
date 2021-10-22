@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-Halberd",
+  "pattern": [
+    " PP",
+    " IP",
+    "I  "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:gold_ingot"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "brass_armory:gold_halberd",
+    "count": 1
+  }
+}

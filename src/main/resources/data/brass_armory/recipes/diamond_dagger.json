@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shapeless",
+  "group" : "Brass Armory-Dagger",
+
+  "ingredients": [
+    [
+      {
+        "item": "minecraft:diamond"
+      }
+    ],
+    {
+      "item": "minecraft:stick"
+    }
+  ],
+  "result": {
+    "item": "brass_armory:diamond_dagger",
+    "count": 1
+  }
+}

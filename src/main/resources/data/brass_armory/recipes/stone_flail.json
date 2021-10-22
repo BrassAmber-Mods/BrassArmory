@@ -1,0 +1,29 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-Flail",
+  "pattern": [
+    "  S",
+    " IS",
+    "I P"
+  ],
+  "key": {
+    "P": [
+      {
+        "item": "minecraft:cobblestone"
+      },
+      {
+        "item": "minecraft:basalt"
+      }
+    ],
+    "S": {
+      "item": "minecraft:string"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "brass_armory:stone_flail",
+    "count": 1
+  }
+}

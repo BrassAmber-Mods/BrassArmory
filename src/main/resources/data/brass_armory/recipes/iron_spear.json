@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-Spear",
+  "pattern": [
+    "  P",
+    " I ",
+    "I  "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:iron_ingot"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "brass_armory:iron_spear",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-Spear",
+  "pattern": [
+    "  P",
+    " I ",
+    "I  "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:cobblestone"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "brass_armory:stone_spear",
+    "count": 1
+  }
+}
