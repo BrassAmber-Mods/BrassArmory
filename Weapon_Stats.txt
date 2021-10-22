@@ -1,0 +1,77 @@
+WEAPON DAMAGE
+
+Spear:
+W        3
+G        3
+S        5
+I        6
+D        8
+N       9
+
+Halberd:
+W          5
+G          5
+S          7
+I          9
+D         10
+N         11
+
+Dagger:
+W          3
+G          3
+S          5
+I          7
+D          8
+N          9
+
+Battleaxe:
+W         5
+G         5
+S         6
+I         8
+D         9
+N        10
+
+Mace:
+W         5
+G         5
+S         6
+I         8
+D        10
+N        11
+
+Flail:
+W         4
+G         4
+S         5
+I         7
+D         8
+N         9
+
+Boomerang: 
+W        2
+G        2
+S        4
+I        5
+D        7
+N        8
+
+attack speed
+Dagger- 2.0
+Vanilla Sword- 1.6
+Spear- 1.4
+Flail- 1.4
+Battleaxe- 0.9
+Mace- 0.8
+Halberd- 0.6
+Boomerang - 1.9
+
+RANGED WEAPON INFORMATION
+
+Musket: 1 projectile, high accuracy, 14dmg [7 Hearts] on hit with reload twice as long as crossbow
+
+Blunderbuss: 10 small scatter shots, close range accuracy, 20dmg if all pellets hit 1 enemy, reload is twice as long as musket
+
+Cannon: 1 projectile, accuracte with moderate range, 40dmg [20 Hearts] slow load and mounted by the player to aim and fire
+
+Bomb: thrown half of egg distance, 8dmg blast and 2x2 radius crater, tnt fuse delay on explosion

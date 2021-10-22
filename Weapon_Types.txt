@@ -1,0 +1,34 @@
+Spear-- +1 range, can be thrown a short distance [8 blocks]
+-arches as it flies
+-sticks into walls like arrows
+
+Dagger-- Can be thrown a moderate distance [12 block]
+-spins as it flys through the air [refer to yogbox for exact animation]
+-sticks into walls like arrows
+
+Halberd-- +2 range, right-click to activate guard
+-Guard- resistance 1 for wood/stone/gold
+       resistance 2 for iron/diamon
+       resistance 3 for netherite
+-effect lasts 20 seconds with 30 second cooldown [10 seconds of vulnerability between uses]
+-guard uses 10 durability to activate
+
+Mace-- smash attack with right-click
+-does AoE damage
+-smash does not harm player
+-smash uses 5 durability to activate
+
+Flail-- This a changeup from the classic mod. ball is thrown out on a chain and can be dropped
+-sling with right click to throw your flail head
+-flail head goes out 4 blocks in a non-gravity effected line [ala terraria]
+-right click again while flail head is travelling to drop it straight down
+-flail head returns when you walk more than 4 blocks away
+-right-click will also return the flail
+-left-click melee does less damage than the throw
+
+Battleaxe-- This is a changeup from the classic mod. battle axe now has a sweeping effect like a sword
+-standard melee attack
+-battleaxes can be thrown at doors to destroy them [wood in 1 hit, iron in 3]
+-right click to throw [only travels 3 blocks, very short throw]
+-enemies hit by the throw take 2x weapon damage
+-throw uses 6 durability
