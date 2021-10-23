@@ -3,19 +3,19 @@
   "group" : "Brass Armory-Spear",
   "pattern": [
     "   ",
-    "IIP",
+    "PII",
     "   "
   ],
   "key": {
     "P": {
-      "item": "minecraft:diamond"
+      "item": "minecraft:cobblestone"
     },
     "I": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "brass_armory:diamond_spear",
+    "item": "brass_armory:stone_spear",
     "count": 1
   }
 }

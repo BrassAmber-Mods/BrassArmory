@@ -1,10 +1,10 @@
 {
   "type" : "minecraft:crafting_shaped",
-  "group" : "Brass Armory-Flail",
+  "group" : "Brass Armory-Halberd",
   "pattern": [
-    "  S",
-    " IS",
-    "I P"
+    " PP",
+    " IP",
+    "I  "
   ],
   "key": {
     "P": [
@@ -15,15 +15,12 @@
         "item": "minecraft:basalt"
       }
     ],
-    "S": {
-      "item": "minecraft:chain"
-    },
     "I": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "brass_armory:stone_flail",
+    "item": "brass_armory:stone_halberd",
     "count": 1
   }
 }

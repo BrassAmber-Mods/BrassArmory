@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 
 version = '1.16.5-Alpha 1.2'
 group = 'com.milamberBrass.brass_armory' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'brass_armory'
+archivesBaseName = 'Brass_Armory'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
 
