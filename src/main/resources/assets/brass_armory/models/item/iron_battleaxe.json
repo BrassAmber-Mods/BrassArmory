@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "brass_armory:item/iron_battleaxe"
+    "layer0": "brass_armory:item/iron/iron_battleaxe"
   },
   "display": {
     "thirdperson_righthand": {

@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "brass_armory:item/netherite_battleaxe"
+    "layer0": "brass_armory:item/netherite/netherite_battleaxe"
   },
   "display": {
     "thirdperson_righthand": {

@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "brass_armory:item/wood_spear"
+    "layer0": "brass_armory:item/wood/wood_spear"
   },
   "display": {
     "thirdperson_righthand": {

@@ -1,4 +1,14 @@
 {
+
+  "item.brass_armory.dirt_arrow" : "Dirt Arrow",
+  "item.brass_armory.ex_arrow" : "Ex Arrow",
+  "item.brass_armory.frost_arrow" : "Frost Arrow",
+  "item.brass_armory.grass_arrow" : "Grass Arrow",
+  "item.brass_armory.laser_arrow" : "Laser Arrow",
+  "item.brass_armory.rope_arrow" : "Rope Arrow",
+  "item.brass_armory.slime_arrow" : "Slime Arrow",
+  "item.brass_armory.warp_arrow" : "Warp Arrow",
+
   "item.brass_armory.gold_spear" : "Gold Spear",
   "item.brass_armory.wood_spear" : "Wooden Spear",
   "item.brass_armory.stone_spear" : "Stone Spear",

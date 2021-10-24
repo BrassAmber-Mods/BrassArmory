@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "item/handheld",
 	"textures": {
-		"layer0": "brass_armory:item/diamond_halberd"
+		"layer0": "brass_armory:item/diamond/diamond_halberd"
 	},
 	"display": {
 		"thirdperson_righthand": {

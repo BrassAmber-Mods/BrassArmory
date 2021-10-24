@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "brass_armory:item/iron_dagger"
+    "layer0": "brass_armory:item/iron/iron_dagger"
   },
   "display": {
     "thirdperson_righthand": {

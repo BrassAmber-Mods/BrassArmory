@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"parent": "item/handheld",
 	"textures": {
-		"layer0": "brass_armory:item/netherite_mace"
+		"layer0": "brass_armory:item/netherite/netherite_mace"
 	},
 	"display": {
 		"thirdperson_righthand": {

@@ -2,6 +2,7 @@ package com.milamberBrass.brass_armory.items;
 
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.items.custom.*;
+import net.minecraft.item.ArrowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.Rarity;
@@ -14,6 +15,45 @@ public class ModItems {
 
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, BrassArmory.MOD_ID);
+
+    //------------------------------------RANGED----------------------------------------------------------
+
+    public static final RegistryObject<ArrowItem> DIRT_ARROW =
+            ITEMS.register("dirt_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<ArrowItem> EX_ARROW =
+            ITEMS.register("ex_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<ArrowItem> FROST_ARROW =
+            ITEMS.register("frost_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<ArrowItem> GRASS_ARROW =
+            ITEMS.register("grass_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<ArrowItem> LASER_ARROW =
+            ITEMS.register("laser_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<ArrowItem> ROPE_ARROW =
+            ITEMS.register("rope_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<ArrowItem> SLIME_ARROW =
+            ITEMS.register("slime_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<ArrowItem> WARP_ARROW =
+            ITEMS.register("warp_arrow", () ->
+                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+
+
+
+    //------------------------------------MELEE-----------------------------------------------------------
 
     public static final RegistryObject<Spear> GOLD_SPEAR =
             ITEMS.register("gold_spear", () -> new Spear(ItemTier.GOLD, 2,

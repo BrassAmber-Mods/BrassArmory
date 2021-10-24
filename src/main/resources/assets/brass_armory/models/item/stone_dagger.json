@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "brass_armory:item/stone_dagger"
+    "layer0": "brass_armory:item/stone/stone_dagger"
   },
   "display": {
     "thirdperson_righthand": {

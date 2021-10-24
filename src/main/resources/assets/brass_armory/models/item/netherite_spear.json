@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "brass_armory:item/netherite_spear"
+    "layer0": "brass_armory:item/netherite/netherite_spear"
   },
   "display": {
     "thirdperson_righthand": {
