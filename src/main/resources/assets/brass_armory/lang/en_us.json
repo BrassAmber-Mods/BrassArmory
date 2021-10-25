@@ -9,6 +9,18 @@
   "item.brass_armory.slime_arrow" : "Slime Arrow",
   "item.brass_armory.warp_arrow" : "Warp Arrow",
 
+  "item.brass_armory.wood_boomerang" : "Wood Boomerang",
+  "item.brass_armory.gold_boomerang" : "Gold Boomerang",
+  "item.brass_armory.stone_boomerang" : "Stone Boomerang",
+  "item.brass_armory.iron_boomerang" : "Iron Boomerang",
+  "item.brass_armory.diamond_boomerang" : "Diamond Boomerang",
+  "item.brass_armory.netherite_boomerang" : "Netherite Boomerang",
+
+
+  "item.brass_armory.bomb" : "Bomb",
+  "item.brass_armory.bouncy_bomb" : "Bouncy Bomb",
+  "item.brass_armory.sticky_bomb" : "Sticky Bomb",
+
   "item.brass_armory.gold_spear" : "Gold Spear",
   "item.brass_armory.wood_spear" : "Wooden Spear",
   "item.brass_armory.stone_spear" : "Stone Spear",

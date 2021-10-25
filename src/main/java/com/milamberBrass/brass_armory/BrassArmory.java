@@ -33,8 +33,9 @@ public class BrassArmory
         // Register the setup method for modloading
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModEntityTypes.register(eventBus);
         ModItems.register(eventBus);
+        ModEntityTypes.register(eventBus);
+
 
         eventBus.addListener(this::setup);
         // Register the enqueueIMC method for modloading

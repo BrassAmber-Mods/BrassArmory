@@ -2,14 +2,12 @@ package com.milamberBrass.brass_armory.items;
 
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.items.custom.*;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.Rarity;
+import net.minecraft.item.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.lwjgl.system.CallbackI;
 
 public class ModItems {
 
@@ -20,7 +18,7 @@ public class ModItems {
 
     public static final RegistryObject<ArrowItem> DIRT_ARROW =
             ITEMS.register("dirt_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new DirtArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY)));
 
     public static final RegistryObject<ArrowItem> EX_ARROW =
             ITEMS.register("ex_arrow", () ->
@@ -28,11 +26,11 @@ public class ModItems {
 
     public static final RegistryObject<ArrowItem> FROST_ARROW =
             ITEMS.register("frost_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new ArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY)));
 
     public static final RegistryObject<ArrowItem> GRASS_ARROW =
             ITEMS.register("grass_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new ArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY)));
 
     public static final RegistryObject<ArrowItem> LASER_ARROW =
             ITEMS.register("laser_arrow", () ->
@@ -40,17 +38,55 @@ public class ModItems {
 
     public static final RegistryObject<ArrowItem> ROPE_ARROW =
             ITEMS.register("rope_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new ArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY)));
 
     public static final RegistryObject<ArrowItem> SLIME_ARROW =
             ITEMS.register("slime_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new ArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY)));
 
     public static final RegistryObject<ArrowItem> WARP_ARROW =
             ITEMS.register("warp_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new ArrowItem(new Item.Properties().rarity(Rarity.EPIC).group(ModItemGroup.BRASS_ARMORY)));
+    //               --------------------------BOOMERANG-------------------------------
+
+    public static final RegistryObject<BowItem> WOOD_BOOMERANG =
+            ITEMS.register("wood_boomerang", () ->
+                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).maxDamage(384).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<BowItem> GOLD_BOOMERANG =
+            ITEMS.register("gold_boomerang", () ->
+                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).maxDamage(384).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<BowItem> STONE_BOOMERANG =
+            ITEMS.register("stone_boomerang", () ->
+                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).maxDamage(384).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<BowItem> IRON_BOOMERANG =
+            ITEMS.register("iron_boomerang", () ->
+                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).maxDamage(384).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<BowItem> DIAMOND_BOOMERANG =
+            ITEMS.register("diamond_boomerang", () ->
+                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).maxDamage(384).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<BowItem> NETHERITE_BOOMERANG =
+            ITEMS.register("netherite_boomerang", () ->
+                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).maxDamage(384).group(ModItemGroup.BRASS_ARMORY)));
 
 
+    //------------------------------------BOMB-----------------------------------------------------------
+
+    public static final RegistryObject<EggItem> BOMB =
+            ITEMS.register("bomb", () ->
+                    new EggItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<EggItem> BOUNCY_BOMB =
+            ITEMS.register("bouncy_bomb", () ->
+                    new EggItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+
+    public static final RegistryObject<EggItem> STICKY_BOMB =
+            ITEMS.register("sticky_bomb", () ->
+                    new EggItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
 
 
     //------------------------------------MELEE-----------------------------------------------------------

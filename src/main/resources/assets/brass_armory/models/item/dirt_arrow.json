@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "item/arrow",
   "textures": {
-    "layer0": "brass_armory:item/projectile/dirt_arrow"
+    "layer0": "brass_armory:item/arrow/dirt_arrow"
   }
 }
