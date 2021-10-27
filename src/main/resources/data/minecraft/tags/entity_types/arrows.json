@@ -1,10 +1,9 @@
 {
   "replace": false,
   "values": [
-    "minecraft:arrow",
-    "minecraft:spectral_arrow",
     "brass_armory:dirt_arrow",
     "brass_armory:ex_arrow",
+    "brass_armory:frost_arrow",
     "brass_armory:grass_arrow",
     "brass_armory:laser_arrow",
     "brass_armory:rope_arrow",

@@ -1,6 +1,7 @@
 package com.milamberBrass.brass_armory.entities.custom;
 
 import com.milamberBrass.brass_armory.items.ModItems;
+import com.milamberBrass.brass_armory.util.ArrowType;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -13,27 +14,32 @@ import net.minecraft.potion.Potions;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class DirtArrowEntity extends ArrowEntity {
-    public DirtArrowEntity(EntityType<? extends ArrowEntity> type, World worldIn) {
+public class BAArrowEntity extends ArrowEntity {
+    public ArrowType arrowType;
+    public BAArrowEntity(EntityType<? extends ArrowEntity> type, World worldIn) {
         super(type, worldIn);
     }
 
-    public DirtArrowEntity(World worldIn, double x, double y, double z) {
+    public BAArrowEntity(World worldIn, double x, double y, double z) {
         super(worldIn, x, y, z);
     }
 
-    public DirtArrowEntity(World worldIn, LivingEntity shooter) {
+    public BAArrowEntity(World worldIn, LivingEntity shooter, ArrowType typeIn) {
         super(worldIn, shooter);
+        this.arrowType = typeIn;
     }
 
     @Override
     protected ItemStack getArrowStack() {
-        return new ItemStack(ModItems.DIRT_ARROW.get());
+        return new ItemStack(arrowType.getModItemFor(arrowType));
     }
 
     @Override
     protected void arrowHit(LivingEntity living) {
         super.arrowHit(living);
-        living.getEntityWorld().setBlockState(new BlockPos(this.getPosX(), this.getPosY(), this.getPosZ()), Blocks.DIRT.getDefaultState());
+        if (arrowType == ArrowType.DIRT) {
+            living.getEntityWorld().setBlockState(new BlockPos(this.getPosX(), this.getPosY(), this.getPosZ()), Blocks.DIRT.getDefaultState());
+        }
+
     }
 }

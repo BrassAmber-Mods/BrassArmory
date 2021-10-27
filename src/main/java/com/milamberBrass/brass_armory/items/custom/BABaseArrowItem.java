@@ -1,27 +1,29 @@
 package com.milamberBrass.brass_armory.items.custom;
 
-import com.milamberBrass.brass_armory.entities.custom.DirtArrowEntity;
+import com.milamberBrass.brass_armory.entities.custom.BAArrowEntity;
+import com.milamberBrass.brass_armory.util.ArrowType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.item.ArrowItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class DirtArrowItem extends ArrowItem {
-    public DirtArrowItem(Item.Properties builder) {
+public class BABaseArrowItem extends ArrowItem {
+    private ArrowType arrowType;
+    public BABaseArrowItem(Properties builder, ArrowType typeIn) {
         super(builder);
+        this.arrowType = typeIn;
     }
 
     public AbstractArrowEntity createArrow(World worldIn, ItemStack stack, LivingEntity shooter) {
-        DirtArrowEntity arrowentity = new DirtArrowEntity(worldIn, shooter);
-        arrowentity.setPotionEffect(stack);
-        return arrowentity;
+        return new BAArrowEntity(worldIn, shooter, this.arrowType);
+
     }
 
+    @Override
     public boolean isInfinite(ItemStack stack, ItemStack bow, net.minecraft.entity.player.PlayerEntity player) {
-        int enchant = net.minecraft.enchantment.EnchantmentHelper.getEnchantmentLevel(net.minecraft.enchantment.Enchantments.INFINITY, bow);
-        return enchant <= 0 ? false : this.getClass() == DirtArrowItem.class;
+        return false;
     }
+
 }

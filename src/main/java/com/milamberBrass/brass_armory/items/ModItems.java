@@ -2,6 +2,7 @@ package com.milamberBrass.brass_armory.items;
 
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.items.custom.*;
+import com.milamberBrass.brass_armory.util.ArrowType;
 import net.minecraft.item.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -16,37 +17,38 @@ public class ModItems {
 
     //------------------------------------RANGED----------------------------------------------------------
 
-    public static final RegistryObject<ArrowItem> DIRT_ARROW =
+    public static final RegistryObject<BABaseArrowItem> DIRT_ARROW =
             ITEMS.register("dirt_arrow", () ->
-                    new DirtArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.DIRT));
 
-    public static final RegistryObject<ArrowItem> EX_ARROW =
+    public static final RegistryObject<BABaseArrowItem> EX_ARROW =
             ITEMS.register("ex_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY), ArrowType.EXPLOSION));
 
-    public static final RegistryObject<ArrowItem> FROST_ARROW =
+    public static final RegistryObject<BABaseArrowItem> FROST_ARROW =
             ITEMS.register("frost_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.FROST));
 
-    public static final RegistryObject<ArrowItem> GRASS_ARROW =
+    public static final RegistryObject<BABaseArrowItem> GRASS_ARROW =
             ITEMS.register("grass_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.GRASS));
 
-    public static final RegistryObject<ArrowItem> LASER_ARROW =
+    public static final RegistryObject<BABaseArrowItem> LASER_ARROW =
             ITEMS.register("laser_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY), ArrowType.LASER));
 
-    public static final RegistryObject<ArrowItem> ROPE_ARROW =
+    public static final RegistryObject<BABaseArrowItem> ROPE_ARROW =
             ITEMS.register("rope_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.ROPE));
 
-    public static final RegistryObject<ArrowItem> SLIME_ARROW =
+    public static final RegistryObject<BABaseArrowItem> SLIME_ARROW =
             ITEMS.register("slime_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.SLIME));
 
-    public static final RegistryObject<ArrowItem> WARP_ARROW =
+    public static final RegistryObject<BABaseArrowItem> WARP_ARROW =
             ITEMS.register("warp_arrow", () ->
-                    new ArrowItem(new Item.Properties().rarity(Rarity.EPIC).group(ModItemGroup.BRASS_ARMORY)));
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.EPIC).group(ModItemGroup.BRASS_ARMORY), ArrowType.WARP));
+
     //               --------------------------BOOMERANG-------------------------------
 
     public static final RegistryObject<BowItem> WOOD_BOOMERANG =

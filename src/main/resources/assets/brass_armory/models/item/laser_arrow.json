@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "brass_armory:item/arrow/laser_arrow"
+    "layer0": "brass_armory:item/arrows/laser_arrow"
   }
 }
