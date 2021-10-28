@@ -1,13 +1,13 @@
-package com.milamberBrass.brass_armory.entities.custom;
+package com.milamberBrass.brass_armory.entities.render;
 
 import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.items.custom.Spear;
+import com.milamberBrass.brass_armory.entities.custom.Spear_Entity;
+import com.milamberBrass.brass_armory.entities.model.Spear_Model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.model.TridentModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;

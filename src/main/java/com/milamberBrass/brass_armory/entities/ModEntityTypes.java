@@ -3,6 +3,7 @@ package com.milamberBrass.brass_armory.entities;
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.entities.custom.BAArrowEntity;
 import com.milamberBrass.brass_armory.entities.custom.Spear_Entity;
+import com.milamberBrass.brass_armory.util.ArrowType;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -22,11 +23,6 @@ public class ModEntityTypes {
                     .<Spear_Entity>create(Spear_Entity::new, EntityClassification.MISC).size(1.0f, 2.0f)
                     .trackingRange(64).updateInterval(20)
                     .build(new ResourceLocation(BrassArmory.MOD_ID, "item/wood_spear").toString()));
-
-    public static final RegistryObject<EntityType<BAArrowEntity>> BA_ARROW_ENTITY =
-            ENTITY_TYPES.register("ba_arrow_entity", () -> EntityType.Builder.<BAArrowEntity>create(BAArrowEntity::new, EntityClassification.MISC)
-                    .trackingRange(64).updateInterval(20)
-                    .build(new ResourceLocation(BrassArmory.MOD_ID, "entity/projectile/dirt_arrow").toString()));
 
 
     public static void register(IEventBus eventBus) {

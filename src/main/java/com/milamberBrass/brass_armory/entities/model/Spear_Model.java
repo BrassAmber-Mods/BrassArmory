@@ -1,4 +1,4 @@
-package com.milamberBrass.brass_armory.entities.custom;
+package com.milamberBrass.brass_armory.entities.model;
 
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.mojang.blaze3d.matrix.MatrixStack;

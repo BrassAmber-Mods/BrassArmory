@@ -3,7 +3,7 @@ package com.milamberBrass.brass_armory.util;
 
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.entities.ModEntityTypes;
-import com.milamberBrass.brass_armory.entities.custom.Spear_Entity_Renderer;
+import com.milamberBrass.brass_armory.entities.render.Spear_Entity_Renderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
