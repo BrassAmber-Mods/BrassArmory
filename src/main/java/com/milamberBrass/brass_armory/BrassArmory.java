@@ -1,11 +1,19 @@
 package com.milamberBrass.brass_armory;
 
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.milamberBrass.brass_armory.entities.ModEntityTypes;
+import com.milamberBrass.brass_armory.entities.dispenser.CustomDispenserBehavior;
 import com.milamberBrass.brass_armory.entities.render.BAArrowRenderer;
 import com.milamberBrass.brass_armory.entities.render.Spear_Entity_Renderer;
 import com.milamberBrass.brass_armory.items.ModItems;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,10 +27,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(BrassArmory.MOD_ID)
@@ -30,7 +34,7 @@ public class BrassArmory
 {
     public static final String MOD_ID = "brass_armory";
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public BrassArmory() {
         // Register the setup method for modloading
@@ -57,11 +61,15 @@ public class BrassArmory
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        
+        // Register behavior for Items like Arrows.
+        CustomDispenserBehavior.init();
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SPEAR.get(), Spear_Entity_Renderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)
@@ -94,4 +102,11 @@ public class BrassArmory
             LOGGER.info("HELLO from Register Block");
         }
     }
+    
+    /**
+     * Helper method for ResourceLocations.
+     */
+    public static ResourceLocation locate(String name) {
+		return new ResourceLocation(MOD_ID, name);
+	}
 }
