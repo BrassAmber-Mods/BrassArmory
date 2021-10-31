@@ -1,14 +1,24 @@
 package com.milamberBrass.brass_armory.items;
 
 import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.items.custom.*;
+import com.milamberBrass.brass_armory.items.custom.BABaseArrowItem;
+import com.milamberBrass.brass_armory.items.custom.Battleaxe;
+import com.milamberBrass.brass_armory.items.custom.Dagger;
+import com.milamberBrass.brass_armory.items.custom.Flail;
+import com.milamberBrass.brass_armory.items.custom.Halberd;
+import com.milamberBrass.brass_armory.items.custom.Mace;
+import com.milamberBrass.brass_armory.items.custom.Spear;
 import com.milamberBrass.brass_armory.util.ArrowType;
-import net.minecraft.item.*;
+
+import net.minecraft.item.BowItem;
+import net.minecraft.item.EggItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemTier;
+import net.minecraft.item.Rarity;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.lwjgl.system.CallbackI;
 
 public class ModItems {
 
@@ -291,6 +301,14 @@ public class ModItems {
                     new Item.Properties().rarity(Rarity.EPIC)
                             .maxStackSize(1).defaultMaxDamage(2031).group(ModItemGroup.BRASS_ARMORY)));
 
+    /**
+	 * Helper method for registering all Items
+	 */
+	public static Item registerItem(String registryName, Item item) {
+		ITEMS.register(registryName, () -> item);
+		return item;
+	}
+	
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

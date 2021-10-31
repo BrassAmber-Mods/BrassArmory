@@ -52,6 +52,10 @@ public enum ArrowType implements IStringSerializable {
                 return ModItems.SLIME_ARROW.get();
             case WARP:
                 return ModItems.WARP_ARROW.get();
+            case FIRE:
+            	return ModItems.FIRE_ARROW.get();
+            case CONCUSSION:
+            	return ModItems.CONCUSSION_ARROW.get();
         }
     }
     

@@ -104,5 +104,27 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
 				return abstractarrowentity;
 			}
 		});
+		DispenserBlock.registerDispenseBehavior(ModItems.FIRE_ARROW.get(), new ProjectileDispenseBehavior() {
+			/**
+			 * Return the projectile entity spawned by this dispense behavior.
+			 */
+			@Override
+			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.FIRE);
+				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+				return abstractarrowentity;
+			}
+		});
+		DispenserBlock.registerDispenseBehavior(ModItems.CONCUSSION_ARROW.get(), new ProjectileDispenseBehavior() {
+			/**
+			 * Return the projectile entity spawned by this dispense behavior.
+			 */
+			@Override
+			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.CONCUSSION);
+				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+				return abstractarrowentity;
+			}
+		});
 	}
 }
