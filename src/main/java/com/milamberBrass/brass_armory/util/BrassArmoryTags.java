@@ -34,6 +34,12 @@ public class BrassArmoryTags {
         public static final Tags.IOptionalNamedTag<Item> WARP_ARROW_ITEM =
                 createTag("warp_arrow");
 
+        public static final Tags.IOptionalNamedTag<Item> FIRE_ARROW_ITEM =
+                createTag("fire_arrow");
+
+        public static final Tags.IOptionalNamedTag<Item> CONCUSSION_ARROW_ITEM =
+                createTag("concussion_arrow");
+
         private static Tags.IOptionalNamedTag<Item> createTag(String name) {
             return ItemTags.createOptional(new ResourceLocation(BrassArmory.MOD_ID, name));
         }
