@@ -47,6 +47,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class BAArrowEntity extends AbstractArrowEntity {
 	private static final DataParameter<String> ARROW_TYPE = EntityDataManager.createKey(BAArrowEntity.class, DataSerializers.STRING);
 	private static final String ARROW_TYPE_STRING = "ArrowType";
+	private static boolean hitEntity = false;
 
 	/**
 	 * Used to initialize the EntityType.
@@ -177,6 +178,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	@Override
 	protected void arrowHit(LivingEntity living) {
 		super.arrowHit(living);
+		this.hitEntity = true;
 		switch (ArrowType.byName(this.getDataManager().get(ARROW_TYPE))) {
 
 			case DIRT:
@@ -245,6 +247,9 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			case CONCUSSION:
 				break;
 			case LASER:
+				if (this.hitEntity) {
+					this.remove();
+				}
 			case WARP:
 			default:
 				break;
@@ -375,7 +380,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 					break;
 				case LASER:
 					for (int j = 0; j < particleCount; ++j) {
-						this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.REDSTONE_TORCH.getDefaultState()), this.getPosXRandom(0.5D), this.getPosYRandom(), this.getPosZRandom(0.5D), d0, d1, d2);
+						this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.getDefaultState()), this.getPosXRandom(0.5D), this.getPosYRandom(), this.getPosZRandom(0.5D), d0, d1, d2);
 					}
 					break;
 				case SLIME:
