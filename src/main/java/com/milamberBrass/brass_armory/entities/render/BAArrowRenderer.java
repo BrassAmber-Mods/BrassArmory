@@ -21,6 +21,8 @@ public class BAArrowRenderer extends ArrowRenderer<BAArrowEntity> {
    public static final ResourceLocation RES_ROPE_ARROW = BrassArmory.locate("textures/entity/projectile/rope_arrow.png");
    public static final ResourceLocation RES_SLIME_ARROW = BrassArmory.locate("textures/entity/projectile/slime_arrow.png");
    public static final ResourceLocation RES_WARP_ARROW = BrassArmory.locate("textures/entity/projectile/warp_arrow.png");
+   public static final ResourceLocation RES_FIRE_ARROW = BrassArmory.locate("textures/entity/projectile/fire_arrow.png");
+   public static final ResourceLocation RES_CONCUSS_ARROW = BrassArmory.locate("textures/entity/projectile/concussion_arrow.png");
 
 
    public BAArrowRenderer(EntityRendererManager manager) {
@@ -49,6 +51,10 @@ public class BAArrowRenderer extends ArrowRenderer<BAArrowEntity> {
          return RES_SLIME_ARROW;
       }else if (arrowType == ArrowType.WARP) {
          return RES_WARP_ARROW;
+      }else if (arrowType == ArrowType.FIRE) {
+         return RES_FIRE_ARROW;
+      }else if (arrowType == ArrowType.CONCUSSION) {
+         return RES_CONCUSS_ARROW;
       }
       return RES_ARROW;
    }

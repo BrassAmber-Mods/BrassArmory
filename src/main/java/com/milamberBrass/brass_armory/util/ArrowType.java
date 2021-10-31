@@ -16,7 +16,9 @@ public enum ArrowType implements IStringSerializable {
     LASER(0, "laser"),
     ROPE(4, "rope"),
     SLIME(4, "slime"),
-    WARP(4, "warp");
+    WARP(4, "warp"),
+    FIRE(1, "fire"),
+    CONCUSSION(1, "concuss");
 
     private final int damage;
     private String name;
