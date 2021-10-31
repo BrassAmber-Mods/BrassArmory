@@ -49,6 +49,14 @@ public class ModItems {
             ITEMS.register("warp_arrow", () ->
                     new BABaseArrowItem(new Item.Properties().rarity(Rarity.EPIC).group(ModItemGroup.BRASS_ARMORY), ArrowType.WARP));
 
+    public static final RegistryObject<BABaseArrowItem> FIRE_ARROW =
+            ITEMS.register("fire_arrow", () ->
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.FIRE));
+
+    public static final RegistryObject<BABaseArrowItem> CONCUSSION_ARROW =
+            ITEMS.register("concussion_arrow", () ->
+                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.CONCUSSION));
+
     //               --------------------------BOOMERANG-------------------------------
 
     public static final RegistryObject<BowItem> WOOD_BOOMERANG =

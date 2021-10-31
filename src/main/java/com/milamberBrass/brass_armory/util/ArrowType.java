@@ -1,10 +1,11 @@
 package com.milamberBrass.brass_armory.util;
 
+import javax.annotation.Nullable;
+
 import com.milamberBrass.brass_armory.items.ModItems;
 import com.milamberBrass.brass_armory.items.custom.BABaseArrowItem;
-import net.minecraft.util.IStringSerializable;
 
-import javax.annotation.Nullable;
+import net.minecraft.util.IStringSerializable;
 
 public enum ArrowType implements IStringSerializable {
     EMPTY(0, "empty"),
@@ -15,7 +16,9 @@ public enum ArrowType implements IStringSerializable {
     LASER(0, "laser"),
     ROPE(4, "rope"),
     SLIME(4, "slime"),
-    WARP(4, "warp");
+    WARP(4, "warp"),
+    FIRE(1, "fire"),
+    CONCUSSION(1, "concuss");
 
     private final int damage;
     private String name;
@@ -51,6 +54,16 @@ public enum ArrowType implements IStringSerializable {
                 return ModItems.WARP_ARROW.get();
         }
     }
+    
+    public static ArrowType byName(String name) {
+        for(ArrowType arrowType : values()) {
+           if (arrowType.name.equals(name)) {
+              return arrowType;
+           }
+        }
+
+        return EMPTY;
+     }
 
     @Override
     public String getString() {

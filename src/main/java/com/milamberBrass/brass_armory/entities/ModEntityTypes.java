@@ -3,7 +3,8 @@ package com.milamberBrass.brass_armory.entities;
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.entities.custom.BAArrowEntity;
 import com.milamberBrass.brass_armory.entities.custom.Spear_Entity;
-import com.milamberBrass.brass_armory.util.ArrowType;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -23,11 +24,19 @@ public class ModEntityTypes {
                     .<Spear_Entity>create(Spear_Entity::new, EntityClassification.MISC).size(1.0f, 2.0f)
                     .trackingRange(64).updateInterval(20)
                     .build(new ResourceLocation(BrassArmory.MOD_ID, "item/wood_spear").toString()));
+    
+    public static final RegistryObject<EntityType<BAArrowEntity>> BA_ARROW = registerEntityType("ba_arrow", EntityType.Builder.<BAArrowEntity>create(BAArrowEntity::new, EntityClassification.MISC).size(0.5F, 0.5F).trackingRange(4).updateInterval(20));
 
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }
 
+    /**
+     * Helper method for registering all EntityTypes
+     */
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerEntityType(String registryName, EntityType.Builder<T> builder) {
+    	return ENTITY_TYPES.register(registryName, () -> builder.build(registryName));
+    }
 }
 
