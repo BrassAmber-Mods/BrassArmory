@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "#",
+    "Y"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "tag": "forge:seeds"
+    },
+    "Y": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "brass_armory:grass_arrow",
+    "count": 4
+  }
+}

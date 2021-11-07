@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "#",
+    "Y"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "minecraft:coal"
+    },
+    "Y": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "brass_armory:fire_arrow",
+    "count": 4
+  }
+}

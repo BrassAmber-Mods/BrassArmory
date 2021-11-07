@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "#",
+    "Y"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "item": "minecraft:obsidian"
+    },
+    "Y": {
+      "item": "minecraft:feather"
+    }
+  },
+  "result": {
+    "item": "brass_armory:warp_arrow",
+    "count": 4
+  }
+}
