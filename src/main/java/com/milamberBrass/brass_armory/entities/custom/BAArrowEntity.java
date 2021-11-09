@@ -1,5 +1,6 @@
 package com.milamberBrass.brass_armory.entities.custom;
 
+import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.blocks.ModBlocks;
 import com.milamberBrass.brass_armory.blocks.custom.RopeBlock;
 import com.milamberBrass.brass_armory.entities.ModEntityTypes;
@@ -26,10 +27,12 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SChangeGameStatePacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -40,11 +43,20 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.apache.logging.log4j.Level;
 
 public class BAArrowEntity extends AbstractArrowEntity {
 	private static final DataParameter<String> ARROW_TYPE = EntityDataManager.createKey(BAArrowEntity.class, DataSerializers.STRING);
 	private static final String ARROW_TYPE_STRING = "ArrowType";
 	private boolean hitEntity = false;
+	private int flightTime = 0;
+	private boolean placeRope = false;
+	private BlockPos currentRopePos;
+	private double damage;
+	private int maxRopeLength = 24;
+	private int totalRope = 0;
+	private Direction hitBlockfaceDirection;
+	private int ticksSinceRope;
 
 	/**
 	 * Used to initialize the EntityType.
@@ -62,6 +74,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 		if (this.isArrowType(ArrowType.LASER)) {
 			this.setPierceLevel((byte) 5);
 		}
+		this.setDamage(this.getArrowType().getDamage());
 	}
 
 	/**
@@ -72,6 +85,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 		if (this.isArrowType(ArrowType.LASER)) {
 			this.setPierceLevel((byte) 5);
 		}
+		this.setDamage(this.getArrowType().getDamage());
 	}
 
 	/**
@@ -127,7 +141,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	protected void onImpact(RayTraceResult result) {
 		super.onImpact(result);
 		// Check if this is a Warp Arrow.
-		if (this.isArrowType(ArrowType.WARP)) {
+		if (this.isArrowType(ArrowType.WARP) && this.world.getBlockState(this.getPosition()).getFluidState().isEmpty()) {
 			this.teleportShooter();
 		}
 		// Check if this is a Slime Arrow.
@@ -152,18 +166,17 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			this.world.createExplosion(this, this.getPosX(), this.getPosY(), this.getPosZ(), 2.0F, Explosion.Mode.BREAK);
 			break;
 		case FROST:
-			living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 3));
-			if (living.getType() == EntityType.PLAYER) {
-				PlayerEntity player = (PlayerEntity) living;
-				player.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 3));
-			}
+			living.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 70, 3));
 			break;
 		case SLIME:
+			living.applyKnockback(2F, 1,1);
 			break;
 		case FIRE:
 			living.setFire(16);
 			break;
 		case CONCUSSION:
+			// add nausea with a duration of 2x the current flight time with a amplification of the flight time /80
+			living.addPotionEffect(new EffectInstance(Effects.NAUSEA, MathHelper.clamp(this.flightTime*2,80,240), MathHelper.clamp(this.flightTime/80, 0, 2)));
 			break;
 		case LASER:
 		case WARP:
@@ -228,11 +241,38 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	 */
 	public void tick() {
 		super.tick();
+		this.flightTime++; // Increase the counter for number of ticks spent flying
+		this.ticksSinceRope++; // Increase the counter for number of ticks since last placing a rope
 		if (this.isArrowType(ArrowType.FROST)) {
 			freezeNearby(this.world, this.getPosition());
 			if (this.inGround && this.timeInGround != 0) {
 				this.remove();
 			}
+		}
+		// check that the arrow is not in the ground and has been flying for half a second.
+		else if (this.isArrowType(ArrowType.LASER) && !this.inGround && this.flightTime > 10) {
+			// make the arrows Y position only decrease by 0.05 every tick (1 block per second).
+			this.moveForced(this.getPosX(), this.prevPosY-.0005, this.getPosZ());
+			// if the arrow enters an unloaded chunk, remove it.
+			if (!this.world.chunkExists(this.chunkCoordX, this.chunkCoordZ)) {
+				this.remove();
+			}
+		}
+		// Check that we have entered place rope mode and that the ticks since last placing a rope are at least equal to 10 ticks
+		else if (this.isArrowType(ArrowType.ROPE) && this.placeRope && this.ticksSinceRope > 8) {
+			BlockPos newPos = currentRopePos.offset(Direction.DOWN, 1);
+			if (this.world.getBlockState(newPos).isAir() && this.totalRope < this.maxRopeLength) {
+				this.world.setBlockState(newPos, ModBlocks.ROPE.get().getDefaultState().with(RopeBlock.FACING, hitBlockfaceDirection).with(RopeBlock.HAS_ARROW, totalRope == 0 ? true : false));
+				this.currentRopePos = newPos;
+				this.totalRope++;
+				this.ticksSinceRope = 0;
+			}
+			else {
+				// No space to place more Ropes or Rope Limit reached.
+				this.placeRope = false;
+				this.remove();
+			}
+
 		}
 		if (this.world.isRemote) {
 			if (this.inGround) {
@@ -241,48 +281,39 @@ public class BAArrowEntity extends AbstractArrowEntity {
 				}
 			} else {
 				this.spawnArrowParticles(2);
+
 			}
 		} else if (this.inGround && this.timeInGround != 0 && this.timeInGround >= 600) {
 			this.world.setEntityState(this, (byte) 0);
 			// Causes crashes.
 			// this.dataManager.set(COLOR, -1);
 		}
-
 	}
 
 	/*********************************************************** Arrow Functionalities ********************************************************/
 
 	@SuppressWarnings("deprecation")
 	private void placeRopes(BlockRayTraceResult result) {
-		Direction hitBlockfaceDirection = result.getFace();
+		hitBlockfaceDirection = result.getFace();
 		// TODO Temporarily disabled, because there are no models to be placed like this yet.
 		if (!hitBlockfaceDirection.equals(Direction.DOWN) && !hitBlockfaceDirection.equals(Direction.UP)) {
 			BlockPos hitPos = result.getPos();
-			BlockPos ropePos = hitPos.offset(hitBlockfaceDirection);
+			currentRopePos = hitPos.offset(hitBlockfaceDirection);
 			BlockState hitBlockState = this.world.getBlockState(hitPos);
 			// Check if the block that the arrow hit can hold the Rope.
-			if (hitBlockState.isSolidSide(this.world, ropePos, hitBlockfaceDirection)) {
+			if (hitBlockState.isSolidSide(this.world, currentRopePos, hitBlockfaceDirection)) {
 				// Check if there's space to place a Rope.
-				if (this.world.getBlockState(ropePos).isAir()) {
-					int maxRopeLength = 6;
-					for (int ropeLength = 0; ropeLength < maxRopeLength; ropeLength++) {
-						BlockPos newPos = ropePos.offset(Direction.DOWN, ropeLength);
-						if (this.world.getBlockState(newPos).isAir()) {
-							this.world.setBlockState(newPos, ModBlocks.ROPE.get().getDefaultState().with(RopeBlock.FACING, hitBlockfaceDirection).with(RopeBlock.HAS_ARROW, ropeLength == 0 ? true : false));
-						}
-						// No space to place more Ropes.
-						else {
-							break;
-						}
-					}
-					this.remove();
+				if (this.world.getBlockState(currentRopePos).isAir()) {
+					this.world.setBlockState(currentRopePos, ModBlocks.ROPE.get().getDefaultState().with(RopeBlock.FACING, hitBlockfaceDirection).with(RopeBlock.HAS_ARROW, totalRope == 0 ? true : false));
+					this.totalRope++;
+					this.placeRope = true;
 				}
 			}
 		}
 	}
 	
 	/**
-	 * Referenced from {@link EnderPearlEntity#onImpact}
+	 * Referenced from {@link EnderPearlEntity}
 	 */
 	private void teleportShooter() {
 		// Create teleportation particles.
@@ -331,8 +362,11 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING)) {
 				// Slime default size is small so we don't need to set a size.
 				SlimeEntity slimeEntity = EntityType.SLIME.create(this.world);
+				// slime was spawning with wrong bounding box and too much health, though visually small
+				slimeEntity.recalculateSize();
+				slimeEntity.setHealth(1);
 				// Set the Slime's position to the center of the block.
-				slimeEntity.setLocationAndAngles(this.getPosition().getX() + 0.5f, this.getPosition().getY() + 0.05f, this.getPosition().getZ() + 0.5f, this.rotationYaw, this.rotationPitch);
+				slimeEntity.setLocationAndAngles(this.getPosition().getX()+.5f, this.getPosition().getY() + 0.05f, this.getPosition().getZ()+.5f, this.rotationYaw, this.rotationPitch);
 				this.world.addEntity(slimeEntity);
 
 				// Remove this arrow only if a Slime spawns
@@ -467,6 +501,16 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	 */
 	private boolean isArrowType(ArrowType arrowType) {
 		return ArrowType.byName(this.getDataManager().get(ARROW_TYPE)) == arrowType;
+	}
+
+	@Override
+	public void setDamage(double damageIn) {
+		this.damage = damageIn;
+	}
+
+	@Override
+	public double getDamage() {
+		return this.damage;
 	}
 
 	/**
