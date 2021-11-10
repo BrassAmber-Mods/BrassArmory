@@ -18,7 +18,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.monster.EndermiteEntity;
 import net.minecraft.entity.monster.SlimeEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ItemStack;
@@ -27,12 +26,10 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SChangeGameStatePacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -43,7 +40,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
-import org.apache.logging.log4j.Level;
 
 public class BAArrowEntity extends AbstractArrowEntity {
 	private static final DataParameter<String> ARROW_TYPE = EntityDataManager.createKey(BAArrowEntity.class, DataSerializers.STRING);
@@ -84,15 +80,8 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	 * Used when fired by a Player.
 	 */
 	public BAArrowEntity(World worldIn, LivingEntity shooter, ArrowType typeIn) {
+		// Calls the constructor above.
 		this(ModEntityTypes.BA_ARROW.get(), worldIn, shooter, typeIn);
-		if (this.isArrowType(ArrowType.LASER)) {
-			this.setPierceLevel((byte) 5);
-		}
-		this.setDamage(this.getArrowType().getDamage());
-		if (this.isArrowType(ArrowType.ROPE)) {
-			this.pickupStatus = PickupStatus.DISALLOWED;
-		}
-
 	}
 
 	/**
@@ -252,7 +241,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	public void tick() {
 		super.tick();
 		this.flightTime++; // Increase the counter for number of ticks spent flying
-		this.ticksSinceRope++; // Increase the counter for number of ticks since last placing a rope
 		if (this.isArrowType(ArrowType.FROST)) {
 			freezeNearby(this.world, this.getPosition());
 			if (this.inGround && this.timeInGround != 0) {
@@ -269,20 +257,22 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			}
 		}
 		// Check that we have entered place rope mode and that the ticks since last placing a rope are at least equal to 10 ticks
-		else if (this.isArrowType(ArrowType.ROPE) && this.placeRope && this.ticksSinceRope > 6) {
-			BlockPos newPos = currentRopePos.offset(Direction.DOWN, 1);
-			if (this.world.getBlockState(newPos).isAir() && this.totalRope < this.maxRopeLength) {
-				this.world.setBlockState(newPos, ModBlocks.ROPE.get().getDefaultState().with(RopeBlock.FACING, hitBlockfaceDirection).with(RopeBlock.HAS_ARROW, totalRope == 0 ? true : false));
-				this.currentRopePos = newPos;
-				this.totalRope++;
-				this.ticksSinceRope = 0;
+		else if (this.isArrowType(ArrowType.ROPE) && this.placeRope) {
+			this.ticksSinceRope++; // Increase the counter for number of ticks since last placing a rope
+			if (this.ticksSinceRope > 6) {
+				BlockPos newPos = currentRopePos.offset(Direction.DOWN, 1);
+				if (this.world.getBlockState(newPos).isAir() && this.totalRope < this.maxRopeLength) {
+					this.world.setBlockState(newPos, ModBlocks.ROPE.get().getDefaultState().with(RopeBlock.FACING, this.hitBlockfaceDirection).with(RopeBlock.HAS_ARROW, this.totalRope == 0 ? true : false));
+					this.currentRopePos = newPos;
+					this.totalRope++;
+					this.ticksSinceRope = 0;
+				}
+				else {
+					// No space to place more Ropes or Rope Limit reached.
+					this.placeRope = false;
+					this.remove();
+				}
 			}
-			else {
-				// No space to place more Ropes or Rope Limit reached.
-				this.placeRope = false;
-				this.remove();
-			}
-
 		}
 		if (this.world.isRemote) {
 			if (this.inGround) {
@@ -295,8 +285,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			}
 		} else if (this.inGround && this.timeInGround != 0 && this.timeInGround >= 600) {
 			this.world.setEntityState(this, (byte) 0);
-			// Causes crashes.
-			// this.dataManager.set(COLOR, -1);
 		}
 	}
 
