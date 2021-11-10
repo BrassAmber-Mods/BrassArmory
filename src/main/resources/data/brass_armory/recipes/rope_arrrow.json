@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "X",
-    "#",
-    "Y"
+    "XX",
+    "#X",
+    "YX"
   ],
   "key": {
     "#": {
       "item": "minecraft:stick"
     },
     "X": {
-      "item": "minecraft:iron_block"
+      "item": "minecraft:string"
     },
     "Y": {
       "item": "minecraft:feather"
     }
   },
   "result": {
-    "item": "brass_armory:concussion_arrow",
+    "item": "brass_armory:rope_arrow",
     "count": 4
   }
 }
