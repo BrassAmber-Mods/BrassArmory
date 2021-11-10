@@ -1,6 +1,5 @@
 package com.milamberBrass.brass_armory.entities.custom;
 
-import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.blocks.ModBlocks;
 import com.milamberBrass.brass_armory.blocks.custom.RopeBlock;
 import com.milamberBrass.brass_armory.entities.ModEntityTypes;
@@ -71,9 +70,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			this.setPierceLevel((byte) 5);
 		}
 		this.setDamage(this.getArrowType().getDamage());
-		if (this.isArrowType(ArrowType.ROPE)) {
-			this.pickupStatus = PickupStatus.DISALLOWED;
-		}
 	}
 
 	/**
@@ -90,9 +86,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	public BAArrowEntity(World worldIn, double x, double y, double z, ArrowType typeIn) {
 		super(ModEntityTypes.BA_ARROW.get(), x, y, z, worldIn);
 		this.setArrowType(typeIn.getString());
-		if (this.isArrowType(ArrowType.ROPE)) {
-			this.pickupStatus = PickupStatus.DISALLOWED;
-		}
 	}
 
 	/*********************************************************** Data ********************************************************/
@@ -305,6 +298,8 @@ public class BAArrowEntity extends AbstractArrowEntity {
 					this.world.setBlockState(currentRopePos, ModBlocks.ROPE.get().getDefaultState().with(RopeBlock.FACING, hitBlockfaceDirection).with(RopeBlock.HAS_ARROW, totalRope == 0 ? true : false));
 					this.totalRope++;
 					this.placeRope = true;
+					// Prevent the arrow from being picked up while the ropes are being placed.
+					this.pickupStatus = PickupStatus.DISALLOWED;
 				}
 			}
 		}
