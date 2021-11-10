@@ -75,6 +75,9 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			this.setPierceLevel((byte) 5);
 		}
 		this.setDamage(this.getArrowType().getDamage());
+		if (this.isArrowType(ArrowType.ROPE)) {
+			this.pickupStatus = PickupStatus.DISALLOWED;
+		}
 	}
 
 	/**
@@ -86,6 +89,10 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			this.setPierceLevel((byte) 5);
 		}
 		this.setDamage(this.getArrowType().getDamage());
+		if (this.isArrowType(ArrowType.ROPE)) {
+			this.pickupStatus = PickupStatus.DISALLOWED;
+		}
+
 	}
 
 	/**
@@ -94,6 +101,9 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	public BAArrowEntity(World worldIn, double x, double y, double z, ArrowType typeIn) {
 		super(ModEntityTypes.BA_ARROW.get(), x, y, z, worldIn);
 		this.setArrowType(typeIn.getString());
+		if (this.isArrowType(ArrowType.ROPE)) {
+			this.pickupStatus = PickupStatus.DISALLOWED;
+		}
 	}
 
 	/*********************************************************** Data ********************************************************/
@@ -259,7 +269,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 			}
 		}
 		// Check that we have entered place rope mode and that the ticks since last placing a rope are at least equal to 10 ticks
-		else if (this.isArrowType(ArrowType.ROPE) && this.placeRope && this.ticksSinceRope > 8) {
+		else if (this.isArrowType(ArrowType.ROPE) && this.placeRope && this.ticksSinceRope > 6) {
 			BlockPos newPos = currentRopePos.offset(Direction.DOWN, 1);
 			if (this.world.getBlockState(newPos).isAir() && this.totalRope < this.maxRopeLength) {
 				this.world.setBlockState(newPos, ModBlocks.ROPE.get().getDefaultState().with(RopeBlock.FACING, hitBlockfaceDirection).with(RopeBlock.HAS_ARROW, totalRope == 0 ? true : false));
