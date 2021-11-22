@@ -52,7 +52,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 	private int flightTime = 0;
 	private boolean placeRope = false;
 	private BlockPos currentRopePos;
-	private double damage;
+	private double baDamage;
 	private int maxRopeLength = 24;
 	private int totalRope = 0;
 	private Direction hitBlockfaceDirection;
@@ -515,12 +515,12 @@ public class BAArrowEntity extends AbstractArrowEntity {
 
 	@Override
 	public void setDamage(double damageIn) {
-		this.damage = damageIn;
+		this.baDamage = damageIn;
 	}
 
 	@Override
 	public double getDamage() {
-		return this.damage;
+		return this.baDamage;
 	}
 
 	/**
