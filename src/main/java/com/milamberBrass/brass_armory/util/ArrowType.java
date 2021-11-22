@@ -8,27 +8,28 @@ import com.milamberBrass.brass_armory.items.custom.BABaseArrowItem;
 import net.minecraft.util.IStringSerializable;
 
 public enum ArrowType implements IStringSerializable {
-    EMPTY(0, "empty"),
-    DIRT(0, "dirt"),
-    EXPLOSION(0, "explosion"),
-    FROST(2, "frost"),
-    GRASS(3, "grass"),
-    LASER(0, "laser"),
-    ROPE(4, "rope"),
-    SLIME(4, "slime"),
-    WARP(4, "warp"),
-    FIRE(1, "fire"),
-    CONCUSSION(1, "concuss");
+    EMPTY(0D, "empty"),
+    DIRT(1D, "dirt"),
+    EXPLOSION(0D, "explosion"),
+    FROST(4D, "frost"),
+    GRASS(2D, "grass"),
+    LASER(4D, "laser"),
+    ROPE(2D, "rope"),
+    SLIME(4D, "slime"),
+    WARP(1D, "warp"),
+    FIRE(4D, "fire"),
+    CONCUSSION(4D, "concuss");
 
-    private final int damage;
+    private final double damage;
     private String name;
 
-    private ArrowType(int damageIn, String nameIn) {
+    private ArrowType(double damageIn, String nameIn) {
         this.damage = damageIn;
         this.name = nameIn;
     }
 
-    public int getDamage() {return this.damage;}
+
+    public double getDamage() {return this.damage;}
 
 
     @Nullable
@@ -52,6 +53,10 @@ public enum ArrowType implements IStringSerializable {
                 return ModItems.SLIME_ARROW.get();
             case WARP:
                 return ModItems.WARP_ARROW.get();
+            case FIRE:
+            	return ModItems.FIRE_ARROW.get();
+            case CONCUSSION:
+            	return ModItems.CONCUSSION_ARROW.get();
         }
     }
     

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,arrow=false": {
+      "model": "brass_armory:block/rope",
+      "y": 90
+    },
+    "facing=north,arrow=false": {
+      "model": "brass_armory:block/rope"
+    },
+    "facing=south,arrow=false": {
+      "model": "brass_armory:block/rope",
+      "y": 180
+    },
+    "facing=west,arrow=false": {
+      "model": "brass_armory:block/rope",
+      "y": 270
+    },
+    "facing=east,arrow=true": {
+      "model": "brass_armory:block/rope_with_arrow",
+      "y": 90
+    },
+    "facing=north,arrow=true": {
+      "model": "brass_armory:block/rope_with_arrow"
+    },
+    "facing=south,arrow=true": {
+      "model": "brass_armory:block/rope_with_arrow",
+      "y": 180
+    },
+    "facing=west,arrow=true": {
+      "model": "brass_armory:block/rope_with_arrow",
+      "y": 270
+    }
+  }
+}
