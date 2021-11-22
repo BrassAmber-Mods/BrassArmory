@@ -1,13 +1,7 @@
 package com.milamberBrass.brass_armory.items;
 
 import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.items.custom.BABaseArrowItem;
-import com.milamberBrass.brass_armory.items.custom.Battleaxe;
-import com.milamberBrass.brass_armory.items.custom.Dagger;
-import com.milamberBrass.brass_armory.items.custom.Flail;
-import com.milamberBrass.brass_armory.items.custom.Halberd;
-import com.milamberBrass.brass_armory.items.custom.Mace;
-import com.milamberBrass.brass_armory.items.custom.Spear;
+import com.milamberBrass.brass_armory.items.custom.*;
 import com.milamberBrass.brass_armory.util.ArrowType;
 
 import net.minecraft.item.BowItem;
@@ -29,43 +23,47 @@ public class ModItems {
 
     public static final RegistryObject<BABaseArrowItem> DIRT_ARROW =
             ITEMS.register("dirt_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.DIRT));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.DIRT));
 
     public static final RegistryObject<BABaseArrowItem> EX_ARROW =
             ITEMS.register("ex_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY), ArrowType.EXPLOSION));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.EXPLOSION));
 
     public static final RegistryObject<BABaseArrowItem> FROST_ARROW =
             ITEMS.register("frost_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.FROST));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.FROST));
 
     public static final RegistryObject<BABaseArrowItem> GRASS_ARROW =
             ITEMS.register("grass_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.COMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.GRASS));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.GRASS));
 
     public static final RegistryObject<BABaseArrowItem> LASER_ARROW =
             ITEMS.register("laser_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.RARE).group(ModItemGroup.BRASS_ARMORY), ArrowType.LASER));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.LASER));
 
     public static final RegistryObject<BABaseArrowItem> ROPE_ARROW =
             ITEMS.register("rope_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.ROPE));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.ROPE));
 
     public static final RegistryObject<BABaseArrowItem> SLIME_ARROW =
             ITEMS.register("slime_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.SLIME));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.SLIME));
 
     public static final RegistryObject<BABaseArrowItem> WARP_ARROW =
             ITEMS.register("warp_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.EPIC).group(ModItemGroup.BRASS_ARMORY), ArrowType.WARP));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.WARP));
 
     public static final RegistryObject<BABaseArrowItem> FIRE_ARROW =
             ITEMS.register("fire_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.FIRE));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.FIRE));
 
     public static final RegistryObject<BABaseArrowItem> CONCUSSION_ARROW =
             ITEMS.register("concussion_arrow", () ->
-                    new BABaseArrowItem(new Item.Properties().rarity(Rarity.UNCOMMON).group(ModItemGroup.BRASS_ARMORY), ArrowType.CONCUSSION));
+                    new BABaseArrowItem(new Item.Properties().group(ModItemGroup.BRASS_ARMORY), ArrowType.CONCUSSION));
+
+    public static final RegistryObject<Quiver> QUIVER =
+            ITEMS.register("quiver", () ->
+                    new Quiver(new Item.Properties().maxStackSize(1).group(ModItemGroup.BRASS_ARMORY)));
 
     //               --------------------------BOOMERANG-------------------------------
 
