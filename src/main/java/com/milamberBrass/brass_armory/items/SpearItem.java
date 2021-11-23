@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.entities.SpearEntity;
-import com.milamberBrass.brass_armory.util.ReflectionMethod;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -33,9 +32,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
 
@@ -199,8 +200,6 @@ public class SpearItem extends TieredItem implements IVanishable {
     @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
     private static class EventHandler {
 
-        private static final ReflectionMethod<Object> METHOD_SYNC_CURRENT_PLAY_ITEM = new ReflectionMethod<>(PlayerController.class, "func_78750_j", "syncCurrentPlayItem");
-
         @SubscribeEvent
         public static void onMouseEvent(MouseInputEvent event) {
             if (event.getButton() != 0) {
@@ -262,7 +261,14 @@ public class SpearItem extends TieredItem implements IVanishable {
             }
 
             if (pointedEntity != null && (mc.hitResult == null || pointedEntity != null && (mc.hitResult.getType() == RayTraceResult.Type.ENTITY))) {
-                METHOD_SYNC_CURRENT_PLAY_ITEM.invoke(mc.gameMode);
+                Method ensureHasSentCarriedItem = ObfuscationReflectionHelper.findMethod(PlayerController.class, "ensureHasSentCarriedItem");
+                ensureHasSentCarriedItem.setAccessible(true);
+                try {
+                    ensureHasSentCarriedItem.invoke(mc.gameMode);
+                } catch (Exception e) {
+                    // I've failed.
+                    e.printStackTrace();
+                }
                 //NETWORK.sendToServer(new PacketAttackEntity(pointedEntity));
 
                 if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
