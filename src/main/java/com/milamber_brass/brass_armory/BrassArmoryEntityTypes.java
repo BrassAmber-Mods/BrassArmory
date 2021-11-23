@@ -1,7 +1,7 @@
-package com.milamberBrass.brass_armory;
+package com.milamber_brass.brass_armory;
 
-import com.milamberBrass.brass_armory.entities.BAArrowEntity;
-import com.milamberBrass.brass_armory.entities.SpearEntity;
+import com.milamber_brass.brass_armory.entities.BAArrowEntity;
+import com.milamber_brass.brass_armory.entities.SpearEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;

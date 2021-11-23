@@ -1,4 +1,4 @@
-package com.milamberBrass.brass_armory;
+package com.milamber_brass.brass_armory;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;

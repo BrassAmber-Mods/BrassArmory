@@ -1,9 +1,9 @@
-package com.milamberBrass.brass_armory.util;
+package com.milamber_brass.brass_armory.util;
 
 
-import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.BrassArmoryEntityTypes;
-import com.milamberBrass.brass_armory.entities.render.SpearEntityRenderer;
+import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.entities.render.SpearEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;

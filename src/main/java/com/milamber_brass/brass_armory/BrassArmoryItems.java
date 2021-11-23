@@ -1,7 +1,8 @@
-package com.milamberBrass.brass_armory;
+package com.milamber_brass.brass_armory;
 
 import com.milamberBrass.brass_armory.items.*;
-import com.milamberBrass.brass_armory.util.ArrowType;
+import com.milamber_brass.brass_armory.items.*;
+import com.milamber_brass.brass_armory.util.ArrowType;
 import net.minecraft.item.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;

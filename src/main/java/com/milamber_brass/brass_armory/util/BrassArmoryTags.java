@@ -1,6 +1,6 @@
-package com.milamberBrass.brass_armory.util;
+package com.milamber_brass.brass_armory.util;
 
-import com.milamberBrass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.BrassArmory;
 import net.minecraft.item.Item;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;

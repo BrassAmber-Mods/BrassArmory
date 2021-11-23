@@ -1,7 +1,7 @@
-package com.milamberBrass.brass_armory.entities;
+package com.milamber_brass.brass_armory.entities;
 
-import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.BrassArmoryEntityTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

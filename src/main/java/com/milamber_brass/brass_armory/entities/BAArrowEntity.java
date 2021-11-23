@@ -1,10 +1,10 @@
-package com.milamberBrass.brass_armory.entities;
+package com.milamber_brass.brass_armory.entities;
 
-import com.milamberBrass.brass_armory.BrassArmoryBlocks;
-import com.milamberBrass.brass_armory.blocks.RopeBlock;
-import com.milamberBrass.brass_armory.BrassArmoryEntityTypes;
-import com.milamberBrass.brass_armory.entities.dispenser.CustomDispenserBehavior;
-import com.milamberBrass.brass_armory.util.ArrowType;
+import com.milamber_brass.brass_armory.BrassArmoryBlocks;
+import com.milamber_brass.brass_armory.blocks.RopeBlock;
+import com.milamber_brass.brass_armory.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.entities.dispenser.CustomDispenserBehavior;
+import com.milamber_brass.brass_armory.util.ArrowType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;

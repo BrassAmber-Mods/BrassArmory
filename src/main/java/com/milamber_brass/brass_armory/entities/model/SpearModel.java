@@ -1,6 +1,6 @@
-package com.milamberBrass.brass_armory.entities.model;
+package com.milamber_brass.brass_armory.entities.model;
 
-import com.milamberBrass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.BrassArmory;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.RenderType;

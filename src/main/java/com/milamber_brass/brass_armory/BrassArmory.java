@@ -1,8 +1,8 @@
-package com.milamberBrass.brass_armory;
+package com.milamber_brass.brass_armory;
 
-import com.milamberBrass.brass_armory.entities.dispenser.CustomDispenserBehavior;
-import com.milamberBrass.brass_armory.entities.render.BAArrowRenderer;
-import com.milamberBrass.brass_armory.entities.render.SpearEntityRenderer;
+import com.milamber_brass.brass_armory.entities.dispenser.CustomDispenserBehavior;
+import com.milamber_brass.brass_armory.entities.render.BAArrowRenderer;
+import com.milamber_brass.brass_armory.entities.render.SpearEntityRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

@@ -1,6 +1,6 @@
-package com.milamberBrass.brass_armory;
+package com.milamber_brass.brass_armory;
 
-import com.milamberBrass.brass_armory.blocks.RopeBlock;
+import com.milamber_brass.brass_armory.blocks.RopeBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
