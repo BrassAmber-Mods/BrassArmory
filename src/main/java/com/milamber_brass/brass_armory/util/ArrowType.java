@@ -31,6 +31,8 @@ public enum ArrowType implements IStringSerializable {
     @Nullable
     public static BABaseArrowItem getModItemFor(ArrowType arrowType) {
         switch (arrowType) {
+            default:
+            case EMPTY:
             case DIRT:
                 return BrassArmoryItems.DIRT_ARROW.get();
             case EXPLOSION:
@@ -51,8 +53,7 @@ public enum ArrowType implements IStringSerializable {
                 return BrassArmoryItems.FIRE_ARROW.get();
             case CONCUSSION:
                 return BrassArmoryItems.CONCUSSION_ARROW.get();
-            default:
-                return null;
+
         }
     }
 

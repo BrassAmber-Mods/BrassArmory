@@ -8,7 +8,7 @@ license="All rights reserved."
     version="${file.jarVersion}"
     displayName="Brass Armory"
     credits="Inspired by Balkon's Weapons Mod"
-    authors="Brass_herbalist, Milamber, and FireControl1847"
+    authors="Brass_herbalist, Milamber, XRatedJunior,and FireControl1847"
     description='''
 A revamp of Balkon's Weapons Mod from YogBox/Tekkit days which slims down the item list slightly.
 Stays true to the core of Balkon's Weapons with new item textures made by Brass_Herbalist.
