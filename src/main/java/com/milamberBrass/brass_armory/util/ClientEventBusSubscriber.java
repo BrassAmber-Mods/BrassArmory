@@ -18,4 +18,5 @@ public class ClientEventBusSubscriber {
     public static void clientSetup(FMLClientSetupEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SPEAR.get(), Spear_Entity_Renderer::new);
     }
+
 }

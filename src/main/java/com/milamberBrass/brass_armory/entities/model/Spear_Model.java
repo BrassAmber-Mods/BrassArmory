@@ -8,7 +8,10 @@ import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 public class Spear_Model extends Model {
+
     public static ResourceLocation TEXTURE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png");
     private final ModelRenderer modelRenderer = new ModelRenderer(32, 32, 0, 6);
 
@@ -31,8 +34,10 @@ public class Spear_Model extends Model {
         this.modelRenderer.addChild(modelrenderer3);
     }
 
+    @ParametersAreNonnullByDefault
     public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.modelRenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
+
 }
 

@@ -13,7 +13,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 public class Spear_Entity_Renderer extends EntityRenderer<Spear_Entity> {
+
     public static final ResourceLocation SPEAR = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/wood_spear.png");
     private final Spear_Model spear_model = new Spear_Model(SPEAR);
 
@@ -21,6 +25,7 @@ public class Spear_Entity_Renderer extends EntityRenderer<Spear_Entity> {
         super(renderManagerIn);
     }
 
+    @ParametersAreNonnullByDefault
     public void render(Spear_Entity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
@@ -32,9 +37,11 @@ public class Spear_Entity_Renderer extends EntityRenderer<Spear_Entity> {
     }
 
     /**
-     * Returns the location of an entity's texture.
+     * @return Returns the location of an entity's texture.
      */
+    @Nonnull
     public ResourceLocation getTextureLocation(Spear_Entity entity) {
         return  entity.getTierResourceLocation();
     }
+
 }

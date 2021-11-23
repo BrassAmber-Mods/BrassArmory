@@ -21,13 +21,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public class Spear_Entity extends AbstractArrowEntity {
-    private ItemStack thrownStack;
-    private boolean dealtDamage;
+
     public int returningTicks;
     public ItemTier finalTier;
+    private ItemStack thrownStack;
+    private boolean dealtDamage;
 
     public Spear_Entity(EntityType<? extends Spear_Entity> type, World worldIn) {
         super(type, worldIn);
@@ -45,7 +48,7 @@ public class Spear_Entity extends AbstractArrowEntity {
     }
 
 
-    public ResourceLocation getTierResourceLocation(){
+    public ResourceLocation getTierResourceLocation() {
         String tier2 = finalTier.toString();
         switch (tier2) {
             case "GOLD":
@@ -91,6 +94,7 @@ public class Spear_Entity extends AbstractArrowEntity {
         super.tick();
     }
 
+    @Nonnull
     protected ItemStack getPickupItem() {
         return this.thrownStack.copy();
     }
@@ -99,6 +103,7 @@ public class Spear_Entity extends AbstractArrowEntity {
      * Gets the EntityRayTraceResult representing the entity hit
      */
     @Nullable
+    @ParametersAreNonnullByDefault
     protected EntityRayTraceResult findHitEntity(Vector3d startVec, Vector3d endVec) {
         return this.dealtDamage ? null : super.findHitEntity(startVec, endVec);
     }
@@ -110,12 +115,12 @@ public class Spear_Entity extends AbstractArrowEntity {
         Entity entity = result.getEntity();
         float f = 8.0F;
         if (entity instanceof LivingEntity) {
-            LivingEntity livingentity = (LivingEntity)entity;
+            LivingEntity livingentity = (LivingEntity) entity;
             f += EnchantmentHelper.getDamageBonus(this.thrownStack, livingentity.getMobType());
         }
 
         Entity entity1 = this.getOwner();
-        DamageSource damagesource = DamageSource.trident(this, (Entity)(entity1 == null ? this : entity1));
+        DamageSource damagesource = DamageSource.trident(this, entity1 == null ? this : entity1);
         this.dealtDamage = true;
         SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
         if (entity.hurt(damagesource, f)) {
@@ -124,10 +129,10 @@ public class Spear_Entity extends AbstractArrowEntity {
             }
 
             if (entity instanceof LivingEntity) {
-                LivingEntity livingentity1 = (LivingEntity)entity;
+                LivingEntity livingentity1 = (LivingEntity) entity;
                 if (entity1 instanceof LivingEntity) {
                     EnchantmentHelper.doPostHurtEffects(livingentity1, entity1);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity1);
+                    EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity1);
                 }
 
                 this.doPostHurtEffects(livingentity1);
@@ -142,6 +147,7 @@ public class Spear_Entity extends AbstractArrowEntity {
     /**
      * The sound made when an entity is hit by this projectile
      */
+    @Nonnull
     protected SoundEvent getDefaultHitGroundSoundEvent() {
         return SoundEvents.TRIDENT_HIT_GROUND;
     }
@@ -149,6 +155,7 @@ public class Spear_Entity extends AbstractArrowEntity {
     /**
      * Called by a player entity when they collide with an entity
      */
+    @ParametersAreNonnullByDefault
     public void playerTouch(PlayerEntity entityIn) {
         Entity entity = this.getOwner();
         if (entity == null || entity.getUUID() == entityIn.getUUID()) {
@@ -159,6 +166,7 @@ public class Spear_Entity extends AbstractArrowEntity {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
+    @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("Spear", 10)) {
@@ -168,6 +176,7 @@ public class Spear_Entity extends AbstractArrowEntity {
         this.dealtDamage = compound.getBoolean("DealtDamage");
     }
 
+    @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
         compound.put("Spear", this.thrownStack.save(new CompoundNBT()));
@@ -189,6 +198,7 @@ public class Spear_Entity extends AbstractArrowEntity {
     public boolean shouldRender(double x, double y, double z) {
         return true;
     }
+
 }
 
 

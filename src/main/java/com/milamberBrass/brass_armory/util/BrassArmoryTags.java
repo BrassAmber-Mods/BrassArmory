@@ -43,5 +43,7 @@ public class BrassArmoryTags {
         private static Tags.IOptionalNamedTag<Item> createTag(String name) {
             return ItemTags.createOptional(new ResourceLocation(BrassArmory.MOD_ID, name));
         }
+
     }
+
 }

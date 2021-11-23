@@ -33,33 +33,32 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 
 public class Spear extends TieredItem implements IVanishable {
+
     private static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("99f7541c-a163-437c-8c25-bd685549b305");
     private static final float SPECIAL_REACH_MULTIPLIER = 1.5F;
     private final double reachDistanceBonus = 1.0D;
-
     private final float attackDamage;
-    /** Modifiers applied when the item is in the mainhand of a user. */
+
+    /**
+     * Modifiers applied when the item is in the mainhand of a user.
+     */
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
     protected ItemTier finalTier;
-    public static final String VERSION = "1.0";
-    public static Predicate<String> versionCheck = NetworkRegistry.acceptMissingOr(VERSION);
-    public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(ResourceLocation.tryParse(BrassArmory.MOD_ID),() -> VERSION , versionCheck, versionCheck);
 
     public Spear(ItemTier tier, int attackDamageIn, Properties builderIn) {
         super(tier, builderIn);
         finalTier = tier;
-        this.attackDamage = (float)attackDamageIn + tier.getAttackDamageBonus();
+        this.attackDamage = (float) attackDamageIn + tier.getAttackDamageBonus();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.6D, AttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
@@ -74,50 +73,56 @@ public class Spear extends TieredItem implements IVanishable {
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
-
-        /** ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
+        /*
+        ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
         if (slot == EquipmentSlotType.MAINHAND) {
             multimap.put(player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getAttribute(),
-                    new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
-                            AttributeModifier.Operation.ADDITION));
-        }*/
-        return multimap;
+                new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
+                AttributeModifier.Operation.ADDITION));
+        }
+        */
+
+        return super.getAttributeModifiers(slot, stack);
     }
 
     public float getAttackDamage() {
         return this.attackDamage;
     }
 
+    @ParametersAreNonnullByDefault
     public boolean canAttackBlock(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
         return !player.isCreative();
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-            Material material = state.getMaterial();
-            return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && material != Material.CORAL && !state.is(BlockTags.LEAVES) && material != Material.VEGETABLE ? 1.0F : 1.5F;
+        Material material = state.getMaterial();
+        return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && material != Material.CORAL && !state.is(BlockTags.LEAVES) && material != Material.VEGETABLE ? 1.0F : 1.5F;
     }
 
-    public IItemTier getFinalTier(){
+    public IItemTier getFinalTier() {
         return finalTier;
     }
 
-
     /**
-     * returns the action that specifies what animation to play when the items is being used
+     * @return The action that specifies what animation to play when the item is being used.
      */
+    @ParametersAreNonnullByDefault
+    @Nonnull
     public UseAction getUseAnimation(ItemStack stack) {
         return UseAction.SPEAR;
     }
 
     /**
-     * How long it takes to use or consume an item
+     * How long it takes to use or consume an item.
      */
+    @ParametersAreNonnullByDefault
     public int getUseDuration(ItemStack stack) {
         return 72000;
     }
 
+    @ParametersAreNonnullByDefault
     public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof PlayerEntity) {
             PlayerEntity playerentity = (PlayerEntity) entityLiving;
@@ -135,7 +140,7 @@ public class Spear extends TieredItem implements IVanishable {
                     }
 
                     worldIn.addFreshEntity(spear_entity);
-                    worldIn.playSound((PlayerEntity) null, spear_entity, SoundEvents.TRIDENT_THROW,
+                    worldIn.playSound(null, spear_entity, SoundEvents.TRIDENT_THROW,
                             SoundCategory.PLAYERS, 1.0F, 1.0F);
                     if (!playerentity.abilities.instabuild) {
                         playerentity.inventory.removeItem(stack);
@@ -148,8 +153,8 @@ public class Spear extends TieredItem implements IVanishable {
         }
     }
 
-
-
+    @ParametersAreNonnullByDefault
+    @Nonnull
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
         if (itemstack.getDamageValue() >= itemstack.getMaxDamage() - 1) {
@@ -161,11 +166,11 @@ public class Spear extends TieredItem implements IVanishable {
     }
 
 
-
     /**
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
      * the damage on the stack.
      */
+    @ParametersAreNonnullByDefault
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, (entity) -> {
             entity.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
@@ -173,8 +178,9 @@ public class Spear extends TieredItem implements IVanishable {
         return true;
     }
 
+    @ParametersAreNonnullByDefault
     public boolean mineBlock(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
-        if ((double)state.getDestroySpeed(worldIn, pos) != 0.0D) {
+        if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
             stack.hurtAndBreak(2, entityLiving, (entity) -> {
                 entity.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
             });
@@ -183,6 +189,8 @@ public class Spear extends TieredItem implements IVanishable {
         return true;
     }
 
+    @ParametersAreNonnullByDefault
+    @Nonnull
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlotType equipmentSlot) {
         // Why does this method exist?
         return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getDefaultAttributeModifiers(equipmentSlot);
@@ -205,7 +213,7 @@ public class Spear extends TieredItem implements IVanishable {
             Entity entity = mc.getCameraEntity();
             float partialTicks = mc.getFrameTime();
             double blockReachDistance = mc.gameMode.getPickRange();
-            RayTraceResult blockMouseOver = entity.pick(blockReachDistance, partialTicks,false);
+            RayTraceResult blockMouseOver = entity.pick(blockReachDistance, partialTicks, false);
 
             Vector3d eyeVec = entity.getEyePosition(partialTicks);
             double entityReachDistance = blockReachDistance - 1.5D;
@@ -239,7 +247,8 @@ public class Spear extends TieredItem implements IVanishable {
                     break;
                 }
 
-                /*RayTraceResult rayTraceResult = aabb1.rayTrace(eyeVec, endVec);
+                /*
+                RayTraceResult rayTraceResult = aabb1.rayTrace(eyeVec, endVec);
                 if (rayTraceResult == null) {
                     continue;
                 }
@@ -248,7 +257,8 @@ public class Spear extends TieredItem implements IVanishable {
                 if (dist < minSqr) {
                     pointedEntity = entity2;
                     minSqr = dist;
-                }*/
+                }
+                */
             }
 
             if (pointedEntity != null && (mc.hitResult == null || pointedEntity != null && (mc.hitResult.getType() == RayTraceResult.Type.ENTITY))) {
@@ -263,4 +273,5 @@ public class Spear extends TieredItem implements IVanishable {
         }
 
     }
+
 }

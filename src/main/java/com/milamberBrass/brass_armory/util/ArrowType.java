@@ -4,6 +4,7 @@ import com.milamberBrass.brass_armory.items.ModItems;
 import com.milamberBrass.brass_armory.items.custom.BABaseArrowItem;
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public enum ArrowType implements IStringSerializable {
@@ -20,22 +21,16 @@ public enum ArrowType implements IStringSerializable {
     CONCUSSION(4D, "concuss");
 
     private final double damage;
-    private String name;
+    private final String name;
 
-    private ArrowType(double damageIn, String nameIn) {
+    ArrowType(double damageIn, String nameIn) {
         this.damage = damageIn;
         this.name = nameIn;
     }
 
-
-    public double getDamage() {return this.damage;}
-
-
     @Nullable
     public static BABaseArrowItem getModItemFor(ArrowType arrowType) {
         switch (arrowType) {
-            case EMPTY:
-            default:
             case DIRT:
                 return ModItems.DIRT_ARROW.get();
             case EXPLOSION:
@@ -53,22 +48,29 @@ public enum ArrowType implements IStringSerializable {
             case WARP:
                 return ModItems.WARP_ARROW.get();
             case FIRE:
-            	return ModItems.FIRE_ARROW.get();
+                return ModItems.FIRE_ARROW.get();
             case CONCUSSION:
-            	return ModItems.CONCUSSION_ARROW.get();
+                return ModItems.CONCUSSION_ARROW.get();
+            default:
+                return null;
         }
     }
-    
+
     public static ArrowType byName(String name) {
-        for(ArrowType arrowType : values()) {
-           if (arrowType.name.equals(name)) {
-              return arrowType;
-           }
+        for (ArrowType arrowType : values()) {
+            if (arrowType.name.equals(name)) {
+                return arrowType;
+            }
         }
 
         return EMPTY;
-     }
+    }
 
+    public double getDamage() {
+        return this.damage;
+    }
+
+    @Nonnull
     @Override
     public String getSerializedName() {
         return this.name;
