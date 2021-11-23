@@ -1,11 +1,10 @@
 package com.milamberBrass.brass_armory.util;
 
-import javax.annotation.Nullable;
-
 import com.milamberBrass.brass_armory.items.ModItems;
 import com.milamberBrass.brass_armory.items.custom.BABaseArrowItem;
-
 import net.minecraft.util.IStringSerializable;
+
+import javax.annotation.Nullable;
 
 public enum ArrowType implements IStringSerializable {
     EMPTY(0D, "empty"),
@@ -71,7 +70,8 @@ public enum ArrowType implements IStringSerializable {
      }
 
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return this.name;
     }
+
 }

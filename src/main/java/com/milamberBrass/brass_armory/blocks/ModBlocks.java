@@ -30,13 +30,13 @@ public class ModBlocks {
 
 	//------------------------------------MISC----------------------------------------------------------
 
-	public static final RegistryObject<RopeBlock> ROPE = registerBlock("rope", new RopeBlock(AbstractBlock.Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0.4F).sound(SoundType.CLOTH).notSolid().doesNotBlockMovement()));
+	public static final RegistryObject<RopeBlock> ROPE = registerBlock("rope", new RopeBlock(AbstractBlock.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.WOOL).noOcclusion().noCollission()));
 
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent()
 	public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
 		BrassArmory.LOGGER.info("Set Block RenderTypes");
-		RenderType cutoutRenderType = RenderType.getCutout();
+		RenderType cutoutRenderType = RenderType.cutout();
 		RenderTypeLookup.setRenderLayer(ROPE.get(), cutoutRenderType);
 	}
 
@@ -45,7 +45,7 @@ public class ModBlocks {
 	 */
 	private static <B extends Block> RegistryObject<B> registerBlock(String registryName, B block) {
 		// Blocks are registered before Items
-		ModItems.registerItem(registryName, new BlockItem(block, new Item.Properties().group(ModItemGroup.BRASS_ARMORY)));
+		ModItems.registerItem(registryName, new BlockItem(block, new Item.Properties().tab(ModItemGroup.BRASS_ARMORY)));
 		return BLOCKS.register(registryName, () -> block);
 	}
 

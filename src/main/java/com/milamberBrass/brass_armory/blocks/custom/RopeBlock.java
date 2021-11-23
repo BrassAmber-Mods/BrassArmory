@@ -1,12 +1,6 @@
 package com.milamberBrass.brass_armory.blocks.custom;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.IWaterLoggable;
+import net.minecraft.block.*;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
@@ -25,18 +19,20 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 
+import javax.annotation.Nullable;
+
 public class RopeBlock extends Block implements IWaterLoggable {
-	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+	public static final DirectionProperty FACING = HorizontalBlock.FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty HAS_ARROW = BooleanProperty.create("arrow");
-	private static final VoxelShape ROPE_NORTH = Block.makeCuboidShape(6.0D, 0.0D, 12.0D, 10.0D, 16.0D, 16.0D);
-	private static final VoxelShape ROPE_SOUTH = Block.makeCuboidShape(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 4.0D);
-	private static final VoxelShape ROPE_EAST = Block.makeCuboidShape(4.0D, 0.0D, 6.0D, 0.0D, 16.0D, 10.0D);
-	private static final VoxelShape ROPE_WEST = Block.makeCuboidShape(12.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
-	private static final VoxelShape ARROW_NORTH = Block.makeCuboidShape(7.0D, 12.0D, 5.0D, 9.0D, 15.0D, 16.0D);
-	private static final VoxelShape ARROW_SOUTH = Block.makeCuboidShape(7.0D, 12.0D, 0.0D, 9.0D, 15.0D, 11.0D);
-	private static final VoxelShape ARROW_EAST = Block.makeCuboidShape(0.0D, 12.0D, 7.0D, 11.0D, 15.0D, 9.0D);
-	private static final VoxelShape ARROW_WEST = Block.makeCuboidShape(5.0D, 12.0D, 7.0D, 16.0D, 15.0D, 9.0D);
+	private static final VoxelShape ROPE_NORTH = Block.box(6.0D, 0.0D, 12.0D, 10.0D, 16.0D, 16.0D);
+	private static final VoxelShape ROPE_SOUTH = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 4.0D);
+	private static final VoxelShape ROPE_EAST = Block.box(4.0D, 0.0D, 6.0D, 0.0D, 16.0D, 10.0D);
+	private static final VoxelShape ROPE_WEST = Block.box(12.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
+	private static final VoxelShape ARROW_NORTH = Block.box(7.0D, 12.0D, 5.0D, 9.0D, 15.0D, 16.0D);
+	private static final VoxelShape ARROW_SOUTH = Block.box(7.0D, 12.0D, 0.0D, 9.0D, 15.0D, 11.0D);
+	private static final VoxelShape ARROW_EAST = Block.box(0.0D, 12.0D, 7.0D, 11.0D, 15.0D, 9.0D);
+	private static final VoxelShape ARROW_WEST = Block.box(5.0D, 12.0D, 7.0D, 16.0D, 15.0D, 9.0D);
 	private static final VoxelShape NORTH_WITH_ARROW = VoxelShapes.or(ROPE_NORTH, ARROW_NORTH);
 	private static final VoxelShape SOUTH_WITH_ARROW = VoxelShapes.or(ROPE_SOUTH, ARROW_SOUTH);
 	private static final VoxelShape EAST_WITH_ARROW = VoxelShapes.or(ROPE_EAST, ARROW_EAST);
@@ -44,11 +40,11 @@ public class RopeBlock extends Block implements IWaterLoggable {
 
 	public RopeBlock(Properties properties) {
 		super(properties);
-		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, Boolean.valueOf(false)).with(HAS_ARROW, Boolean.valueOf(false)));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(HAS_ARROW, Boolean.valueOf(false)));
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(FACING, WATERLOGGED, HAS_ARROW);
 	}
 
@@ -56,28 +52,28 @@ public class RopeBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		switch ((Direction) state.get(FACING)) {
+		switch ((Direction) state.getValue(FACING)) {
 		case NORTH:
-			return state.get(HAS_ARROW) ? NORTH_WITH_ARROW : ROPE_NORTH;
+			return state.getValue(HAS_ARROW) ? NORTH_WITH_ARROW : ROPE_NORTH;
 		case SOUTH:
-			return state.get(HAS_ARROW) ? SOUTH_WITH_ARROW : ROPE_SOUTH;
+			return state.getValue(HAS_ARROW) ? SOUTH_WITH_ARROW : ROPE_SOUTH;
 		case EAST:
-			return state.get(HAS_ARROW) ? EAST_WITH_ARROW : ROPE_EAST;
+			return state.getValue(HAS_ARROW) ? EAST_WITH_ARROW : ROPE_EAST;
 		case WEST:
 		default:
-			return state.get(HAS_ARROW) ? WEST_WITH_ARROW : ROPE_WEST;
+			return state.getValue(HAS_ARROW) ? WEST_WITH_ARROW : ROPE_WEST;
 		}
 	}
 
 	/*********************************************************** Placement ********************************************************/
 
 	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-		Direction direction = state.get(FACING);
-		if (state.get(HAS_ARROW)) {
-			return canAttachTo(worldIn, pos.offset(direction.getOpposite()), direction);
+	public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
+		Direction direction = state.getValue(FACING);
+		if (state.getValue(HAS_ARROW)) {
+			return canAttachTo(worldIn, pos.relative(direction.getOpposite()), direction);
 		} else {
-			BlockState blockStateAbove = worldIn.getBlockState(pos.up());
+			BlockState blockStateAbove = worldIn.getBlockState(pos.above());
 			Block blockAbove = blockStateAbove.getBlock();
 			return blockAbove instanceof RopeBlock;
 		}
@@ -85,7 +81,7 @@ public class RopeBlock extends Block implements IWaterLoggable {
 
 	public static boolean canAttachTo(IBlockReader blockReader, BlockPos pos, Direction direction) {
 		BlockState blockstate = blockReader.getBlockState(pos);
-		return blockstate.isSolidSide(blockReader, pos, direction);
+		return blockstate.isFaceSturdy(blockReader, pos, direction);
 	}
 
 	/**
@@ -96,45 +92,45 @@ public class RopeBlock extends Block implements IWaterLoggable {
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
 		BlockState blockState = stateIn;
-		if (facing.getOpposite() == blockState.get(FACING) && !blockState.isValidPosition(worldIn, currentPos)) {
-			return Blocks.AIR.getDefaultState();
-		} else if (blockState.get(WATERLOGGED)) {
-			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+		if (facing.getOpposite() == blockState.getValue(FACING) && !blockState.canSurvive(worldIn, currentPos)) {
+			return Blocks.AIR.defaultBlockState();
+		} else if (blockState.getValue(WATERLOGGED)) {
+			worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
 		}
 
 		// Remove all the rope underneath a rope that's being broken.
-		return !this.isValidPosition(blockState, worldIn, currentPos) ? Blocks.AIR.getDefaultState() : super.updatePostPlacement(blockState, facing, facingState, worldIn, currentPos, facingPos);
+		return !this.canSurvive(blockState, worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, facing, facingState, worldIn, currentPos, facingPos);
 	}
 
 	@Override
 	@Nullable
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		if (!context.replacingClickedOnBlock()) {
-			BlockState blockstate = context.getWorld().getBlockState(context.getPos().offset(context.getFace().getOpposite()));
-			if (blockstate.matchesBlock(this) && blockstate.get(FACING) == context.getFace()) {
+			BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos().relative(context.getClickedFace().getOpposite()));
+			if (blockstate.is(this) && blockstate.getValue(FACING) == context.getClickedFace()) {
 				return null;
 			}
 		}
 
-		BlockPos blockpos = context.getPos();
-		BlockState blockstate1 = this.getDefaultState();
-		BlockState blockStateAbove = context.getWorld().getBlockState(blockpos.up());
+		BlockPos blockpos = context.getClickedPos();
+		BlockState blockstate1 = this.defaultBlockState();
+		BlockState blockStateAbove = context.getLevel().getBlockState(blockpos.above());
 		Block blockAbove = blockStateAbove.getBlock();
 		// Check if the placement is below an existing RopeBlock and match that block's direction.
 		if (blockAbove instanceof RopeBlock) {
-			return blockstate1.with(FACING, blockStateAbove.get(FACING));
+			return blockstate1.setValue(FACING, blockStateAbove.getValue(FACING));
 		}
 
-		IWorldReader iworldreader = context.getWorld();
-		FluidState fluidstate = context.getWorld().getFluidState(context.getPos());
+		IWorldReader iworldreader = context.getLevel();
+		FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
 
 		for (Direction direction : context.getNearestLookingDirections()) {
 			if (direction.getAxis().isHorizontal()) {
-				blockstate1 = blockstate1.with(FACING, direction.getOpposite());
-				if (blockstate1.isValidPosition(iworldreader, blockpos)) {
-					return blockstate1.with(WATERLOGGED, Boolean.valueOf(fluidstate.getFluid() == Fluids.WATER));
+				blockstate1 = blockstate1.setValue(FACING, direction.getOpposite());
+				if (blockstate1.canSurvive(iworldreader, blockpos)) {
+					return blockstate1.setValue(WATERLOGGED, Boolean.valueOf(fluidstate.getType() == Fluids.WATER));
 				}
 			}
 		}
@@ -147,7 +143,7 @@ public class RopeBlock extends Block implements IWaterLoggable {
 	@SuppressWarnings("deprecation")
 	@Override
 	public FluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
 	}
 
 	/**
@@ -155,7 +151,7 @@ public class RopeBlock extends Block implements IWaterLoggable {
 	 */
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.with(FACING, rot.rotate(state.get(FACING)));
+		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
 	}
 
 	/**
@@ -164,6 +160,6 @@ public class RopeBlock extends Block implements IWaterLoggable {
 	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState mirror(BlockState state, Mirror mirrorIn) {
-		return state.rotate(mirrorIn.toRotation(state.get(FACING)));
+		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
 	}
 }

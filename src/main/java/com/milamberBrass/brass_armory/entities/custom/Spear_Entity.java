@@ -2,17 +2,12 @@ package com.milamberBrass.brass_armory.entities.custom;
 
 import com.milamberBrass.brass_armory.BrassArmory;
 import com.milamberBrass.brass_armory.entities.ModEntityTypes;
-import com.milamberBrass.brass_armory.items.ModItems;
-import com.milamberBrass.brass_armory.items.custom.Spear;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,11 +15,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -76,29 +69,29 @@ public class Spear_Entity extends AbstractArrowEntity {
     }
 
 
-    protected void registerData() {
-        super.registerData();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
     /**
      * Called to update the entity's position/logic.
      */
     public void tick() {
-        if (this.timeInGround > 4) {
+        if (this.inGroundTime > 4) {
             this.dealtDamage = true;
         }
 
-        Entity entity = this.getShooter();
-        if ((this.dealtDamage || this.getNoClip()) && entity != null) {
-            if (!this.world.isRemote && this.pickupStatus == AbstractArrowEntity.PickupStatus.ALLOWED) {
-                this.entityDropItem(this.getArrowStack(), 0.1F);
+        Entity entity = this.getOwner();
+        if ((this.dealtDamage || this.isNoPhysics()) && entity != null) {
+            if (!this.level.isClientSide && this.pickup == AbstractArrowEntity.PickupStatus.ALLOWED) {
+                this.spawnAtLocation(this.getPickupItem(), 0.1F);
             }
             this.remove();
         }
         super.tick();
     }
 
-    protected ItemStack getArrowStack() {
+    protected ItemStack getPickupItem() {
         return this.thrownStack.copy();
     }
 
@@ -106,26 +99,26 @@ public class Spear_Entity extends AbstractArrowEntity {
      * Gets the EntityRayTraceResult representing the entity hit
      */
     @Nullable
-    protected EntityRayTraceResult rayTraceEntities(Vector3d startVec, Vector3d endVec) {
-        return this.dealtDamage ? null : super.rayTraceEntities(startVec, endVec);
+    protected EntityRayTraceResult findHitEntity(Vector3d startVec, Vector3d endVec) {
+        return this.dealtDamage ? null : super.findHitEntity(startVec, endVec);
     }
 
     /**
      * Called when the arrow hits an entity
      */
-    protected void onEntityHit(EntityRayTraceResult result) {
+    protected void onHitEntity(EntityRayTraceResult result) {
         Entity entity = result.getEntity();
         float f = 8.0F;
         if (entity instanceof LivingEntity) {
             LivingEntity livingentity = (LivingEntity)entity;
-            f += EnchantmentHelper.getModifierForCreature(this.thrownStack, livingentity.getCreatureAttribute());
+            f += EnchantmentHelper.getDamageBonus(this.thrownStack, livingentity.getMobType());
         }
 
-        Entity entity1 = this.getShooter();
-        DamageSource damagesource = DamageSource.causeTridentDamage(this, (Entity)(entity1 == null ? this : entity1));
+        Entity entity1 = this.getOwner();
+        DamageSource damagesource = DamageSource.trident(this, (Entity)(entity1 == null ? this : entity1));
         this.dealtDamage = true;
-        SoundEvent soundevent = SoundEvents.ITEM_TRIDENT_HIT;
-        if (entity.attackEntityFrom(damagesource, f)) {
+        SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
+        if (entity.hurt(damagesource, f)) {
             if (entity.getType() == EntityType.ENDERMAN) {
                 return;
             }
@@ -133,15 +126,15 @@ public class Spear_Entity extends AbstractArrowEntity {
             if (entity instanceof LivingEntity) {
                 LivingEntity livingentity1 = (LivingEntity)entity;
                 if (entity1 instanceof LivingEntity) {
-                    EnchantmentHelper.applyThornEnchantments(livingentity1, entity1);
-                    EnchantmentHelper.applyArthropodEnchantments((LivingEntity)entity1, livingentity1);
+                    EnchantmentHelper.doPostHurtEffects(livingentity1, entity1);
+                    EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity1);
                 }
 
-                this.arrowHit(livingentity1);
+                this.doPostHurtEffects(livingentity1);
             }
         }
 
-        this.setMotion(this.getMotion().mul(-0.01D, -0.1D, -0.01D));
+        this.setDeltaMovement(this.getDeltaMovement().multiply(-0.01D, -0.1D, -0.01D));
         float f1 = 1.0F;
         this.playSound(soundevent, f1, 1.0F);
     }
@@ -149,51 +142,51 @@ public class Spear_Entity extends AbstractArrowEntity {
     /**
      * The sound made when an entity is hit by this projectile
      */
-    protected SoundEvent getHitEntitySound() {
-        return SoundEvents.ITEM_TRIDENT_HIT_GROUND;
+    protected SoundEvent getDefaultHitGroundSoundEvent() {
+        return SoundEvents.TRIDENT_HIT_GROUND;
     }
 
     /**
      * Called by a player entity when they collide with an entity
      */
-    public void onCollideWithPlayer(PlayerEntity entityIn) {
-        Entity entity = this.getShooter();
-        if (entity == null || entity.getUniqueID() == entityIn.getUniqueID()) {
-            super.onCollideWithPlayer(entityIn);
+    public void playerTouch(PlayerEntity entityIn) {
+        Entity entity = this.getOwner();
+        if (entity == null || entity.getUUID() == entityIn.getUUID()) {
+            super.playerTouch(entityIn);
         }
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
         if (compound.contains("Spear", 10)) {
-            this.thrownStack = ItemStack.read(compound.getCompound("Spear"));
+            this.thrownStack = ItemStack.of(compound.getCompound("Spear"));
         }
 
         this.dealtDamage = compound.getBoolean("DealtDamage");
     }
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.put("Spear", this.thrownStack.write(new CompoundNBT()));
+    public void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.put("Spear", this.thrownStack.save(new CompoundNBT()));
         compound.putBoolean("DealtDamage", this.dealtDamage);
     }
 
-    public void func_225516_i_() {
-        if (this.pickupStatus != AbstractArrowEntity.PickupStatus.ALLOWED) {
-            super.func_225516_i_();
+    public void tickDespawn() {
+        if (this.pickup != AbstractArrowEntity.PickupStatus.ALLOWED) {
+            super.tickDespawn();
         }
 
     }
 
-    protected float getWaterDrag() {
+    protected float getWaterInertia() {
         return 0.99F;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public boolean isInRangeToRender3d(double x, double y, double z) {
+    public boolean shouldRender(double x, double y, double z) {
         return true;
     }
 }

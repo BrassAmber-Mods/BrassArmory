@@ -8,7 +8,7 @@ public class ModItemGroup {
     public static final ItemGroup BRASS_ARMORY = new ItemGroup("brass_armory")
     {
         @Override
-        public ItemStack createIcon()
+        public ItemStack makeIcon()
         {
             return new ItemStack(ModItems.DIAMOND_SPEAR.get());
         }

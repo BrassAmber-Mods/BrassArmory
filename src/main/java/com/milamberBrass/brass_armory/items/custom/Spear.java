@@ -10,7 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.enchantment.IVanishable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -30,18 +29,14 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameType;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.network.NetworkRegistry;
-
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -57,15 +52,15 @@ public class Spear extends TieredItem implements IVanishable {
     protected ItemTier finalTier;
     public static final String VERSION = "1.0";
     public static Predicate<String> versionCheck = NetworkRegistry.acceptMissingOr(VERSION);
-    public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(ResourceLocation.tryCreate(BrassArmory.MOD_ID),() -> VERSION , versionCheck, versionCheck);
+    public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(ResourceLocation.tryParse(BrassArmory.MOD_ID),() -> VERSION , versionCheck, versionCheck);
 
     public Spear(ItemTier tier, int attackDamageIn, Properties builderIn) {
         super(tier, builderIn);
         finalTier = tier;
-        this.attackDamage = (float)attackDamageIn + tier.getAttackDamage();
+        this.attackDamage = (float)attackDamageIn + tier.getAttackDamageBonus();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.6D, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.6D, AttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
 
@@ -94,14 +89,14 @@ public class Spear extends TieredItem implements IVanishable {
         return this.attackDamage;
     }
 
-    public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+    public boolean canAttackBlock(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
         return !player.isCreative();
     }
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
             Material material = state.getMaterial();
-            return material != Material.PLANTS && material != Material.TALL_PLANTS && material != Material.CORAL && !state.isIn(BlockTags.LEAVES) && material != Material.GOURD ? 1.0F : 1.5F;
+            return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && material != Material.CORAL && !state.is(BlockTags.LEAVES) && material != Material.VEGETABLE ? 1.0F : 1.5F;
     }
 
     public IItemTier getFinalTier(){
@@ -112,7 +107,7 @@ public class Spear extends TieredItem implements IVanishable {
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public UseAction getUseAction(ItemStack stack) {
+    public UseAction getUseAnimation(ItemStack stack) {
         return UseAction.SPEAR;
     }
 
@@ -123,45 +118,45 @@ public class Spear extends TieredItem implements IVanishable {
         return 72000;
     }
 
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
+    public void releaseUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof PlayerEntity) {
             PlayerEntity playerentity = (PlayerEntity) entityLiving;
             int i = this.getUseDuration(stack) - timeLeft;
             if (i >= 10) {
-                if (!worldIn.isRemote) {
-                    stack.damageItem(1, playerentity, (player) -> {
-                        player.sendBreakAnimation(entityLiving.getActiveHand());
+                if (!worldIn.isClientSide) {
+                    stack.hurtAndBreak(1, playerentity, (player) -> {
+                        player.broadcastBreakEvent(entityLiving.getUsedItemHand());
                     });
                     Spear_Entity spear_entity = new Spear_Entity(worldIn, playerentity, stack, finalTier);
-                    spear_entity.setDirectionAndMovement(playerentity, playerentity.rotationPitch,
-                            playerentity.rotationYaw, 0.0F, 2.5F * 0.5F, 1.0F);
-                    if (playerentity.abilities.isCreativeMode) {
-                        spear_entity.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                    spear_entity.shootFromRotation(playerentity, playerentity.xRot,
+                            playerentity.yRot, 0.0F, 2.5F * 0.5F, 1.0F);
+                    if (playerentity.abilities.instabuild) {
+                        spear_entity.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
 
-                    worldIn.addEntity(spear_entity);
-                    worldIn.playMovingSound((PlayerEntity) null, spear_entity, SoundEvents.ITEM_TRIDENT_THROW,
+                    worldIn.addFreshEntity(spear_entity);
+                    worldIn.playSound((PlayerEntity) null, spear_entity, SoundEvents.TRIDENT_THROW,
                             SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    if (!playerentity.abilities.isCreativeMode) {
-                        playerentity.inventory.deleteStack(stack);
+                    if (!playerentity.abilities.instabuild) {
+                        playerentity.inventory.removeItem(stack);
                     }
 
                 }
 
-                playerentity.addStat(Stats.ITEM_USED.get(this));
+                playerentity.awardStat(Stats.ITEM_USED.get(this));
             }
         }
     }
 
 
 
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
-        if (itemstack.getDamage() >= itemstack.getMaxDamage() - 1) {
-            return ActionResult.resultFail(itemstack);
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
+        if (itemstack.getDamageValue() >= itemstack.getMaxDamage() - 1) {
+            return ActionResult.fail(itemstack);
         } else {
-            playerIn.setActiveHand(handIn);
-            return ActionResult.resultConsume(itemstack);
+            playerIn.startUsingItem(handIn);
+            return ActionResult.consume(itemstack);
         }
     }
 
@@ -171,25 +166,26 @@ public class Spear extends TieredItem implements IVanishable {
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
      * the damage on the stack.
      */
-    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.damageItem(1, attacker, (entity) -> {
-            entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        stack.hurtAndBreak(1, attacker, (entity) -> {
+            entity.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
         });
         return true;
     }
 
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
-        if ((double)state.getBlockHardness(worldIn, pos) != 0.0D) {
-            stack.damageItem(2, entityLiving, (entity) -> {
-                entity.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+    public boolean mineBlock(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+        if ((double)state.getDestroySpeed(worldIn, pos) != 0.0D) {
+            stack.hurtAndBreak(2, entityLiving, (entity) -> {
+                entity.broadcastBreakEvent(EquipmentSlotType.MAINHAND);
             });
         }
 
         return true;
     }
 
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType equipmentSlot) {
-        return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getAttributeModifiers(equipmentSlot);
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlotType equipmentSlot) {
+        // Why does this method exist?
+        return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getDefaultAttributeModifiers(equipmentSlot);
     }
 
     @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
@@ -206,23 +202,23 @@ public class Spear extends TieredItem implements IVanishable {
                 return;
             }
             Minecraft mc = Minecraft.getInstance();
-            Entity entity = mc.getRenderViewEntity();
-            float partialTicks = mc.getRenderPartialTicks();
-            double blockReachDistance = mc.playerController.getBlockReachDistance();
+            Entity entity = mc.getCameraEntity();
+            float partialTicks = mc.getFrameTime();
+            double blockReachDistance = mc.gameMode.getPickRange();
             RayTraceResult blockMouseOver = entity.pick(blockReachDistance, partialTicks,false);
 
             Vector3d eyeVec = entity.getEyePosition(partialTicks);
             double entityReachDistance = blockReachDistance - 1.5D;
             if (blockMouseOver.getType() != RayTraceResult.Type.MISS) {
-                entityReachDistance = Math.min(eyeVec.distanceTo(blockMouseOver.getHitVec()), entityReachDistance);
+                entityReachDistance = Math.min(eyeVec.distanceTo(blockMouseOver.getLocation()), entityReachDistance);
             }
 
-            Vector3d lookVec = entity.getLook(partialTicks);
+            Vector3d lookVec = entity.getViewVector(partialTicks);
             AxisAlignedBB aabb = entity.getBoundingBox();
-            aabb = aabb.expand(lookVec.x * entityReachDistance, lookVec.y * entityReachDistance, lookVec.z * entityReachDistance);
-            aabb = aabb.grow(1.0D, 1.0D, 1.0D);
-            List<Entity> list = mc.world.getEntitiesInAABBexcluding(entity, aabb, entity1 -> {
-                if (!EntityPredicates.NOT_SPECTATING.test(entity1)) {
+            aabb = aabb.expandTowards(lookVec.x * entityReachDistance, lookVec.y * entityReachDistance, lookVec.z * entityReachDistance);
+            aabb = aabb.inflate(1.0D, 1.0D, 1.0D);
+            List<Entity> list = mc.level.getEntities(entity, aabb, entity1 -> {
+                if (!EntityPredicates.NO_SPECTATORS.test(entity1)) {
                     return false;
                 }
                 return entity1.canBeCollidedWith();
@@ -232,11 +228,11 @@ public class Spear extends TieredItem implements IVanishable {
             Vector3d endVec = eyeVec.add(lookVec.x * entityReachDistance, lookVec.y * entityReachDistance, lookVec.z * entityReachDistance);
             double minSqr = entityReachDistance * entityReachDistance;
             for (Entity entity2 : list) {
-                if (entity.getLowestRidingEntity() == entity2.getLowestRidingEntity() && !entity2.canRiderInteract()) {
+                if (entity.getRootVehicle() == entity2.getRootVehicle() && !entity2.canRiderInteract()) {
                     continue;
                 }
 
-                AxisAlignedBB aabb1 = entity2.getBoundingBox().grow(entity2.getCollisionBorderSize());
+                AxisAlignedBB aabb1 = entity2.getBoundingBox().inflate(entity2.getPickRadius());
                 if (aabb1.contains(eyeVec)) {
                     pointedEntity = entity2;
                     minSqr = 0.0D;
@@ -255,13 +251,13 @@ public class Spear extends TieredItem implements IVanishable {
                 }*/
             }
 
-            if (pointedEntity != null && (mc.objectMouseOver == null || pointedEntity != null && (mc.objectMouseOver.getType() == RayTraceResult.Type.ENTITY))) {
-                METHOD_SYNC_CURRENT_PLAY_ITEM.invoke(mc.playerController);
+            if (pointedEntity != null && (mc.hitResult == null || pointedEntity != null && (mc.hitResult.getType() == RayTraceResult.Type.ENTITY))) {
+                METHOD_SYNC_CURRENT_PLAY_ITEM.invoke(mc.gameMode);
                 //NETWORK.sendToServer(new PacketAttackEntity(pointedEntity));
 
-                if (mc.playerController.getCurrentGameType() != GameType.SPECTATOR) {
-                    mc.player.attackTargetEntityWithCurrentItem(pointedEntity);
-                    mc.player.resetCooldown();
+                if (mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
+                    mc.player.attack(pointedEntity);
+                    mc.player.resetAttackStrengthTicker();
                 }
             }
         }

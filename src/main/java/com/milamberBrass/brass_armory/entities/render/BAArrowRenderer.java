@@ -33,7 +33,7 @@ public class BAArrowRenderer extends ArrowRenderer<BAArrowEntity> {
     * Returns the location of an entity's texture.
     */
    @Override
-   public ResourceLocation getEntityTexture(BAArrowEntity entity) {
+   public ResourceLocation getTextureLocation(BAArrowEntity entity) {
 	   ArrowType arrowType = entity.getArrowType();
       if (arrowType == ArrowType.DIRT) {
          return RES_DIRT_ARROW;

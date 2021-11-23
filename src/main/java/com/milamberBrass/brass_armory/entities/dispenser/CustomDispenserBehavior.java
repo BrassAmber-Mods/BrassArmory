@@ -16,113 +16,113 @@ import net.minecraft.world.World;
 public interface CustomDispenserBehavior extends IDispenseItemBehavior {
 
 	static void init() {
-		DispenserBlock.registerDispenseBehavior(ModItems.DIRT_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.DIRT_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.DIRT);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.DIRT);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.EX_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.EX_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.EXPLOSION);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.EXPLOSION);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.FROST_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.FROST_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.FROST);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.FROST);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.GRASS_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.GRASS_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.GRASS);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.GRASS);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.LASER_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.LASER_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.LASER);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.LASER);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.ROPE_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.ROPE_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.ROPE);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.ROPE);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.SLIME_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.SLIME_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.SLIME);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.SLIME);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.WARP_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.WARP_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.WARP);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.WARP);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.FIRE_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.FIRE_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.FIRE);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.FIRE);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});
-		DispenserBlock.registerDispenseBehavior(ModItems.CONCUSSION_ARROW.get(), new ProjectileDispenseBehavior() {
+		DispenserBlock.registerBehavior(ModItems.CONCUSSION_ARROW.get(), new ProjectileDispenseBehavior() {
 			/**
 			 * Return the projectile entity spawned by this dispense behavior.
 			 */
 			@Override
-			protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.getX(), position.getY(), position.getZ(), ArrowType.CONCUSSION);
-				abstractarrowentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+			protected ProjectileEntity getProjectile(World worldIn, IPosition position, ItemStack stackIn) {
+				AbstractArrowEntity abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.CONCUSSION);
+				abstractarrowentity.pickup = AbstractArrowEntity.PickupStatus.ALLOWED;
 				return abstractarrowentity;
 			}
 		});

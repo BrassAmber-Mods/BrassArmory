@@ -21,11 +21,11 @@ public class ModEntityTypes {
 
     public static final RegistryObject<EntityType<Spear_Entity>> SPEAR =
             ENTITY_TYPES.register("wood_spear", () -> EntityType.Builder
-                    .<Spear_Entity>create(Spear_Entity::new, EntityClassification.MISC).size(1.0f, 2.0f)
-                    .trackingRange(64).updateInterval(20)
+                    .<Spear_Entity>of(Spear_Entity::new, EntityClassification.MISC).sized(1.0f, 2.0f)
+                    .clientTrackingRange(64).updateInterval(20)
                     .build(new ResourceLocation(BrassArmory.MOD_ID, "item/wood_spear").toString()));
     
-    public static final RegistryObject<EntityType<BAArrowEntity>> BA_ARROW = registerEntityType("ba_arrow", EntityType.Builder.<BAArrowEntity>create(BAArrowEntity::new, EntityClassification.MISC).size(0.5F, 0.5F).trackingRange(4).updateInterval(20));
+    public static final RegistryObject<EntityType<BAArrowEntity>> BA_ARROW = registerEntityType("ba_arrow", EntityType.Builder.<BAArrowEntity>of(BAArrowEntity::new, EntityClassification.MISC).sized(0.5F, 0.5F).clientTrackingRange(4).updateInterval(20));
 
 
     public static void register(IEventBus eventBus) {
