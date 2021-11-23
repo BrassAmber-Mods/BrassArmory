@@ -1,11 +1,8 @@
 package com.milamberBrass.brass_armory;
 
-import com.milamberBrass.brass_armory.blocks.ModBlocks;
-import com.milamberBrass.brass_armory.entities.ModEntityTypes;
 import com.milamberBrass.brass_armory.entities.dispenser.CustomDispenserBehavior;
 import com.milamberBrass.brass_armory.entities.render.BAArrowRenderer;
-import com.milamberBrass.brass_armory.entities.render.Spear_Entity_Renderer;
-import com.milamberBrass.brass_armory.items.ModItems;
+import com.milamberBrass.brass_armory.entities.render.SpearEntityRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,9 +26,9 @@ public class BrassArmory {
     public BrassArmory() {
         // Register
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModItems.register(eventBus);
-        ModBlocks.register(eventBus);
-        ModEntityTypes.register(eventBus);
+        BrassArmoryItems.register(eventBus);
+        BrassArmoryBlocks.register(eventBus);
+        BrassArmoryEntityTypes.register(eventBus);
     }
 
     @SubscribeEvent
@@ -47,8 +44,8 @@ public class BrassArmory {
         LOGGER.debug("Running client setup.");
 
         // Register spear and arrow entity rendering handlers
-        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SPEAR.get(), Spear_Entity_Renderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.SPEAR.get(), SpearEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);
     }
 
     // Helper method for resource locations

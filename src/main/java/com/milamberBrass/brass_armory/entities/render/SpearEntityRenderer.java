@@ -1,8 +1,8 @@
 package com.milamberBrass.brass_armory.entities.render;
 
 import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.entities.custom.Spear_Entity;
-import com.milamberBrass.brass_armory.entities.model.Spear_Model;
+import com.milamberBrass.brass_armory.entities.SpearEntity;
+import com.milamberBrass.brass_armory.entities.model.SpearModel;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -16,17 +16,17 @@ import net.minecraft.util.math.vector.Vector3f;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class Spear_Entity_Renderer extends EntityRenderer<Spear_Entity> {
+public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
 
     public static final ResourceLocation SPEAR = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/wood_spear.png");
-    private final Spear_Model spear_model = new Spear_Model(SPEAR);
+    private final SpearModel spear_model = new SpearModel(SPEAR);
 
-    public Spear_Entity_Renderer(EntityRendererManager renderManagerIn) {
+    public SpearEntityRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
     }
 
     @ParametersAreNonnullByDefault
-    public void render(Spear_Entity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(SpearEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot) + 90.0F));
@@ -40,7 +40,7 @@ public class Spear_Entity_Renderer extends EntityRenderer<Spear_Entity> {
      * @return Returns the location of an entity's texture.
      */
     @Nonnull
-    public ResourceLocation getTextureLocation(Spear_Entity entity) {
+    public ResourceLocation getTextureLocation(SpearEntity entity) {
         return  entity.getTierResourceLocation();
     }
 

@@ -1,7 +1,7 @@
 package com.milamberBrass.brass_armory.entities.render;
 
 import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.entities.custom.BAArrowEntity;
+import com.milamberBrass.brass_armory.entities.BAArrowEntity;
 import com.milamberBrass.brass_armory.util.ArrowType;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;

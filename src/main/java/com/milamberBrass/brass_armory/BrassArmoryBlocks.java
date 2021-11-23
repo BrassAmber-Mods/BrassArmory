@@ -1,9 +1,6 @@
-package com.milamberBrass.brass_armory.blocks;
+package com.milamberBrass.brass_armory;
 
-import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.blocks.custom.RopeBlock;
-import com.milamberBrass.brass_armory.items.ModItemGroup;
-import com.milamberBrass.brass_armory.items.ModItems;
+import com.milamberBrass.brass_armory.blocks.RopeBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -19,13 +16,15 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModBlocks {
+@Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Bus.MOD)
+public class BrassArmoryBlocks {
 
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, BrassArmory.MOD_ID);
+    // Block Registry
+    public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, BrassArmory.MOD_ID);
 
     //------------------------------------MISC----------------------------------------------------------
 
@@ -40,19 +39,17 @@ public class ModBlocks {
     }
 
     /**
-     * Helper method for registering all Blocks and Items
+     * Helper method for inserting blocks into the registry.
      */
     private static <B extends Block> RegistryObject<B> registerBlock(String registryName, B block) {
         // Blocks are registered before Items
-        ModItems.registerItem(registryName, new BlockItem(block, new Item.Properties().tab(ModItemGroup.BRASS_ARMORY)));
-        return BLOCKS.register(registryName, () -> block);
+        BrassArmoryItems.REGISTRY.register(registryName, () -> new BlockItem(block, new Item.Properties().tab(BrassArmoryItemGroup.BRASS_ARMORY)));
+        return REGISTRY.register(registryName, () -> block);
     }
 
-    /**
-     * Helper method for registering all blocks.
-     */
+    // Attach event handler for registry.
     public static void register(IEventBus eventBus) {
-        BLOCKS.register(eventBus);
+        REGISTRY.register(eventBus);
     }
 
 }

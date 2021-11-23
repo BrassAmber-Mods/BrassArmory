@@ -1,7 +1,7 @@
-package com.milamberBrass.brass_armory.entities.custom;
+package com.milamberBrass.brass_armory.entities;
 
 import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.entities.ModEntityTypes;
+import com.milamberBrass.brass_armory.BrassArmoryEntityTypes;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -25,26 +25,26 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class Spear_Entity extends AbstractArrowEntity {
+public class SpearEntity extends AbstractArrowEntity {
 
     public int returningTicks;
     public ItemTier finalTier;
     private ItemStack thrownStack;
     private boolean dealtDamage;
 
-    public Spear_Entity(EntityType<? extends Spear_Entity> type, World worldIn) {
+    public SpearEntity(EntityType<? extends SpearEntity> type, World worldIn) {
         super(type, worldIn);
     }
 
-    public Spear_Entity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn, ItemTier tier) {
-        super(ModEntityTypes.SPEAR.get(), thrower, worldIn);
+    public SpearEntity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn, ItemTier tier) {
+        super(BrassArmoryEntityTypes.SPEAR.get(), thrower, worldIn);
         this.thrownStack = thrownStackIn.copy();
         finalTier = tier;
 
     }
 
-    public Spear_Entity(World worldIn, double x, double y, double z) {
-        super(ModEntityTypes.SPEAR.get(), x, y, z, worldIn);
+    public SpearEntity(World worldIn, double x, double y, double z) {
+        super(BrassArmoryEntityTypes.SPEAR.get(), x, y, z, worldIn);
     }
 
 

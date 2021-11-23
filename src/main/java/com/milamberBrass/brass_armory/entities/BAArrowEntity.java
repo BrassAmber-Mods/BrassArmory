@@ -1,8 +1,8 @@
-package com.milamberBrass.brass_armory.entities.custom;
+package com.milamberBrass.brass_armory.entities;
 
-import com.milamberBrass.brass_armory.blocks.ModBlocks;
-import com.milamberBrass.brass_armory.blocks.custom.RopeBlock;
-import com.milamberBrass.brass_armory.entities.ModEntityTypes;
+import com.milamberBrass.brass_armory.BrassArmoryBlocks;
+import com.milamberBrass.brass_armory.blocks.RopeBlock;
+import com.milamberBrass.brass_armory.BrassArmoryEntityTypes;
 import com.milamberBrass.brass_armory.entities.dispenser.CustomDispenserBehavior;
 import com.milamberBrass.brass_armory.util.ArrowType;
 import net.minecraft.block.BlockState;
@@ -81,14 +81,14 @@ public class BAArrowEntity extends AbstractArrowEntity {
      */
     public BAArrowEntity(World worldIn, LivingEntity shooter, ArrowType typeIn) {
         // Calls the constructor above.
-        this(ModEntityTypes.BA_ARROW.get(), worldIn, shooter, typeIn);
+        this(BrassArmoryEntityTypes.BA_ARROW.get(), worldIn, shooter, typeIn);
     }
 
     /**
      * Used for Dispensers in: {@link CustomDispenserBehavior}
      */
     public BAArrowEntity(World worldIn, double x, double y, double z, ArrowType typeIn) {
-        super(ModEntityTypes.BA_ARROW.get(), x, y, z, worldIn);
+        super(BrassArmoryEntityTypes.BA_ARROW.get(), x, y, z, worldIn);
         this.setArrowType(typeIn.getSerializedName());
     }
 
@@ -264,7 +264,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
             if (this.ticksSinceRope > 6) {
                 BlockPos newPos = currentRopePos.relative(Direction.DOWN, 1);
                 if (this.level.getBlockState(newPos).isAir() && this.totalRope < this.maxRopeLength) {
-                    this.level.setBlock(newPos, ModBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), BlockFlags.DEFAULT);
+                    this.level.setBlock(newPos, BrassArmoryBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), BlockFlags.DEFAULT);
                     this.currentRopePos = newPos;
                     this.totalRope++;
                     this.ticksSinceRope = 0;
@@ -303,7 +303,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
             if (hitBlockState.isFaceSturdy(this.level, currentRopePos, hitBlockfaceDirection)) {
                 // Check if there's space to place a Rope.
                 if (this.level.getBlockState(currentRopePos).isAir()) {
-                    this.level.setBlock(currentRopePos, ModBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, totalRope == 0), BlockFlags.DEFAULT);
+                    this.level.setBlock(currentRopePos, BrassArmoryBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, totalRope == 0), BlockFlags.DEFAULT);
                     this.totalRope++;
                     this.placeRope = true;
                     // Prevent the arrow from being picked up while the ropes are being placed.

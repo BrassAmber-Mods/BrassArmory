@@ -1,7 +1,7 @@
 package com.milamberBrass.brass_armory.util;
 
-import com.milamberBrass.brass_armory.items.ModItems;
-import com.milamberBrass.brass_armory.items.custom.BABaseArrowItem;
+import com.milamberBrass.brass_armory.BrassArmoryItems;
+import com.milamberBrass.brass_armory.items.BABaseArrowItem;
 import net.minecraft.util.IStringSerializable;
 
 import javax.annotation.Nonnull;
@@ -32,25 +32,25 @@ public enum ArrowType implements IStringSerializable {
     public static BABaseArrowItem getModItemFor(ArrowType arrowType) {
         switch (arrowType) {
             case DIRT:
-                return ModItems.DIRT_ARROW.get();
+                return BrassArmoryItems.DIRT_ARROW.get();
             case EXPLOSION:
-                return ModItems.EX_ARROW.get();
+                return BrassArmoryItems.EX_ARROW.get();
             case FROST:
-                return ModItems.FROST_ARROW.get();
+                return BrassArmoryItems.FROST_ARROW.get();
             case GRASS:
-                return ModItems.GRASS_ARROW.get();
+                return BrassArmoryItems.GRASS_ARROW.get();
             case LASER:
-                return ModItems.LASER_ARROW.get();
+                return BrassArmoryItems.LASER_ARROW.get();
             case ROPE:
-                return ModItems.ROPE_ARROW.get();
+                return BrassArmoryItems.ROPE_ARROW.get();
             case SLIME:
-                return ModItems.SLIME_ARROW.get();
+                return BrassArmoryItems.SLIME_ARROW.get();
             case WARP:
-                return ModItems.WARP_ARROW.get();
+                return BrassArmoryItems.WARP_ARROW.get();
             case FIRE:
-                return ModItems.FIRE_ARROW.get();
+                return BrassArmoryItems.FIRE_ARROW.get();
             case CONCUSSION:
-                return ModItems.CONCUSSION_ARROW.get();
+                return BrassArmoryItems.CONCUSSION_ARROW.get();
             default:
                 return null;
         }

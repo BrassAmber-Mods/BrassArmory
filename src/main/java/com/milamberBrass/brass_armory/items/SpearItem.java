@@ -1,10 +1,10 @@
-package com.milamberBrass.brass_armory.items.custom;
+package com.milamberBrass.brass_armory.items;
 
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.entities.custom.Spear_Entity;
+import com.milamberBrass.brass_armory.entities.SpearEntity;
 import com.milamberBrass.brass_armory.util.ReflectionMethod;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class Spear extends TieredItem implements IVanishable {
+public class SpearItem extends TieredItem implements IVanishable {
 
     private static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("99f7541c-a163-437c-8c25-bd685549b305");
     private static final float SPECIAL_REACH_MULTIPLIER = 1.5F;
@@ -53,7 +53,7 @@ public class Spear extends TieredItem implements IVanishable {
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
     protected ItemTier finalTier;
 
-    public Spear(ItemTier tier, int attackDamageIn, Properties builderIn) {
+    public SpearItem(ItemTier tier, int attackDamageIn, Properties builderIn) {
         super(tier, builderIn);
         finalTier = tier;
         this.attackDamage = (float) attackDamageIn + tier.getAttackDamageBonus();
@@ -132,7 +132,7 @@ public class Spear extends TieredItem implements IVanishable {
                     stack.hurtAndBreak(1, playerentity, (player) -> {
                         player.broadcastBreakEvent(entityLiving.getUsedItemHand());
                     });
-                    Spear_Entity spear_entity = new Spear_Entity(worldIn, playerentity, stack, finalTier);
+                    SpearEntity spear_entity = new SpearEntity(worldIn, playerentity, stack, finalTier);
                     spear_entity.shootFromRotation(playerentity, playerentity.xRot,
                             playerentity.yRot, 0.0F, 2.5F * 0.5F, 1.0F);
                     if (playerentity.abilities.instabuild) {

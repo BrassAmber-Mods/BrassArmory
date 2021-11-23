@@ -1,7 +1,7 @@
 package com.milamberBrass.brass_armory.entities.dispenser;
 
-import com.milamberBrass.brass_armory.entities.custom.BAArrowEntity;
-import com.milamberBrass.brass_armory.items.ModItems;
+import com.milamberBrass.brass_armory.entities.BAArrowEntity;
+import com.milamberBrass.brass_armory.BrassArmoryItems;
 import com.milamberBrass.brass_armory.util.ArrowType;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 public interface CustomDispenserBehavior extends IDispenseItemBehavior {
 
     static void init() {
-        DispenserBlock.registerBehavior(ModItems.DIRT_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.DIRT_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -26,7 +26,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.EX_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.EX_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -37,7 +37,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.FROST_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.FROST_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -48,7 +48,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.GRASS_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.GRASS_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -59,7 +59,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.LASER_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.LASER_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -70,7 +70,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.ROPE_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.ROPE_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -81,7 +81,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.SLIME_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.SLIME_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -92,7 +92,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.WARP_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.WARP_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -103,7 +103,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.FIRE_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.FIRE_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -114,7 +114,7 @@ public interface CustomDispenserBehavior extends IDispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
-        DispenserBlock.registerBehavior(ModItems.CONCUSSION_ARROW.get(), new ProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.CONCUSSION_ARROW.get(), new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */

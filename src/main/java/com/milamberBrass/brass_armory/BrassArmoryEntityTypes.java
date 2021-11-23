@@ -1,8 +1,7 @@
-package com.milamberBrass.brass_armory.entities;
+package com.milamberBrass.brass_armory;
 
-import com.milamberBrass.brass_armory.BrassArmory;
-import com.milamberBrass.brass_armory.entities.custom.BAArrowEntity;
-import com.milamberBrass.brass_armory.entities.custom.Spear_Entity;
+import com.milamberBrass.brass_armory.entities.BAArrowEntity;
+import com.milamberBrass.brass_armory.entities.SpearEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -12,13 +11,13 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ModEntityTypes {
+public class BrassArmoryEntityTypes {
 
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, BrassArmory.MOD_ID);
 
-    public static final RegistryObject<EntityType<Spear_Entity>> SPEAR =
+    public static final RegistryObject<EntityType<SpearEntity>> SPEAR =
             ENTITY_TYPES.register("wood_spear", () -> EntityType.Builder
-                    .<Spear_Entity>of(Spear_Entity::new, EntityClassification.MISC).sized(1.0f, 2.0f)
+                    .<SpearEntity>of(SpearEntity::new, EntityClassification.MISC).sized(1.0f, 2.0f)
                     .clientTrackingRange(64).updateInterval(20)
                     .build(new ResourceLocation(BrassArmory.MOD_ID, "item/wood_spear").toString()));
 

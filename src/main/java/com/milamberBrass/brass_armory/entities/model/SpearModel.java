@@ -10,12 +10,12 @@ import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class Spear_Model extends Model {
+public class SpearModel extends Model {
 
     public static ResourceLocation TEXTURE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png");
     private final ModelRenderer modelRenderer = new ModelRenderer(32, 32, 0, 6);
 
-    public Spear_Model(ResourceLocation texture) {
+    public SpearModel(ResourceLocation texture) {
         super(RenderType::entitySolid);
         TEXTURE_LOCATION = texture;
         this.modelRenderer.addBox(-0.5F, 2.0F, -0.5F, 1.0F, 25.0F, 1.0F, 0.0F);
