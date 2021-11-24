@@ -1,6 +1,5 @@
 package com.milamber_brass.brass_armory;
 
-import com.milamberBrass.brass_armory.items.*;
 import com.milamber_brass.brass_armory.items.*;
 import com.milamber_brass.brass_armory.util.ArrowType;
 import net.minecraft.item.*;

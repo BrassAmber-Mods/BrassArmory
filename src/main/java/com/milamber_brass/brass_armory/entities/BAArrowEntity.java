@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.entities;
 
+import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.blocks.RopeBlock;
 import com.milamber_brass.brass_armory.BrassArmoryEntityTypes;
@@ -29,16 +30,20 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.apache.logging.log4j.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,6 +61,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     private int totalRope = 0;
     private Direction hitBlockfaceDirection;
     private int ticksSinceRope;
+    private Vector3d lastArrowPos;
 
     /**
      * Used to initialize the EntityType.
@@ -72,6 +78,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
         this.setArrowType(typeIn.getSerializedName());
         if (this.isArrowType(ArrowType.LASER)) {
             this.setPierceLevel((byte) 5);
+            this.setNoGravity(true);
         }
         this.setBaseDamage(this.getArrowType().getDamage());
     }
@@ -249,11 +256,12 @@ public class BAArrowEntity extends AbstractArrowEntity {
                 this.remove();
             }
         }
-        // check that the arrow is not in the ground and has been flying for half a second.
-        else if (this.isArrowType(ArrowType.LASER) && !this.inGround && this.flightTime > 10) {
-            // make the arrows Y position only decrease by 0.05 every tick (1 block per second).
-            this.moveTo(this.getX(), this.yo - .0005, this.getZ());
-            // if the arrow enters an unloaded chunk, remove it.
+        // check that the arrow is not in the ground and has been flying for 1/5 a second.
+        else if (this.isArrowType(ArrowType.LASER) && !this.inGround && this.flightTime > 4) {
+            // call super.tick() twice to speed up arrow movement.
+            super.tick();
+            super.tick();
+            // BrassArmory.LOGGER.log(Level.DEBUG, currentDelta + " <- Delta | Forward -> " + forward);
             if (!this.level.hasChunk(this.xChunk, this.zChunk)) {
                 this.remove();
             }
@@ -287,6 +295,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
         } else if (this.inGround && this.inGroundTime != 0 && this.inGroundTime >= 600) {
             this.level.broadcastEntityEvent(this, (byte) 0);
         }
+        this.lastArrowPos = this.position();
     }
 
     /*********************************************************** Arrow Functionalities ********************************************************/
