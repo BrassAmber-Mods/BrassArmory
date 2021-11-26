@@ -1,8 +1,9 @@
-package com.milamber_brass.brass_armory.entities.render;
+package com.milamber_brass.brass_armory.client.render;
 
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.entities.BAArrowEntity;
-import com.milamber_brass.brass_armory.util.ArrowType;
+import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
+import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
+
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;

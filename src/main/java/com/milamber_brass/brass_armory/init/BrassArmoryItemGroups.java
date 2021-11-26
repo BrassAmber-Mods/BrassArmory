@@ -1,11 +1,11 @@
-package com.milamber_brass.brass_armory;
+package com.milamber_brass.brass_armory.init;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class BrassArmoryItemGroup {
+public class BrassArmoryItemGroups {
 
     public static final ItemGroup BRASS_ARMORY = new ItemGroup("brass_armory") {
         @Nonnull

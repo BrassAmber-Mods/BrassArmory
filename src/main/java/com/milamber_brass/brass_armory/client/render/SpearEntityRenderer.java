@@ -1,8 +1,8 @@
-package com.milamber_brass.brass_armory.entities.render;
+package com.milamber_brass.brass_armory.client.render;
 
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.entities.SpearEntity;
-import com.milamber_brass.brass_armory.entities.model.SpearModel;
+import com.milamber_brass.brass_armory.client.model.SpearModel;
+import com.milamber_brass.brass_armory.entity.SpearEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

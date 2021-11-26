@@ -1,11 +1,13 @@
-package com.milamber_brass.brass_armory.entities;
+package com.milamber_brass.brass_armory.entity.projectile;
 
-import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.BrassArmoryBlocks;
-import com.milamber_brass.brass_armory.blocks.RopeBlock;
-import com.milamber_brass.brass_armory.BrassArmoryEntityTypes;
-import com.milamber_brass.brass_armory.entities.dispenser.CustomDispenserBehavior;
-import com.milamber_brass.brass_armory.util.ArrowType;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import com.milamber_brass.brass_armory.block.RopeBlock;
+import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
+import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
@@ -30,23 +32,17 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.fml.network.NetworkHooks;
-import org.apache.logging.log4j.Level;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 public class BAArrowEntity extends AbstractArrowEntity {
 
@@ -92,7 +88,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     }
 
     /**
-     * Used for Dispensers in: {@link CustomDispenserBehavior}
+     * Used for Dispensers in: {@link BrassArmoryDispenseBehaviors}
      */
     public BAArrowEntity(World worldIn, double x, double y, double z, ArrowType typeIn) {
         super(BrassArmoryEntityTypes.BA_ARROW.get(), x, y, z, worldIn);

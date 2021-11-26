@@ -1,4 +1,4 @@
-package com.milamber_brass.brass_armory.util;
+package com.milamber_brass.brass_armory.init;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import net.minecraft.item.Item;

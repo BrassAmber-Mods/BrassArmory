@@ -1,8 +1,12 @@
 package com.milamber_brass.brass_armory;
 
-import com.milamber_brass.brass_armory.entities.dispenser.CustomDispenserBehavior;
-import com.milamber_brass.brass_armory.entities.render.BAArrowRenderer;
-import com.milamber_brass.brass_armory.entities.render.SpearEntityRenderer;
+import com.milamber_brass.brass_armory.client.render.BAArrowRenderer;
+import com.milamber_brass.brass_armory.client.render.SpearEntityRenderer;
+import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,7 +40,7 @@ public class BrassArmory {
         LOGGER.debug("Running common setup.");
 
         // Register custom dispenser behavior
-        CustomDispenserBehavior.init();
+        BrassArmoryDispenseBehaviors.init();
     }
 
     @SubscribeEvent

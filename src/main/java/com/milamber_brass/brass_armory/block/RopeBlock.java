@@ -1,4 +1,4 @@
-package com.milamber_brass.brass_armory.blocks;
+package com.milamber_brass.brass_armory.block;
 
 import net.minecraft.block.*;
 import net.minecraft.fluid.FluidState;

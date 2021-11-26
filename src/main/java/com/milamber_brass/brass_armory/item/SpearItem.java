@@ -1,10 +1,11 @@
-package com.milamber_brass.brass_armory.items;
+package com.milamber_brass.brass_armory.item;
 
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.entities.SpearEntity;
+import com.milamber_brass.brass_armory.entity.SpearEntity;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;

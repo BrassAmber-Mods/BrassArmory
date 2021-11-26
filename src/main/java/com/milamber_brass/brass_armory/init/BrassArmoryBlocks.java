@@ -1,6 +1,8 @@
-package com.milamber_brass.brass_armory;
+package com.milamber_brass.brass_armory.init;
 
-import com.milamber_brass.brass_armory.blocks.RopeBlock;
+import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.block.RopeBlock;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -43,7 +45,7 @@ public class BrassArmoryBlocks {
      */
     private static <B extends Block> RegistryObject<B> registerBlock(String registryName, B block) {
         // Blocks are registered before Items
-        BrassArmoryItems.REGISTRY.register(registryName, () -> new BlockItem(block, new Item.Properties().tab(BrassArmoryItemGroup.BRASS_ARMORY)));
+        BrassArmoryItems.REGISTRY.register(registryName, () -> new BlockItem(block, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
         return REGISTRY.register(registryName, () -> block);
     }
 
