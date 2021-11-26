@@ -1,24 +1,22 @@
 package com.milamber_brass.brass_armory;
 
-import com.milamber_brass.brass_armory.client.render.BAArrowRenderer;
-import com.milamber_brass.brass_armory.client.render.SpearEntityRenderer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
+import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(BrassArmory.MOD_ID)
 @EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Bus.MOD)
@@ -45,11 +43,7 @@ public class BrassArmory {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        LOGGER.debug("Running client setup.");
-
-        // Register spear and arrow entity rendering handlers
-        RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.SPEAR.get(), SpearEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);
+        //Moved into ClientEventBusSubscriber
     }
 
     // Helper method for resource locations

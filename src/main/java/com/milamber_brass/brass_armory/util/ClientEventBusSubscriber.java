@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.util;
 
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.client.render.BAArrowRenderer;
 import com.milamber_brass.brass_armory.client.render.SpearEntityRenderer;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 
@@ -17,7 +18,10 @@ public class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
+    	BrassArmory.LOGGER.debug("Running client setup.");
+        // Register spear and arrow entity rendering handlers
         RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.SPEAR.get(), SpearEntityRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);
     }
 
 }
