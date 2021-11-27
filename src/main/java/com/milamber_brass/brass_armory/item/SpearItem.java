@@ -1,6 +1,13 @@
 package com.milamber_brass.brass_armory.item;
 
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.BrassArmory;
@@ -19,10 +26,18 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
+import net.minecraft.item.TieredItem;
+import net.minecraft.item.UseAction;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -35,14 +50,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.UUID;
 
-
-public class SpearItem extends TieredItem implements IVanishable {
+public class SpearItem extends TieredItem implements IVanishable, ICustomReachItem {
 
     private static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("99f7541c-a163-437c-8c25-bd685549b305");
     private static final float SPECIAL_REACH_MULTIPLIER = 1.5F;
@@ -71,20 +80,6 @@ public class SpearItem extends TieredItem implements IVanishable {
 
     public double getReachExtended() {
         return this.reachDistanceBonus * SPECIAL_REACH_MULTIPLIER;
-    }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-        /*
-        ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
-        if (slot == EquipmentSlotType.MAINHAND) {
-            multimap.put(player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getAttribute(),
-                new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
-                AttributeModifier.Operation.ADDITION));
-        }
-        */
-
-        return super.getAttributeModifiers(slot, stack);
     }
 
     public float getAttackDamage() {
@@ -280,5 +275,43 @@ public class SpearItem extends TieredItem implements IVanishable {
         }
 
     }
+    
+    //Reach stuff...
+    private Multimap<Attribute, AttributeModifier> customAttributes;
+
+   	@Override
+   	public Multimap<Attribute, AttributeModifier> getCustomAttributesField() {
+   		return this.customAttributes;
+   	}
+
+   	@Override
+   	public void setCustomAttributesField(Multimap<Attribute, AttributeModifier> value) {
+   		this.customAttributes = value;
+   	}
+
+   	@Override
+   	public Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+   		return ICustomReachItem.super.getAttributeModifiers(slot, stack);
+   	}
+   	
+   	@Override
+   	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+   		//This smells like cqr code...
+   		/*
+        ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
+        if (slot == EquipmentSlotType.MAINHAND) {
+            multimap.put(player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getAttribute(),
+                new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
+                AttributeModifier.Operation.ADDITION));
+        }
+        */
+   		return super.getAttributeModifiers(slot, stack);
+   	}
+
+	@Override
+	public double getReachDistanceBonus() {
+		return 1;
+	}
+    
 
 }
