@@ -291,11 +291,6 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
 
    	@Override
    	public Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-   		return ICustomReachItem.super.getAttributeModifiers(slot, stack);
-   	}
-   	
-   	@Override
-   	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
    		//This smells like cqr code...
    		/*
         ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
@@ -306,6 +301,11 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
         }
         */
    		return super.getAttributeModifiers(slot, stack);
+   	}
+   	
+   	@Override
+   	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+   		return ICustomReachItem.super.getAttributeModifiers(slot, stack);
    	}
 
 	@Override

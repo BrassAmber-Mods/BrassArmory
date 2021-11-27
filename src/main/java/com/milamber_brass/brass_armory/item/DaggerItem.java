@@ -29,12 +29,12 @@ public class DaggerItem extends SwordItem implements ICustomReachItem {
 
 	@Override
 	public Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-		return ICustomReachItem.super.getAttributeModifiers(slot, stack);
+		return super.getAttributeModifiers(slot, stack);
 	}
 	
 	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-		return super.getAttributeModifiers(slot, stack);
+		return ICustomReachItem.super.getAttributeModifiers(slot, stack);
 	}
 	
 	@Override
