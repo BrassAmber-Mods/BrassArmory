@@ -27,16 +27,17 @@ public class BrassArmory {
 
     public BrassArmory() {
         // Register
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        BrassArmoryItems.register(eventBus);
-        BrassArmoryBlocks.register(eventBus);
+    	IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    	//TODO: Move block renderers into the client package and their registration too!
+    	BrassArmoryBlocks.register(eventBus);
+    	BrassArmoryItems.register(eventBus);
         BrassArmoryEntityTypes.register(eventBus);
     }
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
         LOGGER.debug("Running common setup.");
-
+        
         // Register custom dispenser behavior
         BrassArmoryDispenseBehaviors.init();
     }
