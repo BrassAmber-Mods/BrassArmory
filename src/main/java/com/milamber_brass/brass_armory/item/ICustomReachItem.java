@@ -35,6 +35,12 @@ public interface ICustomReachItem extends IForgeItem {
 		if (slot == EquipmentSlotType.MAINHAND) {
 			if(this.getCustomAttributesField() == null) {
 				Builder<Attribute, AttributeModifier> attributeBuilder = ImmutableMultimap.builder();
+				
+				//Add in all the other attributes...
+				this.execSuperGetAttributeModifiers(slot, stack).forEach((Attribute attribute, AttributeModifier attributeMod) -> {
+					attributeBuilder.put(attribute, attributeMod);
+				});
+				
 				//!!ONLY call get when you need it according to "dieSieben07"...
 		        attributeBuilder.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(ICustomReachItem.REACH_DISTANCE_MODIFIER, "Weapon modifier", this.getReachDistanceBonus(), Operation.ADDITION));
 		        
