@@ -40,11 +40,6 @@ public class BrassArmory {
         BrassArmoryDispenseBehaviors.init();
     }
 
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        //Moved into ClientEventBusSubscriber
-    }
-
     // Helper method for resource locations
     public static ResourceLocation locate(String name) {
         return new ResourceLocation(BrassArmory.MOD_ID, name);
