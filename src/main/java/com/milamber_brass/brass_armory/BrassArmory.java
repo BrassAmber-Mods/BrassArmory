@@ -1,13 +1,9 @@
 package com.milamber_brass.brass_armory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,6 +13,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(BrassArmory.MOD_ID)
 @EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Bus.MOD)
@@ -27,17 +25,17 @@ public class BrassArmory {
 
     public BrassArmory() {
         // Register
-    	IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-    	//TODO: Move block renderers into the client package and their registration too!
-    	BrassArmoryBlocks.register(eventBus);
-    	BrassArmoryItems.register(eventBus);
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        //TODO: Move block renderers into the client package and their registration too!
+        BrassArmoryBlocks.register(eventBus);
+        BrassArmoryItems.register(eventBus);
         BrassArmoryEntityTypes.register(eventBus);
     }
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
         LOGGER.debug("Running common setup.");
-        
+
         // Register custom dispenser behavior
         BrassArmoryDispenseBehaviors.init();
     }

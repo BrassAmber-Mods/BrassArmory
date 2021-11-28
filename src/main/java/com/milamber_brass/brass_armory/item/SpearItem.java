@@ -1,18 +1,10 @@
 package com.milamber_brass.brass_armory.item;
 
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.SpearEntity;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -26,18 +18,10 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.TieredItem;
-import net.minecraft.item.UseAction;
+import net.minecraft.item.*;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -49,6 +33,12 @@ import net.minecraftforge.client.event.InputEvent.MouseInputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.UUID;
 
 
 public class SpearItem extends TieredItem implements IVanishable, ICustomReachItem {
@@ -63,6 +53,7 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
      */
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
     protected ItemTier finalTier;
+    private Multimap<Attribute, AttributeModifier> customAttributes;
 
     public SpearItem(ItemTier tier, int attackDamageIn, Properties builderIn) {
         super(tier, builderIn);
@@ -162,7 +153,6 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
         }
     }
 
-
     /**
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
      * the damage on the stack.
@@ -191,6 +181,41 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlotType equipmentSlot) {
         // Why does this method exist?
         return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getDefaultAttributeModifiers(equipmentSlot);
+    }
+
+    // Reach stuff...
+    @Override
+    public Multimap<Attribute, AttributeModifier> getCustomAttributesField() {
+        return this.customAttributes;
+    }
+
+    @Override
+    public void setCustomAttributesField(Multimap<Attribute, AttributeModifier> value) {
+        this.customAttributes = value;
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+        //This smells like cqr code...
+   		/*
+        ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
+        if (slot == EquipmentSlotType.MAINHAND) {
+            multimap.put(player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getAttribute(),
+                new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
+                AttributeModifier.Operation.ADDITION));
+        }
+        */
+        return super.getAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+        return ICustomReachItem.super.getAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public double getReachDistanceBonus() {
+        return 1;
     }
 
     @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
@@ -275,43 +300,5 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
         }
 
     }
-    
-    //Reach stuff...
-    private Multimap<Attribute, AttributeModifier> customAttributes;
-
-   	@Override
-   	public Multimap<Attribute, AttributeModifier> getCustomAttributesField() {
-   		return this.customAttributes;
-   	}
-
-   	@Override
-   	public void setCustomAttributesField(Multimap<Attribute, AttributeModifier> value) {
-   		this.customAttributes = value;
-   	}
-
-   	@Override
-   	public Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-   		//This smells like cqr code...
-   		/*
-        ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
-        if (slot == EquipmentSlotType.MAINHAND) {
-            multimap.put(player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getAttribute(),
-                new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
-                AttributeModifier.Operation.ADDITION));
-        }
-        */
-   		return super.getAttributeModifiers(slot, stack);
-   	}
-   	
-   	@Override
-   	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-   		return ICustomReachItem.super.getAttributeModifiers(slot, stack);
-   	}
-
-	@Override
-	public double getReachDistanceBonus() {
-		return 1;
-	}
-    
 
 }

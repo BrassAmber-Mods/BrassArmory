@@ -3,7 +3,6 @@ package com.milamber_brass.brass_armory.init;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.item.*;
-
 import net.minecraft.item.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
@@ -14,7 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 @EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Bus.MOD)
 public class BrassArmoryItems {
-    
+
     // Item Registry
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, BrassArmory.MOD_ID);
 
@@ -137,160 +136,160 @@ public class BrassArmoryItems {
     //---------------------------------------------------------------------------------------------------------
 
     public static final RegistryObject<DaggerItem> GOLD_DAGGER =
-            REGISTRY.register( "gold_dagger", () -> new DaggerItem(ItemTier.GOLD, 2,
+            REGISTRY.register("gold_dagger", () -> new DaggerItem(ItemTier.GOLD, 2,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<DaggerItem> WOOD_DAGGER =
-            REGISTRY.register( "wood_dagger", () -> new DaggerItem(ItemTier.WOOD, 2,
+            REGISTRY.register("wood_dagger", () -> new DaggerItem(ItemTier.WOOD, 2,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<DaggerItem> STONE_DAGGER =
-            REGISTRY.register( "stone_dagger", () -> new DaggerItem(ItemTier.STONE, 3,
+            REGISTRY.register("stone_dagger", () -> new DaggerItem(ItemTier.STONE, 3,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<DaggerItem> IRON_DAGGER =
-            REGISTRY.register( "iron_dagger", () -> new DaggerItem(ItemTier.IRON, 4,
+            REGISTRY.register("iron_dagger", () -> new DaggerItem(ItemTier.IRON, 4,
                     new Item.Properties().rarity(Rarity.UNCOMMON)
                             .durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<DaggerItem> DIAMOND_DAGGER =
-            REGISTRY.register( "diamond_dagger", () -> new DaggerItem(ItemTier.DIAMOND, 5,
+            REGISTRY.register("diamond_dagger", () -> new DaggerItem(ItemTier.DIAMOND, 5,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<DaggerItem> NETHERITE_DAGGER =
-            REGISTRY.register( "netherite_dagger", () -> new DaggerItem(ItemTier.NETHERITE, 5,
+            REGISTRY.register("netherite_dagger", () -> new DaggerItem(ItemTier.NETHERITE, 5,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     //---------------------------------------------------------------------------------------------------------
 
     public static final RegistryObject<BattleaxeItem> GOLD_BATTLEAXE =
-            REGISTRY.register( "gold_battleaxe", () -> new BattleaxeItem(ItemTier.GOLD, 6,
+            REGISTRY.register("gold_battleaxe", () -> new BattleaxeItem(ItemTier.GOLD, 6,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> WOOD_BATTLEAXE =
-            REGISTRY.register( "wood_battleaxe", () -> new BattleaxeItem(ItemTier.WOOD, 6,
+            REGISTRY.register("wood_battleaxe", () -> new BattleaxeItem(ItemTier.WOOD, 6,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> STONE_BATTLEAXE =
-            REGISTRY.register( "stone_battleaxe", () -> new BattleaxeItem(ItemTier.STONE, 6,
+            REGISTRY.register("stone_battleaxe", () -> new BattleaxeItem(ItemTier.STONE, 6,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> IRON_BATTLEAXE =
-            REGISTRY.register( "iron_battleaxe", () -> new BattleaxeItem(ItemTier.IRON, 6,
+            REGISTRY.register("iron_battleaxe", () -> new BattleaxeItem(ItemTier.IRON, 6,
                     new Item.Properties().rarity(Rarity.UNCOMMON)
                             .durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> DIAMOND_BATTLEAXE =
-            REGISTRY.register( "diamond_battleaxe", () -> new BattleaxeItem(ItemTier.DIAMOND, 6,
+            REGISTRY.register("diamond_battleaxe", () -> new BattleaxeItem(ItemTier.DIAMOND, 6,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> NETHERITE_BATTLEAXE =
-            REGISTRY.register( "netherite_battleaxe", () -> new BattleaxeItem(ItemTier.NETHERITE, 6,
+            REGISTRY.register("netherite_battleaxe", () -> new BattleaxeItem(ItemTier.NETHERITE, 6,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     //---------------------------------------------------------------------------------------------------------
 
     public static final RegistryObject<HalberdItem> GOLD_HALBERD =
-            REGISTRY.register( "gold_halberd", () -> new HalberdItem(ItemTier.GOLD, 4,
+            REGISTRY.register("gold_halberd", () -> new HalberdItem(ItemTier.GOLD, 4,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<HalberdItem> WOOD_HALBERD =
-            REGISTRY.register( "wood_halberd", () -> new HalberdItem(ItemTier.WOOD, 4,
+            REGISTRY.register("wood_halberd", () -> new HalberdItem(ItemTier.WOOD, 4,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<HalberdItem> STONE_HALBERD =
-            REGISTRY.register( "stone_halberd", () -> new HalberdItem(ItemTier.STONE, 5,
+            REGISTRY.register("stone_halberd", () -> new HalberdItem(ItemTier.STONE, 5,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<HalberdItem> IRON_HALBERD =
-            REGISTRY.register( "iron_halberd", () -> new HalberdItem(ItemTier.IRON, 6,
+            REGISTRY.register("iron_halberd", () -> new HalberdItem(ItemTier.IRON, 6,
                     new Item.Properties().rarity(Rarity.UNCOMMON)
                             .durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<HalberdItem> DIAMOND_HALBERD =
-            REGISTRY.register( "diamond_halberd", () -> new HalberdItem(ItemTier.DIAMOND, 7,
+            REGISTRY.register("diamond_halberd", () -> new HalberdItem(ItemTier.DIAMOND, 7,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<HalberdItem> NETHERITE_HALBERD =
-            REGISTRY.register( "netherite_halberd", () -> new HalberdItem(ItemTier.NETHERITE, 7,
+            REGISTRY.register("netherite_halberd", () -> new HalberdItem(ItemTier.NETHERITE, 7,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     //---------------------------------------------------------------------------------------------------------
 
     public static final RegistryObject<MaceItem> GOLD_MACE =
-            REGISTRY.register( "gold_mace", () -> new MaceItem(ItemTier.GOLD, 3,
+            REGISTRY.register("gold_mace", () -> new MaceItem(ItemTier.GOLD, 3,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<MaceItem> WOOD_MACE =
-            REGISTRY.register( "wood_mace", () -> new MaceItem(ItemTier.WOOD, 3,
+            REGISTRY.register("wood_mace", () -> new MaceItem(ItemTier.WOOD, 3,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<MaceItem> STONE_MACE =
-            REGISTRY.register( "stone_mace", () -> new MaceItem(ItemTier.STONE, 4,
+            REGISTRY.register("stone_mace", () -> new MaceItem(ItemTier.STONE, 4,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<MaceItem> IRON_MACE =
-            REGISTRY.register( "iron_mace", () -> new MaceItem(ItemTier.IRON, 5,
+            REGISTRY.register("iron_mace", () -> new MaceItem(ItemTier.IRON, 5,
                     new Item.Properties().rarity(Rarity.UNCOMMON)
                             .durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<MaceItem> DIAMOND_MACE =
-            REGISTRY.register( "diamond_mace", () -> new MaceItem(ItemTier.DIAMOND, 6,
+            REGISTRY.register("diamond_mace", () -> new MaceItem(ItemTier.DIAMOND, 6,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<MaceItem> NETHERITE_MACE =
-            REGISTRY.register( "netherite_mace", () -> new MaceItem(ItemTier.NETHERITE, 6,
+            REGISTRY.register("netherite_mace", () -> new MaceItem(ItemTier.NETHERITE, 6,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     //---------------------------------------------------------------------------------------------------------
 
     public static final RegistryObject<FlailItem> GOLD_FLAIL =
-            REGISTRY.register( "gold_flail", () -> new FlailItem(ItemTier.GOLD, 3,
+            REGISTRY.register("gold_flail", () -> new FlailItem(ItemTier.GOLD, 3,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> WOOD_FLAIL =
-            REGISTRY.register( "wood_flail", () -> new FlailItem(ItemTier.WOOD, 3,
+            REGISTRY.register("wood_flail", () -> new FlailItem(ItemTier.WOOD, 3,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> STONE_FLAIL =
-            REGISTRY.register( "stone_flail", () -> new FlailItem(ItemTier.STONE, 4,
+            REGISTRY.register("stone_flail", () -> new FlailItem(ItemTier.STONE, 4,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> IRON_FLAIL =
-            REGISTRY.register( "iron_flail", () -> new FlailItem(ItemTier.IRON, 5,
+            REGISTRY.register("iron_flail", () -> new FlailItem(ItemTier.IRON, 5,
                     new Item.Properties().rarity(Rarity.UNCOMMON)
                             .durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> DIAMOND_FLAIL =
-            REGISTRY.register( "diamond_flail", () -> new FlailItem(ItemTier.DIAMOND, 6,
+            REGISTRY.register("diamond_flail", () -> new FlailItem(ItemTier.DIAMOND, 6,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> NETHERITE_FLAIL =
-            REGISTRY.register( "netherite_flail", () -> new FlailItem(ItemTier.NETHERITE, 6,
+            REGISTRY.register("netherite_flail", () -> new FlailItem(ItemTier.NETHERITE, 6,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
@@ -298,5 +297,5 @@ public class BrassArmoryItems {
     public static void register(IEventBus eventBus) {
         REGISTRY.register(eventBus);
     }
-    
+
 }

@@ -2,7 +2,6 @@ package com.milamber_brass.brass_armory.init;
 
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
-
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.dispenser.IPosition;

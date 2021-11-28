@@ -5,7 +5,6 @@ import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.client.render.BAArrowRenderer;
 import com.milamber_brass.brass_armory.client.render.SpearEntityRenderer;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -18,7 +17,7 @@ public class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-    	BrassArmory.LOGGER.debug("Running client setup.");
+        BrassArmory.LOGGER.debug("Running client setup.");
         // Register spear and arrow entity rendering handlers
         RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.SPEAR.get(), SpearEntityRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);

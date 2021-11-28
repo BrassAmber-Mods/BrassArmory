@@ -1,13 +1,9 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import com.milamber_brass.brass_armory.block.RopeBlock;
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
@@ -44,16 +40,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 public class BAArrowEntity extends AbstractArrowEntity {
 
     private static final DataParameter<String> ARROW_TYPE = EntityDataManager.defineId(BAArrowEntity.class, DataSerializers.STRING);
     private static final String ARROW_TYPE_STRING = "ArrowType";
+    private final int maxRopeLength = 24;
     private boolean hitEntity = false;
     private int flightTime = 0;
     private boolean placeRope = false;
     private BlockPos currentRopePos;
     private double baDamage;
-    private final int maxRopeLength = 24;
     private int totalRope = 0;
     private Direction hitBlockfaceDirection;
     private int ticksSinceRope;
@@ -114,7 +113,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     }
 
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
         if (this.getArrowType() != null) {
@@ -126,7 +125,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains(ARROW_TYPE_STRING)) {
@@ -156,7 +155,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * Called when this projectile hits a LivingEntity.
      */
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     protected void doPostHurtEffects(LivingEntity living) {
         super.doPostHurtEffects(living);
         this.hitEntity = true;
@@ -195,7 +194,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * Called when this arrow hits a block.
      */
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     protected void onHitBlock(BlockRayTraceResult result) {
         super.onHitBlock(result);
         switch (ArrowType.byName(this.getEntityData().get(ARROW_TYPE))) {
@@ -526,7 +525,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * Returns the correct Item when picking up an arrow.
      */
     @Override
-	@Nonnull
+    @Nonnull
     protected ItemStack getPickupItem() {
         return new ItemStack(ArrowType.getModItemFor(this.getArrowType()));
     }
@@ -534,7 +533,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     /*********************************************************** Networking ********************************************************/
 
     @Override
-	@Nonnull
+    @Nonnull
     public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

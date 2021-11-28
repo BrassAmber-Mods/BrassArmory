@@ -3,7 +3,6 @@ package com.milamber_brass.brass_armory.init;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.SpearEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;

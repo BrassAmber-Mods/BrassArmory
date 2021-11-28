@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
 
-    public static final ResourceLocation SPEAR = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/wood_spear.png");
+    public static final ResourceLocation SPEAR = new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png");
     private final SpearModel spear_model = new SpearModel(SPEAR);
 
     public SpearEntityRenderer(EntityRendererManager renderManagerIn) {
@@ -41,7 +41,7 @@ public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
      */
     @Nonnull
     public ResourceLocation getTextureLocation(SpearEntity entity) {
-        return  entity.getTierResourceLocation();
+        return entity.getTierResourceLocation();
     }
 
 }

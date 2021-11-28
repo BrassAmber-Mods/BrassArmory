@@ -2,7 +2,6 @@ package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
