@@ -1,12 +1,12 @@
 package com.milamber_brass.brass_armory;
 
-import com.milamber_brass.brass_armory.entities.dispenser.CustomDispenserBehavior;
-import com.milamber_brass.brass_armory.entities.render.BAArrowRenderer;
-import com.milamber_brass.brass_armory.entities.render.SpearEntityRenderer;
+import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
+import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -26,8 +26,9 @@ public class BrassArmory {
     public BrassArmory() {
         // Register
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        BrassArmoryItems.register(eventBus);
+        //TODO: Move block renderers into the client package and their registration too!
         BrassArmoryBlocks.register(eventBus);
+        BrassArmoryItems.register(eventBus);
         BrassArmoryEntityTypes.register(eventBus);
     }
 
@@ -36,16 +37,7 @@ public class BrassArmory {
         LOGGER.debug("Running common setup.");
 
         // Register custom dispenser behavior
-        CustomDispenserBehavior.init();
-    }
-
-    @SubscribeEvent
-    public static void onClientSetup(FMLClientSetupEvent event) {
-        LOGGER.debug("Running client setup.");
-
-        // Register spear and arrow entity rendering handlers
-        RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.SPEAR.get(), SpearEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(BrassArmoryEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);
+        BrassArmoryDispenseBehaviors.init();
     }
 
     // Helper method for resource locations

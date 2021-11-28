@@ -1,8 +1,8 @@
-package com.milamber_brass.brass_armory.entities.render;
+package com.milamber_brass.brass_armory.client.render;
 
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.entities.SpearEntity;
-import com.milamber_brass.brass_armory.entities.model.SpearModel;
+import com.milamber_brass.brass_armory.client.model.SpearModel;
+import com.milamber_brass.brass_armory.entity.SpearEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
 
-    public static final ResourceLocation SPEAR = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/wood_spear.png");
+    public static final ResourceLocation SPEAR = new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png");
     private final SpearModel spear_model = new SpearModel(SPEAR);
 
     public SpearEntityRenderer(EntityRendererManager renderManagerIn) {
@@ -41,7 +41,7 @@ public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
      */
     @Nonnull
     public ResourceLocation getTextureLocation(SpearEntity entity) {
-        return  entity.getTierResourceLocation();
+        return entity.getTierResourceLocation();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.milamber_brass.brass_armory.items;
+package com.milamber_brass.brass_armory.item;
 
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.SwordItem;

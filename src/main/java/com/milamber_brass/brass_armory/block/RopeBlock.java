@@ -1,4 +1,4 @@
-package com.milamber_brass.brass_armory.blocks;
+package com.milamber_brass.brass_armory.block;
 
 import net.minecraft.block.*;
 import net.minecraft.fluid.FluidState;
@@ -59,8 +59,8 @@ public class RopeBlock extends Block implements IWaterLoggable {
     /*********************************************************** Hitbox ********************************************************/
 
     @Override
-	@ParametersAreNonnullByDefault
-	@Nonnull
+    @ParametersAreNonnullByDefault
+    @Nonnull
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         switch (state.getValue(FACING)) {
             case NORTH:
@@ -78,7 +78,7 @@ public class RopeBlock extends Block implements IWaterLoggable {
     /*********************************************************** Placement ********************************************************/
 
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     public boolean canSurvive(BlockState state, IWorldReader worldIn, BlockPos pos) {
         Direction direction = state.getValue(FACING);
         if (state.getValue(HAS_ARROW)) {
@@ -98,10 +98,10 @@ public class RopeBlock extends Block implements IWaterLoggable {
      */
     @SuppressWarnings("deprecation")
     @Override
-	@ParametersAreNonnullByDefault
-	@Nonnull
+    @ParametersAreNonnullByDefault
+    @Nonnull
     public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-		if (facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(worldIn, currentPos)) {
+        if (facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(worldIn, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         } else if (stateIn.getValue(WATERLOGGED)) {
             worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
@@ -149,7 +149,7 @@ public class RopeBlock extends Block implements IWaterLoggable {
 
     @SuppressWarnings("deprecation")
     @Override
-	@Nonnull
+    @Nonnull
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
@@ -158,7 +158,7 @@ public class RopeBlock extends Block implements IWaterLoggable {
      * Returns the BlockState with the given rotation from the passed BlockState. If inapplicable, returns the passed BlockState.
      */
     @Override
-	@Nonnull
+    @Nonnull
     public BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
@@ -168,7 +168,7 @@ public class RopeBlock extends Block implements IWaterLoggable {
      */
     @SuppressWarnings("deprecation")
     @Override
-	@Nonnull
+    @Nonnull
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }

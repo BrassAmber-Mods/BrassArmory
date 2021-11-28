@@ -1,10 +1,9 @@
-package com.milamber_brass.brass_armory.entities;
+package com.milamber_brass.brass_armory.entity.projectile;
 
-import com.milamber_brass.brass_armory.BrassArmoryBlocks;
-import com.milamber_brass.brass_armory.blocks.RopeBlock;
-import com.milamber_brass.brass_armory.BrassArmoryEntityTypes;
-import com.milamber_brass.brass_armory.entities.dispenser.CustomDispenserBehavior;
-import com.milamber_brass.brass_armory.util.ArrowType;
+import com.milamber_brass.brass_armory.block.RopeBlock;
+import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
+import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
@@ -34,6 +33,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -47,15 +47,16 @@ public class BAArrowEntity extends AbstractArrowEntity {
 
     private static final DataParameter<String> ARROW_TYPE = EntityDataManager.defineId(BAArrowEntity.class, DataSerializers.STRING);
     private static final String ARROW_TYPE_STRING = "ArrowType";
+    private final int maxRopeLength = 24;
     private boolean hitEntity = false;
     private int flightTime = 0;
     private boolean placeRope = false;
     private BlockPos currentRopePos;
     private double baDamage;
-    private final int maxRopeLength = 24;
     private int totalRope = 0;
     private Direction hitBlockfaceDirection;
     private int ticksSinceRope;
+    private Vector3d lastArrowPos;
 
     /**
      * Used to initialize the EntityType.
@@ -72,6 +73,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
         this.setArrowType(typeIn.getSerializedName());
         if (this.isArrowType(ArrowType.LASER)) {
             this.setPierceLevel((byte) 5);
+            this.setNoGravity(true);
         }
         this.setBaseDamage(this.getArrowType().getDamage());
     }
@@ -85,7 +87,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     }
 
     /**
-     * Used for Dispensers in: {@link CustomDispenserBehavior}
+     * Used for Dispensers in: {@link BrassArmoryDispenseBehaviors}
      */
     public BAArrowEntity(World worldIn, double x, double y, double z, ArrowType typeIn) {
         super(BrassArmoryEntityTypes.BA_ARROW.get(), x, y, z, worldIn);
@@ -111,7 +113,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     }
 
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundNBT compound) {
         super.addAdditionalSaveData(compound);
         if (this.getArrowType() != null) {
@@ -123,7 +125,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains(ARROW_TYPE_STRING)) {
@@ -153,7 +155,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * Called when this projectile hits a LivingEntity.
      */
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     protected void doPostHurtEffects(LivingEntity living) {
         super.doPostHurtEffects(living);
         this.hitEntity = true;
@@ -192,7 +194,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * Called when this arrow hits a block.
      */
     @Override
-	@ParametersAreNonnullByDefault
+    @ParametersAreNonnullByDefault
     protected void onHitBlock(BlockRayTraceResult result) {
         super.onHitBlock(result);
         switch (ArrowType.byName(this.getEntityData().get(ARROW_TYPE))) {
@@ -249,11 +251,12 @@ public class BAArrowEntity extends AbstractArrowEntity {
                 this.remove();
             }
         }
-        // check that the arrow is not in the ground and has been flying for half a second.
-        else if (this.isArrowType(ArrowType.LASER) && !this.inGround && this.flightTime > 10) {
-            // make the arrows Y position only decrease by 0.05 every tick (1 block per second).
-            this.moveTo(this.getX(), this.yo - .0005, this.getZ());
-            // if the arrow enters an unloaded chunk, remove it.
+        // check that the arrow is not in the ground and has been flying for 1/5 a second.
+        else if (this.isArrowType(ArrowType.LASER) && !this.inGround && this.flightTime > 4) {
+            // call super.tick() twice to speed up arrow movement.
+            super.tick();
+            super.tick();
+            // BrassArmory.LOGGER.log(Level.DEBUG, currentDelta + " <- Delta | Forward -> " + forward);
             if (!this.level.hasChunk(this.xChunk, this.zChunk)) {
                 this.remove();
             }
@@ -287,6 +290,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
         } else if (this.inGround && this.inGroundTime != 0 && this.inGroundTime >= 600) {
             this.level.broadcastEntityEvent(this, (byte) 0);
         }
+        this.lastArrowPos = this.position();
     }
 
     /*********************************************************** Arrow Functionalities ********************************************************/
@@ -521,7 +525,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * Returns the correct Item when picking up an arrow.
      */
     @Override
-	@Nonnull
+    @Nonnull
     protected ItemStack getPickupItem() {
         return new ItemStack(ArrowType.getModItemFor(this.getArrowType()));
     }
@@ -529,7 +533,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     /*********************************************************** Networking ********************************************************/
 
     @Override
-	@Nonnull
+    @Nonnull
     public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

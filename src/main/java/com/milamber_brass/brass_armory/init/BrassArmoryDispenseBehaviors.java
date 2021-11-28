@@ -1,8 +1,7 @@
-package com.milamber_brass.brass_armory.entities.dispenser;
+package com.milamber_brass.brass_armory.init;
 
-import com.milamber_brass.brass_armory.entities.BAArrowEntity;
-import com.milamber_brass.brass_armory.BrassArmoryItems;
-import com.milamber_brass.brass_armory.util.ArrowType;
+import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
+import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.dispenser.IPosition;
@@ -12,7 +11,7 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public interface CustomDispenserBehavior extends IDispenseItemBehavior {
+public interface BrassArmoryDispenseBehaviors extends IDispenseItemBehavior {
 
     static void init() {
         DispenserBlock.registerBehavior(BrassArmoryItems.DIRT_ARROW.get(), new ProjectileDispenseBehavior() {

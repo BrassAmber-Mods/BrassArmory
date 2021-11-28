@@ -1,10 +1,10 @@
-package com.milamber_brass.brass_armory.items;
+package com.milamber_brass.brass_armory.item;
 
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.entities.SpearEntity;
+import com.milamber_brass.brass_armory.entity.SpearEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class SpearItem extends TieredItem implements IVanishable {
+public class SpearItem extends TieredItem implements IVanishable, ICustomReachItem {
 
     private static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("99f7541c-a163-437c-8c25-bd685549b305");
     private static final float SPECIAL_REACH_MULTIPLIER = 1.5F;
@@ -53,6 +53,7 @@ public class SpearItem extends TieredItem implements IVanishable {
      */
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
     protected ItemTier finalTier;
+    private Multimap<Attribute, AttributeModifier> customAttributes;
 
     public SpearItem(ItemTier tier, int attackDamageIn, Properties builderIn) {
         super(tier, builderIn);
@@ -70,20 +71,6 @@ public class SpearItem extends TieredItem implements IVanishable {
 
     public double getReachExtended() {
         return this.reachDistanceBonus * SPECIAL_REACH_MULTIPLIER;
-    }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-        /*
-        ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
-        if (slot == EquipmentSlotType.MAINHAND) {
-            multimap.put(player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getAttribute(),
-                new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
-                AttributeModifier.Operation.ADDITION));
-        }
-        */
-
-        return super.getAttributeModifiers(slot, stack);
     }
 
     public float getAttackDamage() {
@@ -166,7 +153,6 @@ public class SpearItem extends TieredItem implements IVanishable {
         }
     }
 
-
     /**
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise
      * the damage on the stack.
@@ -195,6 +181,41 @@ public class SpearItem extends TieredItem implements IVanishable {
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlotType equipmentSlot) {
         // Why does this method exist?
         return equipmentSlot == EquipmentSlotType.MAINHAND ? this.attributeModifiers : super.getDefaultAttributeModifiers(equipmentSlot);
+    }
+
+    // Reach stuff...
+    @Override
+    public Multimap<Attribute, AttributeModifier> getCustomAttributesField() {
+        return this.customAttributes;
+    }
+
+    @Override
+    public void setCustomAttributesField(Multimap<Attribute, AttributeModifier> value) {
+        this.customAttributes = value;
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+        //This smells like cqr code...
+   		/*
+        ClientPlayerEntity player = (ClientPlayerEntity) stack.getAttachedEntity();
+        if (slot == EquipmentSlotType.MAINHAND) {
+            multimap.put(player.getAttribute(net.minecraftforge.common.ForgeMod.REACH_DISTANCE.get()).getAttribute(),
+                new AttributeModifier(REACH_DISTANCE_MODIFIER, "Weapon Modifier", this.reachDistanceBonus,
+                AttributeModifier.Operation.ADDITION));
+        }
+        */
+        return super.getAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+        return ICustomReachItem.super.getAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public double getReachDistanceBonus() {
+        return 1;
     }
 
     @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)

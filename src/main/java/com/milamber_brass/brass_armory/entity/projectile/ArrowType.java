@@ -1,7 +1,7 @@
-package com.milamber_brass.brass_armory.util;
+package com.milamber_brass.brass_armory.entity.projectile;
 
-import com.milamber_brass.brass_armory.BrassArmoryItems;
-import com.milamber_brass.brass_armory.items.BABaseArrowItem;
+import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.item.BABaseArrowItem;
 import net.minecraft.util.IStringSerializable;
 
 import javax.annotation.Nonnull;
