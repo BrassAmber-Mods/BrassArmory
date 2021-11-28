@@ -17,20 +17,20 @@ import java.util.UUID;
 public interface ICustomReachItem extends IForgeItem {
 
     //Needs to be unique
-    UUID REACH_DISTANCE_MODIFIER = UUID.fromString("b7d3df52-d360-491b-9bb5-2e8e3b5b279a");
+    public static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("b7d3df52-d360-491b-9bb5-2e8e3b5b279a");
 
     //Setter and getter for custom multimap
-    Multimap<Attribute, AttributeModifier> getCustomAttributesField();
+    public Multimap<Attribute, AttributeModifier> getCustomAttributesField();
 
-    void setCustomAttributesField(Multimap<Attribute, AttributeModifier> value);
+    public void setCustomAttributesField(Multimap<Attribute, AttributeModifier> value);
 
     //Getter for the actual reach bonus value
-    double getReachDistanceBonus();
+    public double getReachDistanceBonus();
 
     @Nonnull
     Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack);
 
-    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
+    public default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
         if (slot == EquipmentSlotType.MAINHAND) {
             if (this.getCustomAttributesField() == null) {
                 Builder<Attribute, AttributeModifier> attributeBuilder = ImmutableMultimap.builder();
