@@ -4,10 +4,9 @@ import com.milamber_brass.brass_armory.block.RopeBlock;
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.enchantment.FrostWalkerEnchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -15,9 +14,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.EnderPearlEntity;
 import net.minecraft.entity.monster.EndermiteEntity;
 import net.minecraft.entity.monster.SlimeEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -28,6 +30,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -42,6 +45,10 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
+import java.util.Objects;
+import java.util.Random;
 
 public class BAArrowEntity extends AbstractArrowEntity {
 
@@ -56,7 +63,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
     private int totalRope = 0;
     private Direction hitBlockfaceDirection;
     private int ticksSinceRope;
-    private Vector3d lastArrowPos;
 
     /**
      * Used to initialize the EntityType.
@@ -149,6 +155,12 @@ public class BAArrowEntity extends AbstractArrowEntity {
         else if (this.isArrowType(ArrowType.SLIME)) {
             this.spawnSmallSlime();
         }
+
+        // Check if this is a Explosion arrow
+        else if (this.isArrowType(ArrowType.EXPLOSION)) {
+            this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.BREAK);
+            this.remove();
+        }
     }
 
     /**
@@ -164,9 +176,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
             case DIRT:
                 this.level.setBlock(new BlockPos(this.getX(), this.getY(), this.getZ()), Blocks.DIRT.defaultBlockState(), BlockFlags.DEFAULT);
                 break;
-            case EXPLOSION:
-                this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.BREAK);
-                break;
             case FROST:
                 living.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 70, 3));
                 break;
@@ -180,6 +189,8 @@ public class BAArrowEntity extends AbstractArrowEntity {
                 // add nausea with a duration of 2x the current flight time with a amplification of the flight time /80
                 living.addEffect(new EffectInstance(Effects.CONFUSION, MathHelper.clamp(this.flightTime * 2, 80, 240), MathHelper.clamp(this.flightTime / 80, 0, 2)));
                 break;
+            case EXPLOSION:
+                // Already accounted for in onHit()
             case LASER:
             case WARP:
             case ROPE:
@@ -198,16 +209,9 @@ public class BAArrowEntity extends AbstractArrowEntity {
     protected void onHitBlock(BlockRayTraceResult result) {
         super.onHitBlock(result);
         switch (ArrowType.byName(this.getEntityData().get(ARROW_TYPE))) {
-
             case DIRT:
                 this.setBlockAtArrowFace(Blocks.DIRT.defaultBlockState(), result);
                 this.remove();
-                break;
-            case EXPLOSION:
-                this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.BREAK);
-                this.remove();
-                break;
-            case FROST:
                 break;
             case GRASS:
                 if (this.level.getBlockState(result.getBlockPos()) == Blocks.DIRT.defaultBlockState()) {
@@ -221,18 +225,21 @@ public class BAArrowEntity extends AbstractArrowEntity {
             case ROPE:
                 this.placeRopes(result);
                 break;
-            case SLIME:
-                break;
+
             case FIRE:
-                // TODO Firing at the side of Blocks doesn't work correctly.
-                this.setBlockAtArrowFace(Blocks.FIRE.defaultBlockState(), result);
-                break;
-            case CONCUSSION:
+                BlockState blockstate1 = AbstractFireBlock.getState(level, result.getBlockPos().relative(result.getDirection()));
+                this.level.setBlock(result.getBlockPos().relative(result.getDirection()), blockstate1, 11);
+                this.remove();
                 break;
             case LASER:
                 if (this.hitEntity) {
                     this.remove();
                 }
+            case EXPLOSION:
+                // Already accounted for in onHit()
+            case FROST:
+            case SLIME:
+            case CONCUSSION:
             case WARP:
             default:
                 break;
@@ -252,10 +259,10 @@ public class BAArrowEntity extends AbstractArrowEntity {
             }
         }
         // check that the arrow is not in the ground and has been flying for 1/5 a second.
-        else if (this.isArrowType(ArrowType.LASER) && !this.inGround && this.flightTime > 4) {
-            // call super.tick() twice to speed up arrow movement.
-            super.tick();
-            super.tick();
+        else if (this.isArrowType(ArrowType.LASER) && !this.inGround && (3 < this.flightTime && this.flightTime < 8)){
+            // set DeltaMovement to double itself. Only do this for 4 ticks so it has enough speed to be de-spawned if it
+            // is fired into the sky, but slow enough that it is not instant
+            this.setDeltaMovement(this.getDeltaMovement().add(this.getDeltaMovement()));
             // BrassArmory.LOGGER.log(Level.DEBUG, currentDelta + " <- Delta | Forward -> " + forward);
             if (!this.level.hasChunk(this.xChunk, this.zChunk)) {
                 this.remove();
@@ -290,7 +297,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
         } else if (this.inGround && this.inGroundTime != 0 && this.inGroundTime >= 600) {
             this.level.broadcastEntityEvent(this, (byte) 0);
         }
-        this.lastArrowPos = this.position();
     }
 
     /*********************************************************** Arrow Functionalities ********************************************************/
