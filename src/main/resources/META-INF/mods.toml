@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[36,)"
+loaderVersion="[38,)"
 logoFile="diamond_spear.png"
 license="All rights reserved."
 
@@ -17,6 +17,6 @@ Stays true to the core of Balkon's Weapons with new item textures made by Brass_
 [[dependencies.brass_armory]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.5,1.17)"
+    versionRange="[1.18,1.19)"
     ordering="NONE"
     side="BOTH"

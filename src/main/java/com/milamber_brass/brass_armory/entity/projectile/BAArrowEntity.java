@@ -4,48 +4,44 @@ import com.milamber_brass.brass_armory.block.RopeBlock;
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.enchantment.FrostWalkerEnchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.EnderPearlEntity;
-import net.minecraft.entity.monster.EndermiteEntity;
-import net.minecraft.entity.monster.SlimeEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.BlockFlags;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Endermite;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class BAArrowEntity extends AbstractArrowEntity {
+public class BAArrowEntity extends AbstractArrow {
 
-    private static final DataParameter<String> ARROW_TYPE = EntityDataManager.defineId(BAArrowEntity.class, DataSerializers.STRING);
+    private static final EntityDataAccessor<String> ARROW_TYPE = SynchedEntityData.defineId(BAArrowEntity.class, EntityDataSerializers.STRING);
     private static final String ARROW_TYPE_STRING = "ArrowType";
     private final int maxRopeLength = 24;
     private boolean hitEntity = false;
@@ -56,19 +52,19 @@ public class BAArrowEntity extends AbstractArrowEntity {
     private int totalRope = 0;
     private Direction hitBlockfaceDirection;
     private int ticksSinceRope;
-    private Vector3d lastArrowPos;
+    private Vec3 lastArrowPos;
 
     /**
      * Used to initialize the EntityType.
      */
-    public BAArrowEntity(EntityType<? extends AbstractArrowEntity> entityType, World worldIn) {
+    public BAArrowEntity(EntityType<? extends AbstractArrow> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
     /**
      * Used when fired by a Player.
      */
-    public BAArrowEntity(EntityType<? extends AbstractArrowEntity> type, World worldIn, LivingEntity shooter, ArrowType typeIn) {
+    public BAArrowEntity(EntityType<? extends AbstractArrow> type, Level worldIn, LivingEntity shooter, ArrowType typeIn) {
         super(type, shooter, worldIn);
         this.setArrowType(typeIn.getSerializedName());
         if (this.isArrowType(ArrowType.LASER)) {
@@ -81,7 +77,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     /**
      * Used when fired by a Player.
      */
-    public BAArrowEntity(World worldIn, LivingEntity shooter, ArrowType typeIn) {
+    public BAArrowEntity(Level worldIn, LivingEntity shooter, ArrowType typeIn) {
         // Calls the constructor above.
         this(BrassArmoryEntityTypes.BA_ARROW.get(), worldIn, shooter, typeIn);
     }
@@ -89,7 +85,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     /**
      * Used for Dispensers in: {@link BrassArmoryDispenseBehaviors}
      */
-    public BAArrowEntity(World worldIn, double x, double y, double z, ArrowType typeIn) {
+    public BAArrowEntity(Level worldIn, double x, double y, double z, ArrowType typeIn) {
         super(BrassArmoryEntityTypes.BA_ARROW.get(), x, y, z, worldIn);
         this.setArrowType(typeIn.getSerializedName());
     }
@@ -114,7 +110,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
 
     @Override
     @ParametersAreNonnullByDefault
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         if (this.getArrowType() != null) {
             compound.putString(ARROW_TYPE_STRING, this.getArrowType().getSerializedName());
@@ -126,7 +122,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      */
     @Override
     @ParametersAreNonnullByDefault
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains(ARROW_TYPE_STRING)) {
             this.setArrowType(compound.getString(ARROW_TYPE_STRING));
@@ -134,22 +130,6 @@ public class BAArrowEntity extends AbstractArrowEntity {
     }
 
     /*********************************************************** Arrow Hits ********************************************************/
-
-    /**
-     * Called when this arrow hits a block or entity.
-     */
-    @ParametersAreNonnullByDefault
-    protected void onHit(RayTraceResult result) {
-        super.onHit(result);
-        // Check if this is a Warp Arrow.
-        if (this.isArrowType(ArrowType.WARP) && this.level.getBlockState(this.blockPosition()).getFluidState().isEmpty()) {
-            this.teleportShooter();
-        }
-        // Check if this is a Slime Arrow.
-        else if (this.isArrowType(ArrowType.SLIME)) {
-            this.spawnSmallSlime();
-        }
-    }
 
     /**
      * Called when this projectile hits a LivingEntity.
@@ -162,13 +142,13 @@ public class BAArrowEntity extends AbstractArrowEntity {
         switch (ArrowType.byName(this.getEntityData().get(ARROW_TYPE))) {
 
             case DIRT:
-                this.level.setBlock(new BlockPos(this.getX(), this.getY(), this.getZ()), Blocks.DIRT.defaultBlockState(), BlockFlags.DEFAULT);
+                this.level.setBlock(new BlockPos(this.getX(), this.getY(), this.getZ()), Blocks.DIRT.defaultBlockState(), 2);
                 break;
             case EXPLOSION:
-                this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.BREAK);
+                this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.BlockInteraction.BREAK);
                 break;
             case FROST:
-                living.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 70, 3));
+                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 70, 3));
                 break;
             case SLIME:
                 living.knockback(2F, 1, 1);
@@ -178,10 +158,14 @@ public class BAArrowEntity extends AbstractArrowEntity {
                 break;
             case CONCUSSION:
                 // add nausea with a duration of 2x the current flight time with a amplification of the flight time /80
-                living.addEffect(new EffectInstance(Effects.CONFUSION, MathHelper.clamp(this.flightTime * 2, 80, 240), MathHelper.clamp(this.flightTime / 80, 0, 2)));
+                living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Mth.clamp(this.flightTime * 2, 80, 240), Mth.clamp(this.flightTime / 80, 0, 2)));
+                break;
+            case WARP:
+                if (this.level.getBlockState(this.blockPosition()).getFluidState().isEmpty()) {
+                    this.teleportShooter();
+                }
                 break;
             case LASER:
-            case WARP:
             case ROPE:
                 // Do nothing; Only place ropes when the arrow hits a block.
             case GRASS:
@@ -195,33 +179,34 @@ public class BAArrowEntity extends AbstractArrowEntity {
      */
     @Override
     @ParametersAreNonnullByDefault
-    protected void onHitBlock(BlockRayTraceResult result) {
+    protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
         switch (ArrowType.byName(this.getEntityData().get(ARROW_TYPE))) {
 
             case DIRT:
                 this.setBlockAtArrowFace(Blocks.DIRT.defaultBlockState(), result);
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
                 break;
             case EXPLOSION:
-                this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.Mode.BREAK);
-                this.remove();
+                this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.BlockInteraction.BREAK);
+                this.remove(RemovalReason.DISCARDED);
                 break;
             case FROST:
                 break;
             case GRASS:
                 if (this.level.getBlockState(result.getBlockPos()) == Blocks.DIRT.defaultBlockState()) {
                     this.setBlockAtArrow(Blocks.GRASS_BLOCK.defaultBlockState(), result);
-                    this.remove();
+                    this.remove(RemovalReason.DISCARDED);
                 } else if (this.level.getBlockState(result.getBlockPos()) == Blocks.GRASS_BLOCK.defaultBlockState()) {
-                    this.level.setBlock(result.getBlockPos().above(), Blocks.GRASS.defaultBlockState(), BlockFlags.DEFAULT);
-                    this.remove();
+                    this.level.setBlock(result.getBlockPos().above(), Blocks.GRASS.defaultBlockState(), 2);
+                    this.remove(RemovalReason.DISCARDED);
                 }
                 break;
             case ROPE:
                 this.placeRopes(result);
                 break;
             case SLIME:
+                this.spawnSmallSlime();
                 break;
             case FIRE:
                 // TODO Firing at the side of Blocks doesn't work correctly.
@@ -231,7 +216,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
                 break;
             case LASER:
                 if (this.hitEntity) {
-                    this.remove();
+                    this.remove(RemovalReason.DISCARDED);
                 }
             case WARP:
             default:
@@ -248,7 +233,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
         if (this.isArrowType(ArrowType.FROST)) {
             freezeNearby(this.level, this.blockPosition());
             if (this.inGround && this.inGroundTime != 0) {
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
             }
         }
         // check that the arrow is not in the ground and has been flying for 1/5 a second.
@@ -257,8 +242,8 @@ public class BAArrowEntity extends AbstractArrowEntity {
             super.tick();
             super.tick();
             // BrassArmory.LOGGER.log(Level.DEBUG, currentDelta + " <- Delta | Forward -> " + forward);
-            if (!this.level.hasChunk(this.xChunk, this.zChunk)) {
-                this.remove();
+            if (!this.level.hasChunk(this.chunkPosition().x, this.chunkPosition().z)) {
+                this.remove(RemovalReason.UNLOADED_TO_CHUNK);
             }
         }
         // Check that we have entered place rope mode and that the ticks since last placing a rope are at least equal to 10 ticks
@@ -267,14 +252,14 @@ public class BAArrowEntity extends AbstractArrowEntity {
             if (this.ticksSinceRope > 6) {
                 BlockPos newPos = currentRopePos.relative(Direction.DOWN, 1);
                 if (this.level.getBlockState(newPos).isAir() && this.totalRope < this.maxRopeLength) {
-                    this.level.setBlock(newPos, BrassArmoryBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), BlockFlags.DEFAULT);
+                    this.level.setBlock(newPos, BrassArmoryBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), 2);
                     this.currentRopePos = newPos;
                     this.totalRope++;
                     this.ticksSinceRope = 0;
                 } else {
                     // No space to place more Ropes or Rope Limit reached.
                     this.placeRope = false;
-                    this.remove();
+                    this.remove(RemovalReason.DISCARDED);
                 }
             }
         }
@@ -296,7 +281,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
     /*********************************************************** Arrow Functionalities ********************************************************/
 
     @SuppressWarnings("deprecation")
-    private void placeRopes(BlockRayTraceResult result) {
+    private void placeRopes(BlockHitResult result) {
         hitBlockfaceDirection = result.getDirection();
         // TODO Temporarily disabled, because there are no models to be placed like this yet.
         if (!hitBlockfaceDirection.equals(Direction.DOWN) && !hitBlockfaceDirection.equals(Direction.UP)) {
@@ -311,14 +296,14 @@ public class BAArrowEntity extends AbstractArrowEntity {
                     this.totalRope++;
                     this.placeRope = true;
                     // Prevent the arrow from being picked up while the ropes are being placed.
-                    this.pickup = PickupStatus.DISALLOWED;
+                    this.pickup = Pickup.DISALLOWED;
                 }
             }
         }
     }
 
     /**
-     * Referenced from {@link EnderPearlEntity}
+     * Referenced from {@link net.minecraftforge.event.entity.EntityTeleportEvent.EnderPearl}
      */
     private void teleportShooter() {
         // Create teleportation particles.
@@ -329,21 +314,23 @@ public class BAArrowEntity extends AbstractArrowEntity {
         Entity shooter = this.getOwner();
         if (!this.level.isClientSide && this.isAlive()) {
             // Check if the shooter is a Player.
-            if (shooter instanceof ServerPlayerEntity) {
-                ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) shooter;
-                if (serverplayerentity.connection.getConnection().isConnected() && serverplayerentity.level == this.level && !serverplayerentity.isSleeping()) {
-                    net.minecraftforge.event.entity.living.EntityTeleportEvent.EnderPearl event = net.minecraftforge.event.ForgeEventFactory.onEnderPearlLand(serverplayerentity, this.getX(), this.getY(), this.getZ(), EntityType.ENDER_PEARL.create(this.level), 5.0F);
+            if (shooter instanceof ServerPlayer) {
+                ServerPlayer serverPlayer = (ServerPlayer) shooter;
+                if (serverPlayer.connection.getConnection().isConnected() && serverPlayer.level == this.level && !serverPlayer.isSleeping()) {
+                    net.minecraftforge.event.entity.EntityTeleportEvent.EnderPearl event = net.minecraftforge.event.ForgeEventFactory.onEnderPearlLand(serverPlayer, this.getX(), this.getY(), this.getZ(), EntityType.ENDER_PEARL.create(this.level), 5.0F);
                     if (!event.isCanceled()) {
                         // Small chance to spawn an Endermite.
                         if (this.random.nextFloat() < 0.05F && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-                            EndermiteEntity endermiteentity = EntityType.ENDERMITE.create(this.level);
-                            endermiteentity.setPlayerSpawned(true);
-                            endermiteentity.moveTo(shooter.getX(), shooter.getY(), shooter.getZ(), shooter.yRot, shooter.xRot);
+                            Endermite endermiteentity = EntityType.ENDERMITE.create(this.level);
+
+                            endermiteentity.moveTo(shooter.getX(), shooter.getY(), shooter.getZ(), shooter.getYRot(), shooter.getXRot());
                             this.level.addFreshEntity(endermiteentity);
                         }
 
                         if (shooter.isPassenger()) {
-                            shooter.stopRiding();
+                            serverPlayer.dismountTo(this.getX(), this.getY(), this.getZ());
+                        } else {
+                            shooter.teleportTo(this.getX(), this.getY(), this.getZ());
                         }
 
                         shooter.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
@@ -355,7 +342,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
                 shooter.fallDistance = 0.0F;
             }
 
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 
@@ -366,16 +353,16 @@ public class BAArrowEntity extends AbstractArrowEntity {
         if (!this.level.isClientSide && this.isAlive()) {
             if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
                 // Slime default size is small so we don't need to set a size.
-                SlimeEntity slimeEntity = EntityType.SLIME.create(this.level);
+                Slime slimeEntity = EntityType.SLIME.create(this.level);
                 // slime was spawning with wrong bounding box and too much health, though visually small
                 slimeEntity.refreshDimensions();
                 slimeEntity.setHealth(1);
                 // Set the Slime's position to the center of the block.
-                slimeEntity.moveTo(this.blockPosition().getX() + .5f, this.blockPosition().getY() + 0.05f, this.blockPosition().getZ() + .5f, this.yRot, this.xRot);
+                slimeEntity.moveTo(this.blockPosition().getX() + .5f, this.blockPosition().getY() + 0.05f, this.blockPosition().getZ() + .5f, this.getYRot(), this.getXRot());
                 this.level.addFreshEntity(slimeEntity);
 
                 // Remove this arrow only if a Slime spawns
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
             }
         }
     }
@@ -386,7 +373,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * @param state  (block to change the block the arrow hit into)
      * @param result (RaytraceResult which is used to find the block the arrow hit)
      */
-    public void setBlockAtArrowFace(BlockState state, BlockRayTraceResult result) {
+    public void setBlockAtArrowFace(BlockState state, BlockHitResult result) {
         Direction face = result.getDirection();
         BlockPos newPos;
         switch (face) {
@@ -411,7 +398,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
             default:
                 newPos = result.getBlockPos();
         }
-        this.level.setBlock(newPos, state, BlockFlags.DEFAULT);
+        this.level.setBlock(newPos, state, 2);
     }
 
     /**
@@ -420,33 +407,33 @@ public class BAArrowEntity extends AbstractArrowEntity {
      * @param state  (block to change the block the arrow hit into)
      * @param result (RaytraceResult which is used to find the block the arrow hit)
      */
-    public void setBlockAtArrow(BlockState state, BlockRayTraceResult result) {
+    public void setBlockAtArrow(BlockState state, BlockHitResult result) {
         Direction face = result.getDirection();
         BlockPos newPos = result.getBlockPos();
-        this.level.setBlock(newPos, state, BlockFlags.DEFAULT);
+        this.level.setBlock(newPos, state, 2);
     }
 
     /**
-     * rework of freezeNearby from {@link FrostWalkerEnchantment}
+     * rework of freezeNearby from {@link net.minecraft.world.item.enchantment.FrostWalkerEnchantment}
      *
      * @param worldIn current world
      * @param pos     current arrow position
      */
-    public void freezeNearby(World worldIn, BlockPos pos) {
+    public void freezeNearby(Level worldIn, BlockPos pos) {
         BlockState blockstate = Blocks.ICE.defaultBlockState();
         float f = (float) Math.min(16, 3);
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
-        for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-f, 0.0D, -f), pos.offset(f, 0.0D, f))) {
+        for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-f, -1.0D, -f), pos.offset(f, -1.0D, f))) {
             if (blockpos.closerThan(this.position(), f)) {
                 blockpos$mutable.set(blockpos.getX(), blockpos.getY() + 1, blockpos.getZ());
                 BlockState blockstate1 = worldIn.getBlockState(blockpos$mutable);
-                if (blockstate1.isAir(worldIn, blockpos$mutable)) {
+                if (blockstate1.isAir()) {
                     BlockState blockstate2 = worldIn.getBlockState(blockpos);
-                    boolean isFull = blockstate2.getBlock() == Blocks.WATER && blockstate2.getValue(FlowingFluidBlock.LEVEL) == 0; //TODO: Forge, modded waters?
-                    if (blockstate2.getMaterial() == Material.WATER && isFull && blockstate.canSurvive(worldIn, blockpos) && worldIn.isUnobstructed(blockstate, blockpos, ISelectionContext.empty()) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(this, net.minecraftforge.common.util.BlockSnapshot.create(worldIn.dimension(), worldIn, blockpos), net.minecraft.util.Direction.UP)) {
-                        worldIn.setBlock(blockpos, blockstate, BlockFlags.DEFAULT);
-                        worldIn.getBlockTicks().scheduleTick(blockpos, Blocks.ICE, MathHelper.nextInt(this.random, 60, 120));
+                    boolean isFull = blockstate2.getBlock() == Blocks.WATER && blockstate2.getValue(FlowingFluid.LEVEL) == 0; //TODO: Forge, modded waters?
+                    if (blockstate2.getMaterial() == Material.WATER && isFull && blockstate.canSurvive(worldIn, blockpos) && worldIn.isUnobstructed(blockstate, blockpos, CollisionContext.empty()) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(this, net.minecraftforge.common.util.BlockSnapshot.create(worldIn.dimension(), worldIn, blockpos), Direction.UP.UP)) {
+                        worldIn.setBlockAndUpdate(blockpos, blockstate);
+                        worldIn.scheduleTick(blockpos, Blocks.FROSTED_ICE, Mth.nextInt(this.random, 60, 120));
                     }
                 }
             }
@@ -465,7 +452,7 @@ public class BAArrowEntity extends AbstractArrowEntity {
                 case DIRT:
                 case GRASS:
                     for (int j = 0; j < particleCount; ++j) {
-                        this.level.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.DIRT.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                        this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DIRT.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
                     }
                     break;
                 case EXPLOSION:
@@ -481,12 +468,12 @@ public class BAArrowEntity extends AbstractArrowEntity {
                     break;
                 case LASER:
                     for (int j = 0; j < particleCount; ++j) {
-                        this.level.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                        this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
                     }
                     break;
                 case SLIME:
                     for (int j = 0; j < particleCount; ++j) {
-                        this.level.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.SLIME_BLOCK.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                        this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SLIME_BLOCK.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
                     }
                     break;
                 case WARP:
@@ -530,11 +517,12 @@ public class BAArrowEntity extends AbstractArrowEntity {
         return new ItemStack(ArrowType.getModItemFor(this.getArrowType()));
     }
 
-    /*********************************************************** Networking ********************************************************/
+    /*********************************************************** Networking
+     * @return********************************************************/
 
     @Override
     @Nonnull
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
