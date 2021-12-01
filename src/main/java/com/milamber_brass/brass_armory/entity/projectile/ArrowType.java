@@ -2,12 +2,12 @@ package com.milamber_brass.brass_armory.entity.projectile;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.BABaseArrowItem;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public enum ArrowType implements IStringSerializable {
+public enum ArrowType implements StringRepresentable {
     EMPTY(0D, "empty"),
     DIRT(1D, "dirt"),
     EXPLOSION(0D, "explosion"),
