@@ -4,8 +4,8 @@ import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,7 +27,7 @@ public class BAArrowRenderer extends ArrowRenderer<BAArrowEntity> {
     public static final ResourceLocation RES_CONCUSS_ARROW = BrassArmory.locate("textures/entity/projectile/concussion_arrow.png");
 
 
-    public BAArrowRenderer(EntityRendererManager manager) {
+    public BAArrowRenderer(EntityRendererProvider.Context manager) {
         super(manager);
     }
 
