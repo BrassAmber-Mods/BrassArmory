@@ -28,6 +28,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
@@ -430,7 +431,7 @@ public class BAArrowEntity extends AbstractArrow {
                 BlockState blockstate1 = worldIn.getBlockState(blockpos$mutable);
                 if (blockstate1.isAir()) {
                     BlockState blockstate2 = worldIn.getBlockState(blockpos);
-                    boolean isFull = blockstate2.getBlock() == Blocks.WATER && blockstate2.getValue(FlowingFluid.LEVEL) == 0; //TODO: Forge, modded waters?
+                    boolean isFull = blockstate2.getBlock() == Blocks.WATER && blockstate2.getValue(LiquidBlock.LEVEL) == 0; //TODO: Forge, modded waters?
                     if (blockstate2.getMaterial() == Material.WATER && isFull && blockstate.canSurvive(worldIn, blockpos) && worldIn.isUnobstructed(blockstate, blockpos, CollisionContext.empty()) && !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(this, net.minecraftforge.common.util.BlockSnapshot.create(worldIn.dimension(), worldIn, blockpos), Direction.UP.UP)) {
                         worldIn.setBlockAndUpdate(blockpos, blockstate);
                         worldIn.scheduleTick(blockpos, Blocks.FROSTED_ICE, Mth.nextInt(this.random, 60, 120));

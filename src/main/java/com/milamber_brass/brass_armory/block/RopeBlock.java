@@ -29,7 +29,7 @@ public class RopeBlock extends Block implements SimpleWaterloggedBlock {
     public static final BooleanProperty HAS_ARROW = BooleanProperty.create("arrow");
     private static final VoxelShape ROPE_NORTH = Block.box(6.0D, 0.0D, 12.0D, 10.0D, 16.0D, 16.0D);
     private static final VoxelShape ROPE_SOUTH = Block.box(6.0D, 0.0D, 0.0D, 10.0D, 16.0D, 4.0D);
-    private static final VoxelShape ROPE_EAST = Block.box(4.0D, 0.0D, 6.0D, 0.0D, 16.0D, 10.0D);
+    private static final VoxelShape ROPE_EAST = Block.box(0.0D, 0.0D, 6.0D, 4.0D, 16.0D, 10.0D);
     private static final VoxelShape ROPE_WEST = Block.box(12.0D, 0.0D, 6.0D, 16.0D, 16.0D, 10.0D);
     private static final VoxelShape ARROW_NORTH = Block.box(7.0D, 12.0D, 5.0D, 9.0D, 15.0D, 16.0D);
     private static final VoxelShape ARROW_SOUTH = Block.box(7.0D, 12.0D, 0.0D, 9.0D, 15.0D, 11.0D);
