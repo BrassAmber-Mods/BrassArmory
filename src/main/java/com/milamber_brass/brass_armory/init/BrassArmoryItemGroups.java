@@ -1,7 +1,5 @@
 package com.milamber_brass.brass_armory.init;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 

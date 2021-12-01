@@ -2,22 +2,23 @@ package com.milamber_brass.brass_armory.entity;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,25 +26,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class SpearEntity extends AbstractArrowEntity {
+public class SpearEntity extends AbstractArrow {
 
     public int returningTicks;
-    public ItemTier finalTier;
+    public Tiers finalTier;
     private ItemStack thrownStack;
     private boolean dealtDamage;
 
-    public SpearEntity(EntityType<? extends SpearEntity> type, World worldIn) {
+    public SpearEntity(EntityType<? extends SpearEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public SpearEntity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn, ItemTier tier) {
+    public SpearEntity(Level worldIn, LivingEntity thrower, ItemStack thrownStackIn, Tiers tier) {
         super(BrassArmoryEntityTypes.SPEAR.get(), thrower, worldIn);
         this.thrownStack = thrownStackIn.copy();
         finalTier = tier;
 
     }
 
-    public SpearEntity(World worldIn, double x, double y, double z) {
+    public SpearEntity(Level worldIn, double x, double y, double z) {
         super(BrassArmoryEntityTypes.SPEAR.get(), x, y, z, worldIn);
     }
 
@@ -86,10 +87,10 @@ public class SpearEntity extends AbstractArrowEntity {
 
         Entity entity = this.getOwner();
         if ((this.dealtDamage || this.isNoPhysics()) && entity != null) {
-            if (!this.level.isClientSide && this.pickup == AbstractArrowEntity.PickupStatus.ALLOWED) {
+            if (!this.level.isClientSide && this.pickup == AbstractArrow.Pickup.ALLOWED) {
                 this.spawnAtLocation(this.getPickupItem(), 0.1F);
             }
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         }
         super.tick();
     }
@@ -104,14 +105,14 @@ public class SpearEntity extends AbstractArrowEntity {
      */
     @Nullable
     @ParametersAreNonnullByDefault
-    protected EntityRayTraceResult findHitEntity(Vector3d startVec, Vector3d endVec) {
+    protected EntityHitResult EntityHitResult(Vec3 startVec, Vec3 endVec) {
         return this.dealtDamage ? null : super.findHitEntity(startVec, endVec);
     }
 
     /**
      * Called when the arrow hits an entity
      */
-    protected void onHitEntity(EntityRayTraceResult result) {
+    protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
         float f = 8.0F;
         if (entity instanceof LivingEntity) {
@@ -156,7 +157,7 @@ public class SpearEntity extends AbstractArrowEntity {
      * Called by a player entity when they collide with an entity
      */
     @ParametersAreNonnullByDefault
-    public void playerTouch(PlayerEntity entityIn) {
+    public void playerTouch(Player entityIn) {
         Entity entity = this.getOwner();
         if (entity == null || entity.getUUID() == entityIn.getUUID()) {
             super.playerTouch(entityIn);
@@ -167,7 +168,7 @@ public class SpearEntity extends AbstractArrowEntity {
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @ParametersAreNonnullByDefault
-    public void readAdditionalSaveData(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("Spear", 10)) {
             this.thrownStack = ItemStack.of(compound.getCompound("Spear"));
@@ -177,14 +178,14 @@ public class SpearEntity extends AbstractArrowEntity {
     }
 
     @ParametersAreNonnullByDefault
-    public void addAdditionalSaveData(CompoundNBT compound) {
+    public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.put("Spear", this.thrownStack.save(new CompoundNBT()));
+        compound.put("Spear", this.thrownStack.save(new CompoundTag()));
         compound.putBoolean("DealtDamage", this.dealtDamage);
     }
 
     public void tickDespawn() {
-        if (this.pickup != AbstractArrowEntity.PickupStatus.ALLOWED) {
+        if (this.pickup != AbstractArrow.Pickup.ALLOWED) {
             super.tickDespawn();
         }
 

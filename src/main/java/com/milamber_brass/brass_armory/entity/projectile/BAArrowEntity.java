@@ -292,7 +292,7 @@ public class BAArrowEntity extends AbstractArrow {
             if (hitBlockState.isFaceSturdy(this.level, currentRopePos, hitBlockfaceDirection)) {
                 // Check if there's space to place a Rope.
                 if (this.level.getBlockState(currentRopePos).isAir()) {
-                    this.level.setBlock(currentRopePos, BrassArmoryBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, totalRope == 0), BlockFlags.DEFAULT);
+                    this.level.setBlock(currentRopePos, BrassArmoryBlocks.ROPE.get().defaultBlockState().setValue(RopeBlock.FACING, hitBlockfaceDirection).setValue(RopeBlock.HAS_ARROW, totalRope == 0), 2);
                     this.totalRope++;
                     this.placeRope = true;
                     // Prevent the arrow from being picked up while the ropes are being placed.

@@ -88,7 +88,7 @@ public class SpearItem extends TieredItem implements Vanishable, ICustomReachIte
     @ParametersAreNonnullByDefault
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         Material material = state.getMaterial();
-        return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && material != Material.CORAL && !state.is(BlockTags.LEAVES) && material != Material.VEGETABLE ? 1.0F : 1.5F;
+        return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && !state.is(BlockTags.LEAVES) && material != Material.VEGETABLE ? 1.0F : 1.5F;
     }
 
     public Tier getFinalTier() {
@@ -126,7 +126,7 @@ public class SpearItem extends TieredItem implements Vanishable, ICustomReachIte
                     spear_entity.shootFromRotation(playerentity, playerentity.getXRot(),
                             playerentity.getYRot(), 0.0F, 2.5F * 0.5F, 1.0F);
                     if (playerentity.getAbilities().instabuild) {
-                        spear_entity.pickup = AbstractArrow.PickupStatus.CREATIVE_ONLY;
+                        spear_entity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                     }
 
                     worldIn.addFreshEntity(spear_entity);
