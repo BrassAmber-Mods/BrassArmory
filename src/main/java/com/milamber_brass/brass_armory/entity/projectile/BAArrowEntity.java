@@ -284,7 +284,6 @@ public class BAArrowEntity extends AbstractArrow {
     @SuppressWarnings("deprecation")
     private void placeRopes(BlockHitResult result) {
         hitBlockfaceDirection = result.getDirection();
-        // TODO Temporarily disabled, because there are no models to be placed like this yet.
         if (!hitBlockfaceDirection.equals(Direction.DOWN) && !hitBlockfaceDirection.equals(Direction.UP)) {
             BlockPos hitPos = result.getBlockPos();
             currentRopePos = hitPos.relative(hitBlockfaceDirection);
@@ -308,6 +307,7 @@ public class BAArrowEntity extends AbstractArrow {
      */
     private void teleportShooter() {
         // Create teleportation particles.
+        // TODO FIX THIS
         for (int i = 0; i < 32; ++i) {
             this.level.addParticle(ParticleTypes.PORTAL, this.getX(), this.getY() + this.random.nextDouble() * 2.0D, this.getZ(), this.random.nextGaussian(), 0.0D, this.random.nextGaussian());
         }
