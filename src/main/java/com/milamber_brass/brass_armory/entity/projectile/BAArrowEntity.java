@@ -162,10 +162,6 @@ public class BAArrowEntity extends AbstractArrow {
                 living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, Mth.clamp(this.flightTime * 2, 80, 240), Mth.clamp(this.flightTime / 80, 0, 2)));
                 break;
             case WARP:
-                if (this.level.getBlockState(this.blockPosition()).getFluidState().isEmpty()) {
-                    this.teleportShooter();
-                }
-                break;
             case LASER:
             case ROPE:
                 // Do nothing; Only place ropes when the arrow hits a block.
@@ -186,21 +182,21 @@ public class BAArrowEntity extends AbstractArrow {
 
             case DIRT:
                 this.setBlockAtArrowFace(Blocks.DIRT.defaultBlockState(), result);
-                this.remove(RemovalReason.DISCARDED);
+                this.discard();
                 break;
             case EXPLOSION:
                 this.level.explode(this, this.getX(), this.getY(), this.getZ(), 2.0F, Explosion.BlockInteraction.BREAK);
-                this.remove(RemovalReason.DISCARDED);
+                this.discard();
                 break;
             case FROST:
                 break;
             case GRASS:
                 if (this.level.getBlockState(result.getBlockPos()) == Blocks.DIRT.defaultBlockState()) {
                     this.setBlockAtArrow(Blocks.GRASS_BLOCK.defaultBlockState(), result);
-                    this.remove(RemovalReason.DISCARDED);
+                    this.discard();
                 } else if (this.level.getBlockState(result.getBlockPos()) == Blocks.GRASS_BLOCK.defaultBlockState()) {
                     this.level.setBlock(result.getBlockPos().above(), Blocks.GRASS.defaultBlockState(), 2);
-                    this.remove(RemovalReason.DISCARDED);
+                    this.discard();
                 }
                 break;
             case ROPE:
@@ -213,13 +209,15 @@ public class BAArrowEntity extends AbstractArrow {
                 // TODO Firing at the side of Blocks doesn't work correctly.
                 this.setBlockAtArrowFace(Blocks.FIRE.defaultBlockState(), result);
                 break;
-            case CONCUSSION:
-                break;
             case LASER:
                 if (this.hitEntity) {
-                    this.remove(RemovalReason.DISCARDED);
+                    this.discard();
                 }
             case WARP:
+                if (this.level.getBlockState(this.blockPosition()).getFluidState().isEmpty()) {
+                    this.teleportShooter();
+                }
+            case CONCUSSION:
             default:
                 break;
         }
@@ -234,7 +232,7 @@ public class BAArrowEntity extends AbstractArrow {
         if (this.isArrowType(ArrowType.FROST)) {
             freezeNearby(this.level, this.blockPosition());
             if (this.inGround && this.inGroundTime != 0) {
-                this.remove(RemovalReason.DISCARDED);
+                this.discard();
             }
         }
         // check that the arrow is not in the ground and has been flying for 1/5 a second.
@@ -260,7 +258,7 @@ public class BAArrowEntity extends AbstractArrow {
                 } else {
                     // No space to place more Ropes or Rope Limit reached.
                     this.placeRope = false;
-                    this.remove(RemovalReason.DISCARDED);
+                    this.discard();
                 }
             }
         }
@@ -309,14 +307,14 @@ public class BAArrowEntity extends AbstractArrow {
         // Create teleportation particles.
         // TODO FIX THIS
         for (int i = 0; i < 32; ++i) {
-            this.level.addParticle(ParticleTypes.PORTAL, this.getX(), this.getY() + this.random.nextDouble() * 2.0D, this.getZ(), this.random.nextGaussian(), 0.0D, this.random.nextGaussian());
+            this.level.addParticle(ParticleTypes.PORTAL, this.getX(), this.getY() + this.random.nextDouble() * .5D, this.getZ(), this.random.nextGaussian(), 0.0D, this.random.nextGaussian());
         }
 
-        Entity shooter = this.getOwner();
+        Entity entity = this.getOwner();
         if (!this.level.isClientSide && this.isAlive()) {
             // Check if the shooter is a Player.
-            if (shooter instanceof ServerPlayer) {
-                ServerPlayer serverPlayer = (ServerPlayer) shooter;
+            if (entity instanceof ServerPlayer) {
+                ServerPlayer serverPlayer = (ServerPlayer) entity;
                 if (serverPlayer.connection.getConnection().isConnected() && serverPlayer.level == this.level && !serverPlayer.isSleeping()) {
                     net.minecraftforge.event.entity.EntityTeleportEvent.EnderPearl event = net.minecraftforge.event.ForgeEventFactory.onEnderPearlLand(serverPlayer, this.getX(), this.getY(), this.getZ(), EntityType.ENDER_PEARL.create(this.level), 5.0F);
                     if (!event.isCanceled()) {
@@ -324,26 +322,26 @@ public class BAArrowEntity extends AbstractArrow {
                         if (this.random.nextFloat() < 0.05F && this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
                             Endermite endermiteentity = EntityType.ENDERMITE.create(this.level);
 
-                            endermiteentity.moveTo(shooter.getX(), shooter.getY(), shooter.getZ(), shooter.getYRot(), shooter.getXRot());
+                            endermiteentity.moveTo(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), serverPlayer.getYRot(), serverPlayer.getXRot());
                             this.level.addFreshEntity(endermiteentity);
                         }
 
-                        if (shooter.isPassenger()) {
+                        if (serverPlayer.isPassenger()) {
                             serverPlayer.dismountTo(this.getX(), this.getY(), this.getZ());
                         } else {
-                            shooter.teleportTo(this.getX(), this.getY(), this.getZ());
+                            entity.teleportTo(this.getX(), this.getY(), this.getZ());
                         }
 
-                        shooter.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
-                        shooter.fallDistance = 0.0F;
+                        entity.teleportTo(event.getTargetX(), event.getTargetY(), event.getTargetZ());
+                        entity.resetFallDistance();
                     }
                 }
-            } else if (shooter != null) {
-                shooter.teleportTo(this.getX(), this.getY(), this.getZ());
-                shooter.fallDistance = 0.0F;
+            } else if (entity != null) {
+                entity.teleportTo(this.getX(), this.getY(), this.getZ());
+                entity.resetFallDistance();
             }
 
-            this.remove(RemovalReason.DISCARDED);
+            this.discard();
         }
     }
 
