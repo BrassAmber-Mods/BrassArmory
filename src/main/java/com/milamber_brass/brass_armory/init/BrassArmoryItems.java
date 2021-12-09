@@ -88,17 +88,17 @@ public class BrassArmoryItems {
 
     //------------------------------------BOMB-----------------------------------------------------------
 
-    public static final RegistryObject<EggItem> BOMB =
+    public static final RegistryObject<BombItem> BOMB =
             REGISTRY.register("bomb", () ->
-                    new EggItem(new Item.Properties().rarity(Rarity.RARE).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), 0));
 
-    public static final RegistryObject<EggItem> BOUNCY_BOMB =
+    public static final RegistryObject<BombItem> BOUNCY_BOMB =
             REGISTRY.register("bouncy_bomb", () ->
-                    new EggItem(new Item.Properties().rarity(Rarity.RARE).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), 1));
 
-    public static final RegistryObject<EggItem> STICKY_BOMB =
+    public static final RegistryObject<BombItem> STICKY_BOMB =
             REGISTRY.register("sticky_bomb", () ->
-                    new EggItem(new Item.Properties().rarity(Rarity.RARE).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), 2));
 
 
     //------------------------------------MELEE-----------------------------------------------------------

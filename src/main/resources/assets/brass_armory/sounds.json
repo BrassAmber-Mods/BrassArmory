@@ -1,0 +1,8 @@
+{
+  "entity.bomb.lit": { "subtitle": "subtitles.brass_armory.entity.bomb.lit", "sounds": [ "fire/ignite" ] },
+  "entity.bomb.throw": { "subtitle": "subtitles.brass_armory.entity.bomb.throw", "sounds": [ "random/bow" ] },
+  "entity.bomb.fuse": { "subtitle": "subtitles.brass_armory.entity.bomb.fuse", "sounds": [ "random/fizz" ] },
+  "entity.bomb.hit": { "subtitle": "subtitles.brass_armory.entity.bomb.hit", "sounds": [ "mob/zombie/metal1", "mob/zombie/metal2", "mob/zombie/metal3" ] },
+  "entity.bomb.bouncy_hit": { "subtitle": "subtitles.brass_armory.entity.bomb.bouncy_hit", "sounds": [ "mob/slime/small1", "mob/slime/small2", "mob/slime/small3", "mob/slime/small4", "mob/slime/small5" ] },
+  "entity.bomb.sticky_hit": { "subtitle": "subtitles.brass_armory.entity.bomb.sticky_hit", "sounds": [ "mob/slime/small1", "mob/slime/small2", "mob/slime/small3", "mob/slime/small4", "mob/slime/small5" ] }
+}

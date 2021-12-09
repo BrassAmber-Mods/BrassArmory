@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "brass_armory:item/bombs/bouncy_bomb/9"
+  }
+}

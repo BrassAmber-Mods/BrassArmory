@@ -1,6 +1,40 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "brass_armory:item/bombs/sticky_bomb"
-  }
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "brass_armory:item/bombs/sticky_bomb/sticky_bomb"
+    },
+    "overrides": [
+        { "predicate": { "bomb_fuse": 0.00 }, "model": "brass_armory:item/bombs/sticky_bomb/1" },
+        { "predicate": { "bomb_fuse": 0.03 }, "model": "brass_armory:item/bombs/sticky_bomb/2" },
+        { "predicate": { "bomb_fuse": 0.06 }, "model": "brass_armory:item/bombs/sticky_bomb/3" },
+        { "predicate": { "bomb_fuse": 0.10 }, "model": "brass_armory:item/bombs/sticky_bomb/4" },
+        { "predicate": { "bomb_fuse": 0.13 }, "model": "brass_armory:item/bombs/sticky_bomb/5" },
+        { "predicate": { "bomb_fuse": 0.16 }, "model": "brass_armory:item/bombs/sticky_bomb/6" },
+        { "predicate": { "bomb_fuse": 0.20 }, "model": "brass_armory:item/bombs/sticky_bomb/7" },
+        { "predicate": { "bomb_fuse": 0.23 }, "model": "brass_armory:item/bombs/sticky_bomb/8" },
+        { "predicate": { "bomb_fuse": 0.26 }, "model": "brass_armory:item/bombs/sticky_bomb/9" },
+        { "predicate": { "bomb_fuse": 0.30 }, "model": "brass_armory:item/bombs/sticky_bomb/10" },
+        { "predicate": { "bomb_fuse": 0.33 }, "model": "brass_armory:item/bombs/sticky_bomb/11" },
+        { "predicate": { "bomb_fuse": 0.36 }, "model": "brass_armory:item/bombs/sticky_bomb/12" },
+        { "predicate": { "bomb_fuse": 0.40 }, "model": "brass_armory:item/bombs/sticky_bomb/13" },
+        { "predicate": { "bomb_fuse": 0.43 }, "model": "brass_armory:item/bombs/sticky_bomb/14" },
+        { "predicate": { "bomb_fuse": 0.46 }, "model": "brass_armory:item/bombs/sticky_bomb/15" },
+        { "predicate": { "bomb_fuse": 0.50 }, "model": "brass_armory:item/bombs/sticky_bomb/16" },
+        { "predicate": { "bomb_fuse": 0.53 }, "model": "brass_armory:item/bombs/sticky_bomb/17" },
+        { "predicate": { "bomb_fuse": 0.56 }, "model": "brass_armory:item/bombs/sticky_bomb/18" },
+        { "predicate": { "bomb_fuse": 0.60 }, "model": "brass_armory:item/bombs/sticky_bomb/19" },
+        { "predicate": { "bomb_fuse": 0.63 }, "model": "brass_armory:item/bombs/sticky_bomb/20" },
+        { "predicate": { "bomb_fuse": 0.66 }, "model": "brass_armory:item/bombs/sticky_bomb/21" },
+        { "predicate": { "bomb_fuse": 0.69 }, "model": "brass_armory:item/bombs/sticky_bomb/22" },
+        { "predicate": { "bomb_fuse": 0.73 }, "model": "brass_armory:item/bombs/sticky_bomb/23" },
+        { "predicate": { "bomb_fuse": 0.76 }, "model": "brass_armory:item/bombs/sticky_bomb/24" },
+        { "predicate": { "bomb_fuse": 0.80 }, "model": "brass_armory:item/bombs/sticky_bomb/25" },
+        { "predicate": { "bomb_fuse": 0.83 }, "model": "brass_armory:item/bombs/sticky_bomb/26" },
+        { "predicate": { "bomb_fuse": 0.86 }, "model": "brass_armory:item/bombs/sticky_bomb/27" },
+        { "predicate": { "bomb_fuse": 0.89 }, "model": "brass_armory:item/bombs/sticky_bomb/28" },
+        { "predicate": { "bomb_fuse": 0.93 }, "model": "brass_armory:item/bombs/sticky_bomb/29" },
+        { "predicate": { "bomb_fuse": 0.96 }, "model": "brass_armory:item/bombs/sticky_bomb/30" },
+        { "predicate": { "bomb_fuse": 1.00 }, "model": "brass_armory:item/bombs/sticky_bomb/0" },
+        { "predicate": { "defused": 1.00 }, "model": "brass_armory:item/bombs/sticky_bomb/defused" }
+    ]
 }

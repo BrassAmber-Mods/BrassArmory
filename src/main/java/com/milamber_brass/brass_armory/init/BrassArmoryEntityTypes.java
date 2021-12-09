@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.init;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.SpearEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
+import com.milamber_brass.brass_armory.entity.projectile.BombEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -27,6 +28,12 @@ public class BrassArmoryEntityTypes {
                     .sized(0.5F, 0.5F)
                     .clientTrackingRange(4)
                     .updateInterval(20));
+
+    public static final RegistryObject<EntityType<BombEntity>> BOMB = registerEntityType("bomb",
+            EntityType.Builder.<BombEntity>of(BombEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
