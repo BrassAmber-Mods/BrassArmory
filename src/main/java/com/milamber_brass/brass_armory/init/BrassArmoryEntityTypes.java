@@ -3,7 +3,9 @@ package com.milamber_brass.brass_armory.init;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.SpearEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
-import com.milamber_brass.brass_armory.entity.projectile.BombEntity;
+import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
+import com.milamber_brass.brass_armory.entity.bomb.BouncyBombEntity;
+import com.milamber_brass.brass_armory.entity.bomb.StickyBombEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -29,8 +31,22 @@ public class BrassArmoryEntityTypes {
                     .clientTrackingRange(4)
                     .updateInterval(20));
 
+    //------------------------------------BOMB-----------------------------------------------------------
+
     public static final RegistryObject<EntityType<BombEntity>> BOMB = registerEntityType("bomb",
             EntityType.Builder.<BombEntity>of(BombEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10));
+
+    public static final RegistryObject<EntityType<BombEntity>> BOUNCY_BOMB = registerEntityType("bouncy_bomb",
+            EntityType.Builder.<BombEntity>of(BouncyBombEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10));
+
+    public static final RegistryObject<EntityType<BombEntity>> STICKY_BOMB = registerEntityType("sticky_bomb",
+            EntityType.Builder.<BombEntity>of(StickyBombEntity::new, MobCategory.MISC)
                     .sized(0.25F, 0.25F)
                     .clientTrackingRange(4)
                     .updateInterval(10));

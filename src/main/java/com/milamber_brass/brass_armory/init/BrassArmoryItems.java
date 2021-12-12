@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.init;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.entity.bomb.BombType;
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.item.*;
 import net.minecraft.world.item.*;
@@ -90,15 +91,15 @@ public class BrassArmoryItems {
 
     public static final RegistryObject<BombItem> BOMB =
             REGISTRY.register("bomb", () ->
-                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), 0));
+                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), BombType.NORMAL));
 
     public static final RegistryObject<BombItem> BOUNCY_BOMB =
             REGISTRY.register("bouncy_bomb", () ->
-                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), 1));
+                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), BombType.BOUNCY));
 
     public static final RegistryObject<BombItem> STICKY_BOMB =
             REGISTRY.register("sticky_bomb", () ->
-                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), 2));
+                    new BombItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).tab(BrassArmoryItemGroups.BRASS_ARMORY), BombType.STICKY));
 
 
     //------------------------------------MELEE-----------------------------------------------------------
