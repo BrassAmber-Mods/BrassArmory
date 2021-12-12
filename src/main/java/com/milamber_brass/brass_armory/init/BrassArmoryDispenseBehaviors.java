@@ -1,7 +1,9 @@
 package com.milamber_brass.brass_armory.init;
 
+import com.milamber_brass.brass_armory.entity.bomb.BombType;
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
+import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -10,6 +12,9 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
 
@@ -124,6 +129,24 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
                 return abstractarrowentity;
             }
         });
+
+        for (BombType bombType : BombType.values()) {
+            DispenserBlock.registerBehavior(BombType.getBombItem(bombType), new AbstractProjectileDispenseBehavior() {
+                @Override
+                @ParametersAreNonnullByDefault
+                @Nonnull
+                protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+                    BombEntity bomb = BombType.vec3BombEntityFromType(bombType, worldIn, position.x(), position.y(), position.z());
+                    bomb.setItem(stackIn);
+                    return bomb;
+                }
+
+                @Override
+                protected float getPower() {
+                    return 0.5F;
+                }
+            });
+        }
     }
 
 }

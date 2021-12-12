@@ -1,9 +1,7 @@
 package com.milamber_brass.brass_armory;
 
-import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
-import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
-import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.client.ClientEventBusSubscriber;
+import com.milamber_brass.brass_armory.init.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,6 +27,9 @@ public class BrassArmory {
         BrassArmoryBlocks.register(eventBus);
         BrassArmoryItems.register(eventBus);
         BrassArmoryEntityTypes.register(eventBus);
+        BrassArmorySounds.register(eventBus);
+
+        eventBus.addListener(ClientEventBusSubscriber::clientSetup);
     }
 
     @SubscribeEvent
