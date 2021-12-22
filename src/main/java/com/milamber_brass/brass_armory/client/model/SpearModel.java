@@ -1,42 +1,47 @@
 package com.milamber_brass.brass_armory.client.model;
 
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+
+import net.minecraft.resources.ResourceLocation;
+
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SpearModel extends Model {
 
     public static ResourceLocation TEXTURE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png");
-    private final ModelRenderer modelRenderer = new ModelRenderer(32, 32, 0, 6);
 
-    public SpearModel(ResourceLocation texture) {
+    private final ModelPart root;
+
+    public SpearModel(ModelPart p_171016_) {
         super(RenderType::entitySolid);
-        TEXTURE_LOCATION = texture;
-        this.modelRenderer.addBox(-0.5F, 2.0F, -0.5F, 1.0F, 25.0F, 1.0F, 0.0F);
-        ModelRenderer modelrenderer = new ModelRenderer(32, 32, 4, 0);
-        modelrenderer.addBox(-1.5F, 0.0F, -0.5F, 3.0F, 2.0F, 1.0F);
-        this.modelRenderer.addChild(modelrenderer);
-        ModelRenderer modelrenderer1 = new ModelRenderer(32, 32, 4, 3);
-        modelrenderer1.addBox(-2.5F, -3.0F, -0.5F, 1.0F, 4.0F, 1.0F);
-        this.modelRenderer.addChild(modelrenderer1);
-        ModelRenderer modelrenderer2 = new ModelRenderer(32, 32, 0, 0);
-        modelrenderer2.addBox(-0.5F, -4.0F, -0.5F, 1.0F, 4.0F, 1.0F, 0.0F);
-        this.modelRenderer.addChild(modelrenderer2);
-        ModelRenderer modelrenderer3 = new ModelRenderer(32, 32, 4, 3);
-        modelrenderer3.mirror = true;
-        modelrenderer3.addBox(1.5F, -3.0F, -0.5F, 1.0F, 4.0F, 1.0F);
-        this.modelRenderer.addChild(modelrenderer3);
+        this.root = p_171016_;
+    }
+
+    public static LayerDefinition createLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition partdefinition = meshdefinition.getRoot();
+        PartDefinition partdefinition1 = partdefinition.addOrReplaceChild("pole", CubeListBuilder.create().texOffs(0, 6).addBox(-0.5F, 2.0F, -0.5F, 1.0F, 25.0F, 1.0F), PartPose.ZERO);
+        partdefinition1.addOrReplaceChild("base", CubeListBuilder.create().texOffs(4, 0).addBox(-1.5F, 0.0F, -0.5F, 3.0F, 2.0F, 1.0F), PartPose.ZERO);
+        partdefinition1.addOrReplaceChild("left_spike", CubeListBuilder.create().texOffs(4, 3).addBox(-2.5F, -3.0F, -0.5F, 1.0F, 4.0F, 1.0F), PartPose.ZERO);
+        partdefinition1.addOrReplaceChild("middle_spike", CubeListBuilder.create().texOffs(0, 0).addBox(-0.5F, -4.0F, -0.5F, 1.0F, 4.0F, 1.0F), PartPose.ZERO);
+        partdefinition1.addOrReplaceChild("right_spike", CubeListBuilder.create().texOffs(4, 3).mirror().addBox(1.5F, -3.0F, -0.5F, 1.0F, 4.0F, 1.0F), PartPose.ZERO);
+        return LayerDefinition.create(meshdefinition, 32, 32);
     }
 
     @ParametersAreNonnullByDefault
-    public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        this.modelRenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack p_103919_, VertexConsumer p_103920_, int p_103921_, int p_103922_, float p_103923_, float p_103924_, float p_103925_, float p_103926_) {
+        this.root.render(p_103919_, p_103920_, p_103921_, p_103922_, p_103923_, p_103924_, p_103925_, p_103926_);
     }
 
 }

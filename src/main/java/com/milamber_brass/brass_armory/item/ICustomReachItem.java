@@ -3,11 +3,10 @@ package com.milamber_brass.brass_armory.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.extensions.IForgeItem;
 
@@ -28,10 +27,10 @@ public interface ICustomReachItem extends IForgeItem {
     public double getReachDistanceBonus();
 
     @Nonnull
-    Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlotType slot, ItemStack stack);
+    Multimap<Attribute, AttributeModifier> execSuperGetAttributeModifiers(EquipmentSlot slot, ItemStack stack);
 
-    public default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
-        if (slot == EquipmentSlotType.MAINHAND) {
+    public default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        if (slot == EquipmentSlot.MAINHAND) {
             if (this.getCustomAttributesField() == null) {
                 Builder<Attribute, AttributeModifier> attributeBuilder = ImmutableMultimap.builder();
 
@@ -41,7 +40,7 @@ public interface ICustomReachItem extends IForgeItem {
                 });
 
                 //!!ONLY call get when you need it according to "dieSieben07"...
-                attributeBuilder.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(ICustomReachItem.REACH_DISTANCE_MODIFIER, "Weapon modifier", this.getReachDistanceBonus(), Operation.ADDITION));
+                attributeBuilder.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(ICustomReachItem.REACH_DISTANCE_MODIFIER, "Weapon modifier", this.getReachDistanceBonus(), AttributeModifier.Operation.ADDITION));
 
                 this.setCustomAttributesField(attributeBuilder.build());
             }

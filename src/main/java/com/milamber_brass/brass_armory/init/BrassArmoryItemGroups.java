@@ -1,13 +1,13 @@
 package com.milamber_brass.brass_armory.init;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
 public class BrassArmoryItemGroups {
 
-    public static final ItemGroup BRASS_ARMORY = new ItemGroup("brass_armory") {
+    public static final CreativeModeTab BRASS_ARMORY = new CreativeModeTab("brass_armory") {
         @Nonnull
         @Override
         public ItemStack makeIcon() {

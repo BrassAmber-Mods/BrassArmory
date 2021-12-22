@@ -2,6 +2,7 @@
 
   "entity.brass_armory.dirt_arrow_entity" : "Dirt Arrow",
   "entity.brass_armory.wood_spear": "Wood Spear",
+  "entity.brass_armory.bomb": "Bomb",
 
   "block.brass_armory.rope" : "Rope",
   
@@ -70,5 +71,12 @@
   "item.brass_armory.diamond_flail" : "Diamond Flail",
   "item.brass_armory.netherite_flail" : "Netherite Flail",
 
-  "itemGroup.brass_armory": "Brass Armory"
+  "itemGroup.brass_armory": "Brass Armory",
+
+  "subtitles.brass_armory.entity.bomb.lit": "Bomb fuse lit",
+  "subtitles.brass_armory.entity.bomb.throw": "Bomb flies",
+  "subtitles.brass_armory.entity.bomb.fuse": "Bomb fuse hisses",
+  "subtitles.brass_armory.entity.bomb.hit": "Bomb hit",
+  "subtitles.brass_armory.entity.bomb.bouncy_hit": "Bouncy Bomb hit",
+  "subtitles.brass_armory.entity.bomb.sticky_hit": "Sticky Bomb hit"
 }

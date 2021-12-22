@@ -3,15 +3,19 @@ package com.milamber_brass.brass_armory.client.render;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.client.model.SpearModel;
 import com.milamber_brass.brass_armory.entity.SpearEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.model.TridentModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,21 +23,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
 
     public static final ResourceLocation SPEAR = new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png");
-    private final SpearModel spear_model = new SpearModel(SPEAR);
+    private final SpearModel model;
 
-    public SpearEntityRenderer(EntityRendererManager renderManagerIn) {
+    public SpearEntityRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn);
+        this.model = new SpearModel(renderManagerIn.bakeLayer(ModelLayers.TRIDENT));
     }
 
     @ParametersAreNonnullByDefault
-    public void render(SpearEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        matrixStackIn.pushPose();
-        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot) + 90.0F));
-        IVertexBuilder ivertexbuilder = net.minecraft.client.renderer.ItemRenderer.getFoilBufferDirect(bufferIn, this.spear_model.renderType(this.getTextureLocation(entityIn)), false, false);
-        this.spear_model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStackIn.popPose();
-        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+    public void render(SpearEntity p_116111_, float p_116112_, float p_116113_, PoseStack p_116114_, MultiBufferSource p_116115_, int p_116116_) {
+        p_116114_.pushPose();
+        p_116114_.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(p_116113_, p_116111_.yRotO, p_116111_.getYRot()) - 90.0F));
+        p_116114_.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(p_116113_, p_116111_.xRotO, p_116111_.getXRot()) + 90.0F));
+        VertexConsumer vertexconsumer = ItemRenderer.getFoilBufferDirect(p_116115_, this.model.renderType(this.getTextureLocation(p_116111_)), false, false);
+        this.model.renderToBuffer(p_116114_, vertexconsumer, p_116116_, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        p_116114_.popPose();
+        super.render(p_116111_, p_116112_, p_116113_, p_116114_, p_116115_, p_116116_);
     }
 
     /**
@@ -41,7 +46,7 @@ public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
      */
     @Nonnull
     public ResourceLocation getTextureLocation(SpearEntity entity) {
-        return entity.getTierResourceLocation();
+        return SPEAR;
     }
 
 }

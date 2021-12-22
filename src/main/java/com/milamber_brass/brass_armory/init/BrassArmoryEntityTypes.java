@@ -3,14 +3,17 @@ package com.milamber_brass.brass_armory.init;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.SpearEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.ResourceLocation;
+import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
+import com.milamber_brass.brass_armory.entity.bomb.BouncyBombEntity;
+import com.milamber_brass.brass_armory.entity.bomb.StickyBombEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 public class BrassArmoryEntityTypes {
 
@@ -18,15 +21,35 @@ public class BrassArmoryEntityTypes {
 
     public static final RegistryObject<EntityType<SpearEntity>> SPEAR =
             ENTITY_TYPES.register("wood_spear", () -> EntityType.Builder
-                    .<SpearEntity>of(SpearEntity::new, EntityClassification.MISC).sized(1.0f, 2.0f)
+                    .<SpearEntity>of(SpearEntity::new, MobCategory.MISC).sized(1.0f, 2.0f)
                     .clientTrackingRange(64).updateInterval(20)
                     .build(new ResourceLocation(BrassArmory.MOD_ID, "item/wood_spear").toString()));
 
     public static final RegistryObject<EntityType<BAArrowEntity>> BA_ARROW = registerEntityType("ba_arrow",
-            EntityType.Builder.<BAArrowEntity>of(BAArrowEntity::new, EntityClassification.MISC)
+            EntityType.Builder.<BAArrowEntity>of(BAArrowEntity::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F)
                     .clientTrackingRange(4)
                     .updateInterval(20));
+
+    //------------------------------------BOMB-----------------------------------------------------------
+
+    public static final RegistryObject<EntityType<BombEntity>> BOMB = registerEntityType("bomb",
+            EntityType.Builder.<BombEntity>of(BombEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10));
+
+    public static final RegistryObject<EntityType<BombEntity>> BOUNCY_BOMB = registerEntityType("bouncy_bomb",
+            EntityType.Builder.<BombEntity>of(BouncyBombEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10));
+
+    public static final RegistryObject<EntityType<BombEntity>> STICKY_BOMB = registerEntityType("sticky_bomb",
+            EntityType.Builder.<BombEntity>of(StickyBombEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

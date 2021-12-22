@@ -1,16 +1,13 @@
 package com.milamber_brass.brass_armory;
 
-import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
-import com.milamber_brass.brass_armory.init.BrassArmoryDispenseBehaviors;
-import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import net.minecraft.util.ResourceLocation;
+import com.milamber_brass.brass_armory.client.ClientEventBusSubscriber;
+import com.milamber_brass.brass_armory.init.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +27,9 @@ public class BrassArmory {
         BrassArmoryBlocks.register(eventBus);
         BrassArmoryItems.register(eventBus);
         BrassArmoryEntityTypes.register(eventBus);
+        BrassArmorySounds.register(eventBus);
+
+        eventBus.addListener(ClientEventBusSubscriber::clientSetup);
     }
 
     @SubscribeEvent
