@@ -28,6 +28,10 @@ public class SpearEntityRenderer extends EntityRenderer<SpearEntity> {
     @ParametersAreNonnullByDefault
     public void render(SpearEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.pushPose();
+        //Tip forward when returning
+        if(entityIn.clientSideReturnTridentTickCount > 0) {
+        	matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180F));
+        }
         matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.yRotO, entityIn.yRot) - 90.0F));
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.lerp(partialTicks, entityIn.xRotO, entityIn.xRot) + 90.0F));
         IVertexBuilder ivertexbuilder = net.minecraft.client.renderer.ItemRenderer.getFoilBufferDirect(bufferIn, this.spear_model.renderType(this.getTextureLocation(entityIn)), false, false);
