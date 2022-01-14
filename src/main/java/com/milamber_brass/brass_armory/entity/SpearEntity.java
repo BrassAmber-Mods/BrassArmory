@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
@@ -27,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class SpearEntity extends AbstractArrowEntity {
+public class SpearEntity extends TridentEntity {
 
     public int returningTicks;
     public IItemTier finalTier;
@@ -39,14 +40,20 @@ public class SpearEntity extends AbstractArrowEntity {
     }
 
     public SpearEntity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn, IItemTier tier) {
-        super(BrassArmoryEntityTypes.SPEAR.get(), thrower, worldIn);
+        super(BrassArmoryEntityTypes.SPEAR.get(), worldIn);
+        this.setOwner(thrower);
+        if(thrower instanceof PlayerEntity) {
+        	this.pickup = PickupStatus.ALLOWED;
+        }
+        this.tridentItem = thrownStackIn;
         this.thrownStack = thrownStackIn.copy();
         finalTier = tier;
 
     }
 
     public SpearEntity(World worldIn, double x, double y, double z) {
-        super(BrassArmoryEntityTypes.SPEAR.get(), x, y, z, worldIn);
+    	 super(BrassArmoryEntityTypes.SPEAR.get(), worldIn);
+    	 this.setPos(x, y, z);
     }
 
 
