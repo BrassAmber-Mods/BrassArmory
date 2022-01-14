@@ -213,10 +213,12 @@ public class BAArrowEntity extends AbstractArrow {
                 if (this.hitEntity) {
                     this.discard();
                 }
+                break;
             case WARP:
                 if (this.level.getBlockState(this.blockPosition()).getFluidState().isEmpty()) {
                     this.teleportShooter();
                 }
+                break;
             case CONCUSSION:
             default:
                 break;
@@ -455,9 +457,14 @@ public class BAArrowEntity extends AbstractArrow {
                     }
                     break;
                 case EXPLOSION:
+                    if (this.level.isClientSide && level.getRandom().nextInt(particleCount) == 1) {
+                        Vec3 smokeVec = this.position().add(this.getDeltaMovement().multiply(-1.5D, -1.5D, -1.5D)).add(0, 0.125D, 0);
+                        this.level.addParticle(ParticleTypes.SMOKE, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
+                    }
+                    break;
                 case FIRE:
                     for (int j = 0; j < particleCount; ++j) {
-                        this.level.addParticle(ParticleTypes.FLAME, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                        this.level.addParticle(ParticleTypes.FLAME, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 0D, 0D, 0D);
                     }
                     break;
                 case FROST:
@@ -477,7 +484,7 @@ public class BAArrowEntity extends AbstractArrow {
                     break;
                 case WARP:
                     for (int j = 0; j < particleCount; ++j) {
-                        this.level.addParticle(ParticleTypes.REVERSE_PORTAL, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), d0, d1, d2);
+                        this.level.addParticle(ParticleTypes.REVERSE_PORTAL, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 0D, 0D, 0D);
                     }
                     break;
                 case ROPE:

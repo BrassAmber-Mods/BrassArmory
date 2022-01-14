@@ -9,10 +9,13 @@
   "key": {
     "P": [
       {
-        "item": "minecraft:cobblestone"
+        "tag": "forge:cobblestone"
       },
       {
-        "item": "minecraft:basalt"
+        "item": "minecraft:blackstone"
+      },
+      {
+        "item": "minecraft:cobbled_deepslate"
       }
     ],
     "I": {

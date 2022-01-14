@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-BattleAxe",
+  "pattern": [
+    "PPP",
+    "PIP",
+    " I "
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "brass_armory:diamond_battleaxe",
+    "count": 1
+  }
+}

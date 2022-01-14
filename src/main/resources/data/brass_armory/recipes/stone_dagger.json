@@ -5,9 +5,17 @@
     "IP"
   ],
   "key": {
-    "P": {
-      "item": "minecraft:cobblestone"
-    },
+    "P": [
+      {
+        "tag": "forge:cobblestone"
+      },
+      {
+        "item": "minecraft:blackstone"
+      },
+      {
+        "item": "minecraft:cobbled_deepslate"
+      }
+    ],
     "I": {
       "item": "minecraft:stick"
     }

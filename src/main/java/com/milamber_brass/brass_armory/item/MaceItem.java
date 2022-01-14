@@ -1,12 +1,13 @@
 package com.milamber_brass.brass_armory.item;
 
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class MaceItem extends SwordItem {
+public class MaceItem extends SwordItem implements ICustomAnimationItem {
 
     public MaceItem(Tiers tier, int attackDamageIn, Properties builderIn) {
         super(tier, attackDamageIn, -3.2F, builderIn);
@@ -57,20 +58,13 @@ public class MaceItem extends SwordItem {
     @ParametersAreNonnullByDefault
     public void releaseUsing(ItemStack maceStack, Level level, LivingEntity livingEntity, int useDurationLeft) {
         if (livingEntity instanceof Player player) {
-            if (this.getUseDuration(maceStack) - livingEntity.getUseItemRemainingTicks() >= 40) {
-                float pXRot = player.getXRot();
-                float pYRot = player.getYRot();
-                Vec3 pEyeLevel = player.getEyePosition();
-                float pYCos = Mth.cos(-pYRot * ((float)Math.PI / 180F) - (float)Math.PI);
-                float pYSin = Mth.sin(-pYRot * ((float)Math.PI / 180F) - (float)Math.PI);
-                float pXCos = -Mth.cos(-pXRot * ((float)Math.PI / 180F));
-                float pXSin = Mth.sin(-pXRot * ((float)Math.PI / 180F));
-                float sinCos = pYSin * pXCos;
-                float cosCos = pYCos * pXCos;
+            if (this.getUseDuration(maceStack) - livingEntity.getUseItemRemainingTicks() >= this.getChargeDuration(maceStack)) {
                 double pRange = Objects.requireNonNull(player.getAttribute(ForgeMod.REACH_DISTANCE.get())).getValue();
-                Vec3 pEyes = pEyeLevel.add((double)sinCos * pRange, (double)pXSin * pRange, (double)cosCos * pRange);
-                BlockHitResult blockHitResult = level.clip(new ClipContext(pEyeLevel, pEyes, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
-
+                float partialTicks = Minecraft.getInstance().getFrameTime();
+                Vec3 vec3 = player.getEyePosition(partialTicks);
+                Vec3 vec31 = player.getViewVector(partialTicks);
+                Vec3 vec32 = vec3.add(vec31.x * pRange, vec31.y * pRange, vec31.z * pRange);
+                BlockHitResult blockHitResult = level.clip(new ClipContext(vec3, vec32, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
                 double distance = blockHitResult.distanceTo(player);
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 Vec3 vec = blockHitResult.getLocation();
@@ -176,5 +170,15 @@ public class MaceItem extends SwordItem {
     @ParametersAreNonnullByDefault
     public int getUseDuration(ItemStack maceStack) {
         return 72000;
+    }
+
+    @Override
+    public int getCustomUseDuration(ItemStack maceStack, LocalPlayer localPlayer) {
+        return this.getUseDuration(maceStack) - localPlayer.getUseItemRemainingTicks();
+    }
+
+    @Override
+    public int getChargeDuration(ItemStack itemStack) {
+        return 40;
     }
 }

@@ -1,38 +1,6 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "item/handheld",
+	"parent": "brass_armory:item/diamond_mace",
 	"textures": {
 		"layer0": "brass_armory:item/stone/stone_mace"
-	},
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [0, -90, 40],
-			"translation": [-0.25, 4.5, 2.5],
-			"scale": [0.9, 0.9, 0.85]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [0, -90, -50],
-			"translation": [-0.25, 4.5, 2.5],
-			"scale": [0.9, 0.9, 0.85]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, -90, 39],
-			"translation": [-0.5, 3.25, 0],
-			"scale": [0.8, 0.79, 0.68]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, -90, -51],
-			"translation": [-0.5, 3.25, 0],
-			"scale": [0.8, 0.8, 0.68]
-		},
-		"ground": {
-			"rotation": [0, 0, 45],
-			"translation": [0, 4.25, 0],
-			"scale": [0.75, 0.75, 0.5]
-		},
-		"fixed": {
-			"rotation": [0, 0, 17],
-			"scale": [0.9, 0.9, 1]
-		}
 	}
 }

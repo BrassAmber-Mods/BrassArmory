@@ -155,21 +155,25 @@ public class BombEntity extends ThrowableItemProjectile {
 
     protected void bombOnHit(HitResult hitResult) { //Bounce logic for default and bouncy bombs
         if (hitResult instanceof BlockHitResult blockHitResult) {
-            double ounceMultiplier = this.getBombType().getBounceMultiplier();
+            double bounceMultiplier = this.getBombType().getBounceMultiplier();
             Axis axis = blockHitResult.getDirection().getAxis();
-            Vec3 movement = this.getDeltaMovement();
-            double newX = movement.x * (axis.equals(Axis.X) ? -1D : 1D) * ounceMultiplier;
-            double newY = movement.y * (axis.equals(Axis.Y) ? -1D : 1D) * ounceMultiplier;
-            double newZ = movement.z * (axis.equals(Axis.Z) ? -1D : 1D) * ounceMultiplier;
-            this.setDeltaMovement(newX, newY, newZ);
+            Vec3 movement = bounce(this.getDeltaMovement(), axis, bounceMultiplier);
+            this.setDeltaMovement(movement);
             HitResult newHitResult = ProjectileUtil.getHitResult(this, this::canHitEntity);
             if (newHitResult.getType() != MISS) {
                 this.onHit(newHitResult);
-            } else if (newY < 0.05D && blockHitResult.getDirection() == UP) {
+            } else if (movement.y < 0.05D && blockHitResult.getDirection() == UP) {
                 this.setOnGround(true);
                 this.setDeltaMovement(movement.x, 0, movement.z);
             }
         }
+    }
+
+    public static Vec3 bounce(Vec3 deltaMovement, Axis axis, double multiplier) {
+        double newX = deltaMovement.x * (axis.equals(Axis.X) ? -1D : 1D) * multiplier;
+        double newY = deltaMovement.y * (axis.equals(Axis.Y) ? -1D : 1D) * multiplier;
+        double newZ = deltaMovement.z * (axis.equals(Axis.Z) ? -1D : 1D) * multiplier;
+        return new Vec3(newX, newY, newZ);
     }
 
     protected void onHitEffects() {

@@ -112,7 +112,9 @@ public class SpearItem extends TieredItem implements Vanishable, ICustomReachIte
         return 72000;
     }
 
-    @ParametersAreNonnullByDefault
+    // Disabled for first release, high priority to fix //
+
+    /*@ParametersAreNonnullByDefault
     public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof Player) {
             Player playerentity = (Player) entityLiving;
@@ -153,7 +155,7 @@ public class SpearItem extends TieredItem implements Vanishable, ICustomReachIte
             playerIn.startUsingItem(handIn);
             return InteractionResultHolder.consume(itemstack);
         }
-    }
+    }*/
 
     /**
      * Current implementations of this method in child classes do not use the entry argument beside ev. They just raise

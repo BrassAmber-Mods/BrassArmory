@@ -7,11 +7,9 @@
     "I P"
   ],
   "key": {
-    "P": [
-      {
-        "item": "minecraft:gold_ingot"
-      }
-    ],
+    "P": {
+      "item": "minecraft:gold_ingot"
+    },
     "S": {
       "item": "minecraft:chain"
     },

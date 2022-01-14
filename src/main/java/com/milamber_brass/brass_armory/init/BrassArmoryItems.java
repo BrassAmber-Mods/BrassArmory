@@ -62,29 +62,29 @@ public class BrassArmoryItems {
 
     //               --------------------------BOOMERANG-------------------------------
 
-    public static final RegistryObject<BowItem> WOOD_BOOMERANG =
+    public static final RegistryObject<BoomerangItem> WOOD_BOOMERANG =
             REGISTRY.register("wood_boomerang", () ->
-                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).durability(384).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BoomerangItem(Tiers.WOOD, 2, -2.9F, new Item.Properties().rarity(Rarity.COMMON).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<BowItem> GOLD_BOOMERANG =
+    public static final RegistryObject<BoomerangItem> GOLD_BOOMERANG =
             REGISTRY.register("gold_boomerang", () ->
-                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).durability(384).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BoomerangItem(Tiers.GOLD, 2, -2.9F, new Item.Properties().rarity(Rarity.COMMON).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<BowItem> STONE_BOOMERANG =
+    public static final RegistryObject<BoomerangItem> STONE_BOOMERANG =
             REGISTRY.register("stone_boomerang", () ->
-                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).durability(384).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BoomerangItem(Tiers.STONE, 2, -2.9F, new Item.Properties().rarity(Rarity.COMMON).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<BowItem> IRON_BOOMERANG =
+    public static final RegistryObject<BoomerangItem> IRON_BOOMERANG =
             REGISTRY.register("iron_boomerang", () ->
-                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).durability(384).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BoomerangItem(Tiers.IRON, 2, -2.9F, new Item.Properties().rarity(Rarity.COMMON).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<BowItem> DIAMOND_BOOMERANG =
+    public static final RegistryObject<BoomerangItem> DIAMOND_BOOMERANG =
             REGISTRY.register("diamond_boomerang", () ->
-                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).durability(384).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BoomerangItem(Tiers.DIAMOND, 2, -2.9F, new Item.Properties().rarity(Rarity.COMMON).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<BowItem> NETHERITE_BOOMERANG =
+    public static final RegistryObject<BoomerangItem> NETHERITE_BOOMERANG =
             REGISTRY.register("netherite_boomerang", () ->
-                    new BowItem(new Item.Properties().rarity(Rarity.COMMON).durability(384).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+                    new BoomerangItem(Tiers.NETHERITE, 2, -2.9F, new Item.Properties().rarity(Rarity.COMMON).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
 
     //------------------------------------BOMB-----------------------------------------------------------

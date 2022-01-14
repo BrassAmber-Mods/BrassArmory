@@ -6,6 +6,7 @@ import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
 import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
 import com.milamber_brass.brass_armory.entity.bomb.BouncyBombEntity;
 import com.milamber_brass.brass_armory.entity.bomb.StickyBombEntity;
+import com.milamber_brass.brass_armory.entity.projectile.BoomerangEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -48,6 +49,14 @@ public class BrassArmoryEntityTypes {
     public static final RegistryObject<EntityType<BombEntity>> STICKY_BOMB = registerEntityType("sticky_bomb",
             EntityType.Builder.<BombEntity>of(StickyBombEntity::new, MobCategory.MISC)
                     .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10));
+
+    //------------------------------------BOOMERANG-----------------------------------------------------------
+
+    public static final RegistryObject<EntityType<BoomerangEntity>> BOOMERANG = registerEntityType("boomerang",
+            EntityType.Builder.<BoomerangEntity>of(BoomerangEntity::new, MobCategory.MISC)
+                    .sized(0.75F, 0.2F)
                     .clientTrackingRange(4)
                     .updateInterval(10));
 
