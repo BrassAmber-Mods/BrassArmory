@@ -132,7 +132,7 @@ public class SpearItem extends TridentItem implements IVanishable, ICustomReachI
                     });
                     SpearEntity spear_entity = new SpearEntity(worldIn, playerentity, stack, this.getTier());
                     spear_entity.shootFromRotation(playerentity, playerentity.xRot,
-                            playerentity.yRot, 0.0F, 2.5F * 0.5F, 1.0F);
+                            playerentity.yRot, 0.0F, 2.5F * 0.5F * 0.6F, 1.0F);
                     if (playerentity.abilities.instabuild) {
                         spear_entity.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
