@@ -1,10 +1,18 @@
 package com.milamber_brass.brass_armory.item;
 
 
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.UUID;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.SpearEntity;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -18,10 +26,18 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
+import net.minecraft.item.TridentItem;
+import net.minecraft.item.UseAction;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -34,19 +50,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.UUID;
 
-
-public class SpearItem extends TieredItem implements IVanishable, ICustomReachItem {
+public class SpearItem extends TridentItem implements IVanishable, ICustomReachItem, ITieredItem {
 
     private static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("99f7541c-a163-437c-8c25-bd685549b305");
     private static final float SPECIAL_REACH_MULTIPLIER = 1.5F;
     private final double reachDistanceBonus = 1.0D;
     private final float attackDamage;
+    private final IItemTier tier;
 
     /**
      * Modifiers applied when the item is in the mainhand of a user.
@@ -55,12 +66,13 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
     private Multimap<Attribute, AttributeModifier> customAttributes;
 
     public SpearItem(ItemTier tier, int attackDamageIn, Properties builderIn) {
-        super(tier, builderIn);
+        super(builderIn.defaultDurability(tier.getUses()));
         this.attackDamage = (float) attackDamageIn + tier.getAttackDamageBonus();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.6D, AttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
+        this.tier = tier;
     }
 
     public double getReach() {
@@ -298,5 +310,20 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
         }
 
     }
+    
+    @Override
+    public int getEnchantmentValue() {
+    	return ITieredItem.super.getEnchantmentValue();
+    }
+    
+    @Override
+    public boolean isValidRepairItem(ItemStack p_82789_1_, ItemStack p_82789_2_) {
+    	return ITieredItem.super.isValidRepairItem(p_82789_1_, p_82789_2_) || super.isValidRepairItem(p_82789_1_, p_82789_2_);
+    }
+
+	@Override
+	public IItemTier getTier() {
+		return this.tier;
+	}
 
 }
