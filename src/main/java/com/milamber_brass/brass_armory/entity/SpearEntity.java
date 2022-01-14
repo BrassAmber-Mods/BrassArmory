@@ -1,13 +1,19 @@
 package com.milamber_brass.brass_armory.entity;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
+
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.item.IItemTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,14 +27,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 public class SpearEntity extends AbstractArrowEntity {
 
     public int returningTicks;
-    public ItemTier finalTier;
+    public IItemTier finalTier;
     private ItemStack thrownStack;
     private boolean dealtDamage;
 
@@ -36,7 +38,7 @@ public class SpearEntity extends AbstractArrowEntity {
         super(type, worldIn);
     }
 
-    public SpearEntity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn, ItemTier tier) {
+    public SpearEntity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn, IItemTier tier) {
         super(BrassArmoryEntityTypes.SPEAR.get(), thrower, worldIn);
         this.thrownStack = thrownStackIn.copy();
         finalTier = tier;
@@ -48,27 +50,20 @@ public class SpearEntity extends AbstractArrowEntity {
     }
 
 
+    static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
+    		new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png"),
+    		new ResourceLocation(BrassArmory.MOD_ID, "textures/item/stone_spear.png"),
+    		new ResourceLocation(BrassArmory.MOD_ID, "textures/item/iron_spear.png"),
+    		new ResourceLocation(BrassArmory.MOD_ID, "textures/item/diamond_spear.png"),
+    		new ResourceLocation(BrassArmory.MOD_ID, "textures/item/gold_spear.png"),
+    		new ResourceLocation(BrassArmory.MOD_ID, "textures/item/netherite_spear.png")
+    };
+    
     public ResourceLocation getTierResourceLocation() {
-        String tier2 = finalTier.toString();
-        switch (tier2) {
-            case "GOLD":
-                return new ResourceLocation(BrassArmory.MOD_ID, "textures/item/gold_spear.png");
-
-            case "STONE":
-                return new ResourceLocation(BrassArmory.MOD_ID, "textures/item/stone_spear.png");
-
-            case "IRON":
-                return new ResourceLocation(BrassArmory.MOD_ID, "textures/item/iron_spear.png");
-
-            case "DIAMOND":
-                return new ResourceLocation(BrassArmory.MOD_ID, "textures/item/diamond_spear.png");
-
-            case "NETHERITE":
-                return new ResourceLocation(BrassArmory.MOD_ID, "textures/item/netherite_spear.png");
-
-            default:
-                return new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood_spear.png");
+        if(this.finalTier instanceof ItemTier) {
+        	return TEXTURES[((ItemTier)this.finalTier).ordinal()];
         }
+        return TEXTURES[2];//Iron
     }
 
 

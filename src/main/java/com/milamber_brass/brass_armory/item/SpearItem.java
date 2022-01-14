@@ -52,12 +52,10 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
      * Modifiers applied when the item is in the mainhand of a user.
      */
     private final Multimap<Attribute, AttributeModifier> attributeModifiers;
-    protected ItemTier finalTier;
     private Multimap<Attribute, AttributeModifier> customAttributes;
 
     public SpearItem(ItemTier tier, int attackDamageIn, Properties builderIn) {
         super(tier, builderIn);
-        finalTier = tier;
         this.attackDamage = (float) attackDamageIn + tier.getAttackDamageBonus();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
@@ -90,7 +88,7 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
     }
 
     public IItemTier getFinalTier() {
-        return finalTier;
+        return this.getTier();
     }
 
     /**
@@ -120,7 +118,7 @@ public class SpearItem extends TieredItem implements IVanishable, ICustomReachIt
                     stack.hurtAndBreak(1, playerentity, (player) -> {
                         player.broadcastBreakEvent(entityLiving.getUsedItemHand());
                     });
-                    SpearEntity spear_entity = new SpearEntity(worldIn, playerentity, stack, finalTier);
+                    SpearEntity spear_entity = new SpearEntity(worldIn, playerentity, stack, this.getTier());
                     spear_entity.shootFromRotation(playerentity, playerentity.xRot,
                             playerentity.yRot, 0.0F, 2.5F * 0.5F, 1.0F);
                     if (playerentity.abilities.instabuild) {
