@@ -27,7 +27,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class ThrowableWeaponProjectileBase extends TridentEntity {
 
     public int returningTicks;
-    public IItemTier finalTier;
     protected ItemStack thrownStack;
     protected boolean dealtDamage;
 
@@ -43,7 +42,6 @@ public abstract class ThrowableWeaponProjectileBase extends TridentEntity {
         }
         this.tridentItem = thrownStackIn;
         this.thrownStack = thrownStackIn.copy();
-        finalTier = tier;
 
     }
 

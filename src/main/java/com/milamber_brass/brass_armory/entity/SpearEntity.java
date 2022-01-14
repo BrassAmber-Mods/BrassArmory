@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.entity;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.item.ITieredItem;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -35,8 +36,8 @@ public class SpearEntity extends ThrowableWeaponProjectileBase {
 
 	@Override
 	public ResourceLocation getTierResourceLocation() {
-		if (this.finalTier instanceof ItemTier) {
-			return TEXTURES[((ItemTier) this.finalTier).ordinal()];
+		if (this.tridentItem.getItem() instanceof ITieredItem && ((ITieredItem)this.tridentItem.getItem()).getTier() instanceof ItemTier) {
+			return TEXTURES[((ItemTier) ((ITieredItem)this.tridentItem.getItem()).getTier()).ordinal()];
 		}
 		return TEXTURES[2];// Iron
 	}

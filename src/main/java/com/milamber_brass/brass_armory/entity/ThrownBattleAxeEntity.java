@@ -1,13 +1,17 @@
 package com.milamber_brass.brass_armory.entity;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.item.ITieredItem;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.IItemTier;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ResourceLocation;
@@ -19,6 +23,14 @@ public class ThrownBattleAxeEntity extends ThrowableWeaponProjectileBase {
 	public ThrownBattleAxeEntity(EntityType<? extends ThrowableWeaponProjectileBase> type, World worldIn) {
 		super(type, worldIn);
 	}
+	
+	public ThrownBattleAxeEntity(World worldIn, LivingEntity thrower, ItemStack thrownStackIn, IItemTier tier) {
+		super(BrassArmoryEntityTypes.BATTLEAXE.get(), worldIn, thrower, thrownStackIn, tier);
+    }
+
+    public ThrownBattleAxeEntity(World worldIn, double x, double y, double z) {
+    	super(BrassArmoryEntityTypes.BATTLEAXE.get(), worldIn, x, y, z);
+    }
 
 	static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
 			new ResourceLocation(BrassArmory.MOD_ID, "textures/item/wood/wood_battleaxe.png"),
@@ -30,8 +42,8 @@ public class ThrownBattleAxeEntity extends ThrowableWeaponProjectileBase {
 
 	@Override
 	public ResourceLocation getTierResourceLocation() {
-		if (this.finalTier instanceof ItemTier) {
-			return TEXTURES[((ItemTier) this.finalTier).ordinal()];
+		if (this.tridentItem.getItem() instanceof ITieredItem && ((ITieredItem)this.tridentItem.getItem()).getTier() instanceof ItemTier) {
+			return TEXTURES[((ItemTier) ((ITieredItem)this.tridentItem.getItem()).getTier()).ordinal()];
 		}
 		return TEXTURES[2];// Iron
 	}
