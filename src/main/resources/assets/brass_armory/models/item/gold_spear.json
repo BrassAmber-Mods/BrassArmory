@@ -2,5 +2,10 @@
 	"parent": "brass_armory:item/diamond_spear",
 	"textures": {
 		"layer0": "brass_armory:item/gold/gold_spear"
-	}
+	},
+	"overrides": [
+		{
+			"predicate": { "throwing": 1 }, "model": "brass_armory:item/gold_spear_throwing"
+		}
+	]
 }

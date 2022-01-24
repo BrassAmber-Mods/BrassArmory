@@ -1,0 +1,6 @@
+{
+	"parent": "brass_armory:item/diamond_spear_throwing",
+	"textures": {
+		"layer0": "brass_armory:item/stone/stone_spear"
+	}
+}

@@ -2,7 +2,6 @@ package com.milamber_brass.brass_armory.item;
 
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -173,12 +172,13 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
     }
 
     @Override
-    public int getCustomUseDuration(ItemStack maceStack, LocalPlayer localPlayer) {
-        return this.getUseDuration(maceStack) - localPlayer.getUseItemRemainingTicks();
+    @ParametersAreNonnullByDefault
+    public int getCustomUseDuration(ItemStack maceStack, Player player) {
+        return this.getUseDuration(maceStack) - player.getUseItemRemainingTicks();
     }
 
     @Override
     public int getChargeDuration(ItemStack itemStack) {
-        return 40;
+        return 30;
     }
 }

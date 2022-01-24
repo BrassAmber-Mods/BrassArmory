@@ -24,7 +24,7 @@ public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
     public BoomerangEntityRenderer(Context context) {
         super(context);
         this.itemRenderer = context.getItemRenderer();
-        this.shadowRadius = 0.15F;
+        this.shadowRadius = 0.3F;
         this.shadowStrength = 0.75F;
     }
 
@@ -33,7 +33,7 @@ public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
         stack.pushPose();
         stack.translate(0D, 0.1D, 0D);
         stack.mulPose(Vector3f.XP.rotationDegrees(90F));
-        stack.mulPose(Vector3f.ZN.rotationDegrees(boomerangEntity.getRotation()));
+        stack.mulPose(Vector3f.ZN.rotationDegrees(boomerangEntity.tickCount * 8F));
         this.itemRenderer.renderStatic(boomerangEntity.getItem(), ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, boomerangEntity.getId());
         stack.popPose();
     }

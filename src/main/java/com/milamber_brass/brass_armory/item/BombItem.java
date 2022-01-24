@@ -40,7 +40,7 @@ public class BombItem extends Item {
             }
         } else {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), BrassArmorySounds.BOMB_THROW.get(), SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-            this.throwBomb(level, player, interactionHand, bombStack, 0.5F);
+            this.throwBomb(level, player, interactionHand, bombStack, 0.75F);
         }
         return InteractionResultHolder.sidedSuccess(bombStack, level.isClientSide());
     }

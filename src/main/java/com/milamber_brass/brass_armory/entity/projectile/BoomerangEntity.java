@@ -57,7 +57,7 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
         this.power = 1F;
     }
 
-    public BoomerangEntity(Level level, LivingEntity livingEntity, ItemStack boomerangStack, float power, @Nullable Entity target) {
+    public BoomerangEntity(Level level, LivingEntity livingEntity, ItemStack boomerangStack, float power, @Nullable Entity target, boolean gravity) {
         super(BrassArmoryEntityTypes.BOOMERANG.get(), livingEntity, level);
         this.entityData.set(ID_LOYALTY, (byte)EnchantmentHelper.getLoyalty(boomerangStack));
         this.entityData.set(TARGET_UUID, target != null ? Optional.of(target.getUUID()) : Optional.of(livingEntity.getUUID()));
@@ -68,7 +68,7 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
         this.shootFromRotation(livingEntity, xRot, yRot, 0.0F, power, 1.0F);
         this.setXRot(xRot);
         this.setYRot(yRot);
-        this.setNoGravity(power > 0.25F);
+        this.setNoGravity(gravity);
     }
 
     protected void defineSynchedData() {
@@ -88,7 +88,7 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
                 Entity owner = this.getOwner();
                 if (targetUUID.isPresent() && ((ServerLevel)this.level).getEntity(targetUUID.get()) instanceof LivingEntity livingTarget && this.isNoGravity()) {
                     boolean targetingOwner = livingTarget == owner;
-                    boolean neverHadTarget = !this.dealtDamage && targetingOwner;
+                    //boolean neverHadTarget = !this.dealtDamage && targetingOwner;
 
                     Vec3 thisPos = this.position();
                     Vec3 futurePos = thisPos.add(deltaMovement);
@@ -100,9 +100,9 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
                     double length = thisToTarget - futureToTarget;
 
                     double adjustRange = 12D;
-                    double min = neverHadTarget ? 0.01D : 0.04D;
+                    double min = /*neverHadTarget ? 0.01D :*/ 0.04D;
 
-                    double enchScale = targetingOwner ? ((double) this.entityData.get(ID_LOYALTY) * 0.15D) + 1D : 1D;
+                    double enchScale = targetingOwner ? ((double)this.entityData.get(ID_LOYALTY) * 0.15D) + 1D : 1D;
                     min *= enchScale;
                     double scale = length / maxLength >= 0.5D && futureToTarget <= adjustRange ? Math.max((adjustRange - futureToTarget) / adjustRange, min) : min;
                     scale *= enchScale * 0.5D;
@@ -136,7 +136,7 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
         LivingEntity owner = (LivingEntity)this.getOwner();
         ItemStack boomerangStack = this.getItem();
 
-        if (hitResultEntity == owner && !this.level.isClientSide()) {//TODO: make the player actually pick it up
+        if (hitResultEntity == owner && !this.level.isClientSide()) {
             boolean flag = true;
             if (owner.getMainHandItem().isEmpty()) owner.setItemInHand(InteractionHand.MAIN_HAND, boomerangStack);
             else if (owner.getOffhandItem().isEmpty()) owner.setItemInHand(InteractionHand.OFF_HAND, boomerangStack);
@@ -256,7 +256,6 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
     @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-
         ItemStack itemstack = this.getItemRaw();
         if (!itemstack.isEmpty()) compoundTag.put("Item", itemstack.save(new CompoundTag()));
     }
@@ -265,7 +264,6 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
     @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-
         ItemStack itemstack = ItemStack.of(compoundTag.getCompound("Item"));
         this.setItem(itemstack);
     }

@@ -6,7 +6,6 @@ import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.entity.projectile.BoomerangEntity;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -20,7 +19,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -30,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 
@@ -38,9 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Objects;
-import java.util.UUID;
 
-@SuppressWarnings("deprecation")
 public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnimationItem {
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
     private final ImmutableSet<Enchantment> properEnchantments = ImmutableSet.of(Enchantments.LOYALTY, Enchantments.FLAMING_ARROWS, Enchantments.QUICK_CHARGE, Enchantments.RIPTIDE);
@@ -79,14 +74,15 @@ public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnim
     public void releaseUsing(ItemStack boomerangStack, Level level, LivingEntity livingEntity, int useDurationLeft) {
         if (livingEntity instanceof Player player) {
             float time = this.getUseDuration(boomerangStack) - useDurationLeft;
-            float chargeTime = this.getChargeDuration(boomerangStack);
-            float power = Math.min(time / chargeTime, 1F);
+            float power = Math.min(time / this.getChargeDuration(boomerangStack), 1F);
 
             CompoundTag itemTag = boomerangStack.getTag();
             if ((double)power >= 0.1D && level instanceof ServerLevel serverLevel && itemTag != null) {
                 boomerangStack.hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(livingEntity.getUsedItemHand()));
                 Entity target = itemTag.hasUUID(targetUUID) ? serverLevel.getEntity(itemTag.getUUID(targetUUID)) : null;
-                BoomerangEntity boomerangEntity = new BoomerangEntity(level, player, boomerangStack, power * 0.5F, target);
+                boolean noGravity = power > 0.25F;
+                power *= target != null ? 0.5F : 1F;
+                BoomerangEntity boomerangEntity = new BoomerangEntity(level, player, boomerangStack, power, target, noGravity);
 
                 float critChance = getCrit(boomerangStack);
                 boolean crit = level.random.nextFloat(100F) <= critChance;
@@ -105,8 +101,7 @@ public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnim
     @ParametersAreNonnullByDefault
     public void onUsingTick(ItemStack boomerangStack, LivingEntity player, int useDurationLeft) {
         float time = this.getUseDuration(boomerangStack) - useDurationLeft;
-        float chargeTime = this.getChargeDuration(boomerangStack);
-        float power = Math.min(time / chargeTime, 1F);
+        float power = Math.min(time / this.getChargeDuration(boomerangStack), 1F);
 
         Vec3 vec3 = player.getEyePosition(Minecraft.getInstance().getFrameTime());
         Vec3 vec31 = player.getViewVector(1.0F);
@@ -117,8 +112,6 @@ public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnim
         EntityHitResult entityhitresult = ProjectileUtil.getEntityHitResult(player, vec3, vec32, aabb, (entity) -> !entity.isSpectator() && entity.isPickable(), d1);
 
         if (!player.level.isClientSide && entityhitresult != null && entityhitresult.getEntity() instanceof LivingEntity living) {
-            /*living.setCustomName(boomerangStack.getHoverName());
-            living.setCustomNameVisible(true);*/
             boomerangStack.getOrCreateTag().putUUID(BoomerangItem.targetUUID, living.getUUID());
             setTarget(boomerangStack, living);
         }
@@ -143,6 +136,7 @@ public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnim
     @Override
     @ParametersAreNonnullByDefault
     @Nonnull
+    @SuppressWarnings("deprecation")
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot equipmentSlot) {
         return equipmentSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(equipmentSlot);
     }
@@ -167,15 +161,14 @@ public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnim
 
     @Override
     @ParametersAreNonnullByDefault
-    public int getCustomUseDuration(ItemStack maceStack, LocalPlayer localPlayer) {
-        return this.getUseDuration(maceStack) - localPlayer.getUseItemRemainingTicks();
+    public int getCustomUseDuration(ItemStack maceStack, Player player) {
+        return this.getUseDuration(maceStack) - player.getUseItemRemainingTicks();
     }
 
     @Override
     public int getChargeDuration(ItemStack itemStack) {
-        int quickCharge = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.QUICK_CHARGE, itemStack);
-        if (quickCharge > 3) quickCharge = 3;
-        return quickCharge == 0 ? 40 : 40 - 10 * quickCharge;
+        int quickCharge = Math.min(EnchantmentHelper.getItemEnchantmentLevel(Enchantments.QUICK_CHARGE, itemStack), 3);
+        return quickCharge == 0 ? 24 : 24 - 4 * quickCharge;
     }
 
     public static void setTarget(ItemStack boomerangStack, Entity entity) {
@@ -205,7 +198,7 @@ public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnim
         return 0F;
     }
 
-    @Override //Makes the bomb item not twitch in a player's hand while the fuse is burning
+    @Override //Makes the boomerang item not twitch in a player's hand while picking new targets
     @ParametersAreNonnullByDefault
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return !oldStack.getItem().equals(newStack.getItem()) || slotChanged;

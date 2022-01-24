@@ -12,6 +12,7 @@ import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.BombItem;
 import com.milamber_brass.brass_armory.item.HalberdItem;
+import com.milamber_brass.brass_armory.item.SpearItem;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -66,6 +67,15 @@ public class ClientEventBusSubscriber {
                 ItemProperties.register(halberdItem, new ResourceLocation("blocking"), (halberdStack, clientLevel, living, k) -> {
                     return living != null && living.isUsingItem() && living.getUseItem() == halberdStack ? 1.0F : 0.0F;
                 });
+            }
+
+            SpearItem[] spears = { BrassArmoryItems.WOOD_SPEAR.get(), BrassArmoryItems.STONE_SPEAR.get(),
+                    BrassArmoryItems.IRON_SPEAR.get(), BrassArmoryItems.GOLD_SPEAR.get(),
+                    BrassArmoryItems.DIAMOND_SPEAR.get(), BrassArmoryItems.NETHERITE_SPEAR.get() };
+
+            for (SpearItem spearItem : spears) {
+                ItemProperties.register(spearItem, new ResourceLocation("throwing"), (halberdStack, clientLevel, living, k)
+                        -> living != null && living.isUsingItem() && living.getUseItem() == halberdStack ? 1.0F : 0.0F);
             }
         });
     }

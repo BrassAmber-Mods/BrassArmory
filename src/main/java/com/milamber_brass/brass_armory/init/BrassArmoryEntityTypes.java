@@ -1,7 +1,7 @@
 package com.milamber_brass.brass_armory.init;
 
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.entity.SpearEntity;
+import com.milamber_brass.brass_armory.entity.projectile.SpearEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
 import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
 import com.milamber_brass.brass_armory.entity.bomb.BouncyBombEntity;
@@ -20,11 +20,11 @@ public class BrassArmoryEntityTypes {
 
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, BrassArmory.MOD_ID);
 
-    public static final RegistryObject<EntityType<SpearEntity>> SPEAR =
-            ENTITY_TYPES.register("wood_spear", () -> EntityType.Builder
-                    .<SpearEntity>of(SpearEntity::new, MobCategory.MISC).sized(1.0f, 2.0f)
-                    .clientTrackingRange(64).updateInterval(20)
-                    .build(new ResourceLocation(BrassArmory.MOD_ID, "item/wood_spear").toString()));
+    public static final RegistryObject<EntityType<SpearEntity>> SPEAR = registerEntityType("spear",
+            EntityType.Builder.<SpearEntity>of(SpearEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 0.5F)
+                    .clientTrackingRange(4)
+                    .updateInterval(20));
 
     public static final RegistryObject<EntityType<BAArrowEntity>> BA_ARROW = registerEntityType("ba_arrow",
             EntityType.Builder.<BAArrowEntity>of(BAArrowEntity::new, MobCategory.MISC)
