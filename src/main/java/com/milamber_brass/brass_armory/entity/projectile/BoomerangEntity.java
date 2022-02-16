@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
@@ -114,7 +115,7 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
                     boomerangStack.hurtAndBreak(tier != Tiers.WOOD ? 1 : 2, livingOwner, (living) -> living.broadcastBreakEvent(EquipmentSlot.MAINHAND));
                 }
             }
-            this.entityData.set(DATA_RENDER_ROTATION, this.entityData.get(DATA_RENDER_ROTATION) + (float)deltaMovement.length() * 24F + 8F);
+            this.entityData.set(DATA_RENDER_ROTATION, (float)this.tickCount);
         }
 
         double radToDeg = 180D / Math.PI;
@@ -229,7 +230,7 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
     @Override
     @ParametersAreNonnullByDefault
     @Nonnull
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {//TODO: FIX
         if (this.dealtDamage && player.getItemInHand(hand).isEmpty()) {
             ItemStack boomerangStack = this.getItem();
             float critChance = BoomerangItem.getCrit(boomerangStack) + (20F * this.power);
@@ -244,7 +245,19 @@ public class BoomerangEntity extends AbstractArrow implements ItemSupplier {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
+    public boolean hurt(DamageSource damageSource, float v) {
+        BrassArmory.LOGGER.error("Has been hurt.");
+        return super.hurt(damageSource, v);
+    }
+
+    @Override
     public boolean isPickable() {
+        return true;
+    }
+
+    @Override
+    public boolean isInvulnerable() {
         return true;
     }
 

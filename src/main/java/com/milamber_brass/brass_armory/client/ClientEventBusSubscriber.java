@@ -74,8 +74,9 @@ public class ClientEventBusSubscriber {
                     BrassArmoryItems.DIAMOND_SPEAR.get(), BrassArmoryItems.NETHERITE_SPEAR.get() };
 
             for (SpearItem spearItem : spears) {
-                ItemProperties.register(spearItem, new ResourceLocation("throwing"), (halberdStack, clientLevel, living, k)
-                        -> living != null && living.isUsingItem() && living.getUseItem() == halberdStack ? 1.0F : 0.0F);
+                ItemProperties.register(spearItem, new ResourceLocation("throwing"), (spearStack, clientLevel, living, k) -> {
+                    return living != null && living.isUsingItem() && living.getUseItem() == spearStack ? 1.0F : 0.0F;
+                });
             }
         });
     }

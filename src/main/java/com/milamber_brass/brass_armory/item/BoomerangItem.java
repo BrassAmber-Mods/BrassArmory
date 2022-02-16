@@ -81,7 +81,7 @@ public class BoomerangItem extends TieredItem implements Vanishable, ICustomAnim
                 boomerangStack.hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(livingEntity.getUsedItemHand()));
                 Entity target = itemTag.hasUUID(targetUUID) ? serverLevel.getEntity(itemTag.getUUID(targetUUID)) : null;
                 boolean noGravity = power > 0.25F;
-                power *= target != null ? 0.5F : 1F;
+                power *= target != null ? 0.5F : 1.5F + 0.5F * EnchantmentHelper.getLoyalty(boomerangStack);
                 BoomerangEntity boomerangEntity = new BoomerangEntity(level, player, boomerangStack, power, target, noGravity);
 
                 float critChance = getCrit(boomerangStack);

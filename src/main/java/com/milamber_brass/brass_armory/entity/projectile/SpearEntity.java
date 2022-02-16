@@ -1,22 +1,17 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
-import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.SpearItem;
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
@@ -26,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
@@ -48,9 +42,9 @@ public class SpearEntity extends ThrownTrident implements ItemSupplier {
         this.setItem(spearStack);
         this.setPos(livingEntity.getX(), livingEntity.getEyeY() - (double)0.1F, livingEntity.getZ());
 
-        final Field loyalty = ObfuscationReflectionHelper.findField(ThrownTrident.class, "ID_LOYALTY");
-        loyalty.setAccessible(true);
-        this.entityData.set((EntityDataAccessor<Byte>)loyalty.get(this), (byte)EnchantmentHelper.getLoyalty(spearStack));
+        final Field ID_LOYALTY = ObfuscationReflectionHelper.findField(ThrownTrident.class, "f_37558_");
+        ID_LOYALTY.setAccessible(true);
+        this.entityData.set((EntityDataAccessor<Byte>)ID_LOYALTY.get(this), (byte)EnchantmentHelper.getLoyalty(spearStack));
     }
 
     @Override
@@ -93,7 +87,7 @@ public class SpearEntity extends ThrownTrident implements ItemSupplier {
         this.setDeltaMovement(this.getDeltaMovement().multiply(-0.01D, -0.1D, -0.01D));
         this.playSound(soundevent, 1.0F, 1.0F);
 
-        final Field dealtDamage = ObfuscationReflectionHelper.findField(ThrownTrident.class, "dealtDamage");
+        final Field dealtDamage = ObfuscationReflectionHelper.findField(ThrownTrident.class, "f_37556_");
         dealtDamage.setAccessible(true);
         try {
             dealtDamage.set(this, true);
