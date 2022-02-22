@@ -35,7 +35,6 @@ public class BrassArmory {
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
         LOGGER.debug("Running common setup.");
-
         // Register custom dispenser behavior
         BrassArmoryDispenseBehaviors.init();
     }

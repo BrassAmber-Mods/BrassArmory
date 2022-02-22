@@ -33,7 +33,7 @@ public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
         stack.pushPose();
         stack.translate(0D, 0.1D, 0D);
         stack.mulPose(Vector3f.XP.rotationDegrees(90F));
-        float spin = Math.min(boomerangEntity.getRotation(), (float)boomerangEntity.tickCount) * 8F;
+        float spin = Math.min((float)boomerangEntity.tickCount, boomerangEntity.spin) * 8F;
         stack.mulPose(Vector3f.ZN.rotationDegrees(spin));
         this.itemRenderer.renderStatic(boomerangEntity.getItem(), ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, boomerangEntity.getId());
         stack.popPose();

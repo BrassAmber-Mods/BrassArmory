@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-version = "1.4-alpha"
+version = "1.5-alpha"
 group = "com.milamber_brass.brass_armory"
 archivesBaseName = "brass_armory-1.18.1"
 

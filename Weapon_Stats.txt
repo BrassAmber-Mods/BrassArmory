@@ -16,7 +16,7 @@ I          9
 D         10
 N         11
 
-Dagger:
+Throwing Knife:
 W          3
 G          3
 S          5
@@ -57,7 +57,7 @@ D        7
 N        8
 
 attack speed
-Dagger- 2.0
+Throwing Knife- 2.0
 Vanilla Sword- 1.6
 Spear- 1.4
 Flail- 1.4

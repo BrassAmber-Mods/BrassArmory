@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 
-public class SpearItem extends TridentItem implements Vanishable, ICustomReachItem, ICustomTieredItem {
+public class SpearItem extends TridentItem implements Vanishable, ICustomReachItem, ICustomTieredItem {//TODO: Make it not extend TridentItem
 
     //private static final UUID REACH_DISTANCE_MODIFIER = UUID.fromString("99f7541c-a163-437c-8c25-bd685549b305");
     private static final float SPECIAL_REACH_MULTIPLIER = 1.5F;
@@ -103,18 +103,14 @@ public class SpearItem extends TridentItem implements Vanishable, ICustomReachIt
     @ParametersAreNonnullByDefault
     public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof Player playerEntity) {
-            int i = this.getUseDuration(stack) - timeLeft;
-            if (i >= 10) {
+            float time = this.getUseDuration(stack) - timeLeft;
+            if (time >= 5) {
                 if (!worldIn.isClientSide) {
                     stack.hurtAndBreak(1, playerEntity, (player) -> player.broadcastBreakEvent(entityLiving.getUsedItemHand()));
-                    SpearEntity spear;
-                    try {
-                        spear = new SpearEntity(worldIn, playerEntity, stack);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                    spear.shootFromRotation(playerEntity, playerEntity.getXRot(), playerEntity.getYRot(), 0.0F, 2.5F /* 0.6F*/, 1.0F);
+                    SpearEntity spear = new SpearEntity(worldIn, playerEntity, stack);
+                    float power = Math.min(time / 20F, 1F);
+                    spear.setPower(power);
+                    spear.shootFromRotation(playerEntity, playerEntity.getXRot(), playerEntity.getYRot(), 0.0F, power * 1.2F, 1.0F);
 
                     if (playerEntity.getAbilities().instabuild) spear.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                     worldIn.addFreshEntity(spear);

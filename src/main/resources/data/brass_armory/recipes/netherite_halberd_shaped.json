@@ -8,14 +8,14 @@
   ],
   "key": {
     "A": {
-      "item": "minecraft:iron_axe"
+      "item": "minecraft:netherite_axe"
     },
     "S": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "brass_armory:iron_halberd",
+    "item": "brass_armory:netherite_halberd",
     "count": 1
   }
 }

@@ -30,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -238,14 +237,22 @@ public class BAArrowEntity extends AbstractArrow {
             }
         }
         // check that the arrow is not in the ground and has been flying for 1/5 a second.
-        else if (this.isArrowType(ArrowType.LASER) && !this.inGround && this.flightTime > 4) {
-            // call super.tick() twice to speed up arrow movement.
-            super.tick();
-            super.tick();
-            // BrassArmory.LOGGER.log(Level.DEBUG, currentDelta + " <- Delta | Forward -> " + forward);
-            if (!this.level.hasChunk(this.chunkPosition().x, this.chunkPosition().z)) {
-                this.remove(RemovalReason.UNLOADED_TO_CHUNK);
-            }
+        else if (this.isArrowType(ArrowType.LASER)) {
+            if (!this.inGround) {
+                if (this.flightTime > 4) {
+                    // Set deltaMovement after calling tick()s, so that it remains unchanged by the method itself
+                    Vec3 deltaMovement = this.getDeltaMovement();
+                    super.tick();
+                    if (this.isNoGravity()) {
+                        super.tick();
+                        this.setDeltaMovement(deltaMovement);
+                    }
+                    // BrassArmory.LOGGER.log(Level.DEBUG, currentDelta + " <- Delta | Forward -> " + forward);
+                    if (!this.level.hasChunk(this.chunkPosition().x, this.chunkPosition().z)) {
+                        this.remove(RemovalReason.UNLOADED_TO_CHUNK);
+                    }
+                }
+            } else this.setNoGravity(false);
         }
         // Check that we have entered place rope mode and that the ticks since last placing a rope are at least equal to 10 ticks
         else if (this.isArrowType(ArrowType.ROPE) && this.placeRope) {

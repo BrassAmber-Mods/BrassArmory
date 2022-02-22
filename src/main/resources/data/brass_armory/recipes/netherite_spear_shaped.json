@@ -2,18 +2,20 @@
   "type" : "minecraft:crafting_shaped",
   "group" : "Brass Armory-Spear",
   "pattern": [
-    "IP"
+    "D  ",
+    " S ",
+    "  S"
   ],
   "key": {
-    "P": {
-      "item": "minecraft:iron_ingot"
+    "D": {
+      "item": "brass_armory:netherite_throwing_knife"
     },
-    "I": {
+    "S": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "brass_armory:iron_dagger",
+    "item": "brass_armory:netherite_spear",
     "count": 1
   }
 }

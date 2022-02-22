@@ -1,0 +1,6 @@
+{
+	"parent": "brass_armory:item/diamond_throwing_knife",
+	"textures": {
+		"layer0": "brass_armory:item/netherite/netherite_throwing_knife"
+	}
+}

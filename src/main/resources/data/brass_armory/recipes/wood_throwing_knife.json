@@ -1,19 +1,19 @@
 {
   "type" : "minecraft:crafting_shaped",
-  "group" : "Brass Armory-Dagger",
+  "group" : "Brass Armory-ThrowingKnife",
   "pattern": [
     "IP"
   ],
   "key": {
     "P": {
-      "item": "minecraft:diamond"
+      "tag": "minecraft:planks"
     },
     "I": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "brass_armory:diamond_dagger",
+    "item": "brass_armory:wood_throwing_knife",
     "count": 1
   }
 }

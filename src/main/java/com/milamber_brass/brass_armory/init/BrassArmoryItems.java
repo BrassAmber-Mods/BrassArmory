@@ -136,65 +136,65 @@ public class BrassArmoryItems {
 
     //---------------------------------------------------------------------------------------------------------
 
-    public static final RegistryObject<DaggerItem> GOLD_DAGGER =
-            REGISTRY.register("gold_dagger", () -> new DaggerItem(Tiers.GOLD, 2,
+    public static final RegistryObject<ThrowingKnifeItem> GOLD_THROWING_KNIFE =
+            REGISTRY.register("gold_throwing_knife", () -> new ThrowingKnifeItem(Tiers.GOLD, 2,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<DaggerItem> WOOD_DAGGER =
-            REGISTRY.register("wood_dagger", () -> new DaggerItem(Tiers.WOOD, 2,
+    public static final RegistryObject<ThrowingKnifeItem> WOOD_THROWING_KNIFE =
+            REGISTRY.register("wood_throwing_knife", () -> new ThrowingKnifeItem(Tiers.WOOD, 2,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<DaggerItem> STONE_DAGGER =
-            REGISTRY.register("stone_dagger", () -> new DaggerItem(Tiers.STONE, 2,
+    public static final RegistryObject<ThrowingKnifeItem> STONE_THROWING_KNIFE =
+            REGISTRY.register("stone_throwing_knife", () -> new ThrowingKnifeItem(Tiers.STONE, 2,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<DaggerItem> IRON_DAGGER =
-            REGISTRY.register("iron_dagger", () -> new DaggerItem(Tiers.IRON, 2,
+    public static final RegistryObject<ThrowingKnifeItem> IRON_THROWING_KNIFE =
+            REGISTRY.register("iron_throwing_knife", () -> new ThrowingKnifeItem(Tiers.IRON, 2,
                     new Item.Properties().rarity(Rarity.UNCOMMON)
                             .durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<DaggerItem> DIAMOND_DAGGER =
-            REGISTRY.register("diamond_dagger", () -> new DaggerItem(Tiers.DIAMOND, 2,
+    public static final RegistryObject<ThrowingKnifeItem> DIAMOND_THROWING_KNIFE =
+            REGISTRY.register("diamond_throwing_knife", () -> new ThrowingKnifeItem(Tiers.DIAMOND, 2,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<DaggerItem> NETHERITE_DAGGER =
-            REGISTRY.register("netherite_dagger", () -> new DaggerItem(Tiers.NETHERITE, 2,
+    public static final RegistryObject<ThrowingKnifeItem> NETHERITE_THROWING_KNIFE =
+            REGISTRY.register("netherite_throwing_knife", () -> new ThrowingKnifeItem(Tiers.NETHERITE, 2,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     //---------------------------------------------------------------------------------------------------------
 
     public static final RegistryObject<BattleaxeItem> GOLD_BATTLEAXE =
-            REGISTRY.register("gold_battleaxe", () -> new BattleaxeItem(Tiers.GOLD, 4,
+            REGISTRY.register("gold_battleaxe", () -> new BattleaxeItem(Tiers.GOLD, 7,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> WOOD_BATTLEAXE =
-            REGISTRY.register("wood_battleaxe", () -> new BattleaxeItem(Tiers.WOOD, 4,
+            REGISTRY.register("wood_battleaxe", () -> new BattleaxeItem(Tiers.WOOD, 7,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> STONE_BATTLEAXE =
-            REGISTRY.register("stone_battleaxe", () -> new BattleaxeItem(Tiers.STONE, 4,
+            REGISTRY.register("stone_battleaxe", () -> new BattleaxeItem(Tiers.STONE, 8,
                     new Item.Properties().rarity(Rarity.COMMON)
                             .durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> IRON_BATTLEAXE =
-            REGISTRY.register("iron_battleaxe", () -> new BattleaxeItem(Tiers.IRON, 4,
+            REGISTRY.register("iron_battleaxe", () -> new BattleaxeItem(Tiers.IRON, 7,
                     new Item.Properties().rarity(Rarity.UNCOMMON)
                             .durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> DIAMOND_BATTLEAXE =
-            REGISTRY.register("diamond_battleaxe", () -> new BattleaxeItem(Tiers.DIAMOND, 4,
+            REGISTRY.register("diamond_battleaxe", () -> new BattleaxeItem(Tiers.DIAMOND, 6,
                     new Item.Properties().rarity(Rarity.RARE)
                             .durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<BattleaxeItem> NETHERITE_BATTLEAXE =
-            REGISTRY.register("netherite_battleaxe", () -> new BattleaxeItem(Tiers.NETHERITE, 4,
+            REGISTRY.register("netherite_battleaxe", () -> new BattleaxeItem(Tiers.NETHERITE, 6,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
@@ -293,6 +293,11 @@ public class BrassArmoryItems {
             REGISTRY.register("netherite_flail", () -> new FlailItem(Tiers.NETHERITE, 3,
                     new Item.Properties().rarity(Rarity.EPIC)
                             .defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+
+    //---------------------------------------------------------------------------------------------------------
+
+    public static final RegistryObject<FlintlockPistolItem> FLINTLOCK_PISTOL =
+            REGISTRY.register("flintlock_pistol", () -> new FlintlockPistolItem(new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     // Attach event handler for registry.
     public static void register(IEventBus eventBus) {

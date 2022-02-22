@@ -1,21 +1,19 @@
 {
   "type" : "minecraft:crafting_shaped",
-  "group" : "Brass Armory-Mace",
+  "group" : "Brass Armory-ThrowingKnife",
   "pattern": [
-    "PPP",
-    "PIP",
-    " I "
+    "IP"
   ],
   "key": {
     "P": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:gold_ingot"
     },
     "I": {
       "item": "minecraft:stick"
     }
   },
   "result": {
-    "item": "brass_armory:iron_mace",
+    "item": "brass_armory:gold_throwing_knife",
     "count": 1
   }
 }

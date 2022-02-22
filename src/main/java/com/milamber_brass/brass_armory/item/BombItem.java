@@ -93,6 +93,7 @@ public class BombItem extends Item {
     }
 
     @Override //Makes the bomb item not twitch in a player's hand while the fuse is burning
+    @ParametersAreNonnullByDefault
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return !oldStack.getItem().equals(newStack.getItem());
     }

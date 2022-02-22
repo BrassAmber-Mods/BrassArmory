@@ -10,22 +10,23 @@ import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID)
 public class PlayerContainerEventSubscriber {
     @SubscribeEvent //Drop any lit bombs if opening a container, to prevent storing lit bombs
+    @ParametersAreNonnullByDefault
     public static void PlayerContainerEvent(PlayerContainerEvent.Open event) {
         Player player = event.getPlayer();
-        if (player != null) {
-            for (ItemStack stack : player.getInventory().items) {
-                if (stack.getItem() instanceof BombItem bombItem && BombItem.getFuseLit(stack)) {
-                    BombEntity bomb = BombType.playerBombEntityFromType(bombItem.getBombType(), player.level, player, null);
-                    bomb.setFuse(BombItem.getFuseLength(stack));
-                    bomb.setItem(stack);
-                    BombItem.setFuseLength(stack, 60);
-                    BombItem.setFuseLit(stack, false);
-                    if (!(player.getAbilities().instabuild)) stack.shrink(1);
-                    player.level.addFreshEntity(bomb);
-                }
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof BombItem bombItem && BombItem.getFuseLit(stack)) {
+                BombEntity bomb = BombType.playerBombEntityFromType(bombItem.getBombType(), player.level, player, null);
+                bomb.setFuse(BombItem.getFuseLength(stack));
+                bomb.setItem(stack);
+                BombItem.setFuseLength(stack, 60);
+                BombItem.setFuseLit(stack, false);
+                if (!(player.getAbilities().instabuild)) stack.shrink(1);
+                player.level.addFreshEntity(bomb);
             }
         }
     }

@@ -36,12 +36,12 @@
   "item.brass_armory.diamond_spear" : "Diamond Spear",
   "item.brass_armory.netherite_spear" : "Netherite Spear",
 
-  "item.brass_armory.gold_dagger" : "Gold Dagger",
-  "item.brass_armory.wood_dagger" : "Wooden Dagger",
-  "item.brass_armory.stone_dagger" : "Stone Dagger",
-  "item.brass_armory.iron_dagger" : "Iron Dagger",
-  "item.brass_armory.diamond_dagger" : "Diamond Dagger",
-  "item.brass_armory.netherite_dagger" : "Netherite Dagger",
+  "item.brass_armory.gold_throwing_knife" : "Gold Throwing Knife",
+  "item.brass_armory.wood_throwing_knife" : "Wooden Throwing Knife",
+  "item.brass_armory.stone_throwing_knife" : "Stone Throwing Knife",
+  "item.brass_armory.iron_throwing_knife" : "Iron Throwing Knife",
+  "item.brass_armory.diamond_throwing_knife" : "Diamond Throwing Knife",
+  "item.brass_armory.netherite_throwing_knife" : "Netherite Throwing Knife",
 
   "item.brass_armory.gold_battleaxe" : "Gold BattleAxe",
   "item.brass_armory.wood_battleaxe" : "Wooden BattleAxe",
@@ -70,6 +70,8 @@
   "item.brass_armory.iron_flail" : "Iron Flail",
   "item.brass_armory.diamond_flail" : "Diamond Flail",
   "item.brass_armory.netherite_flail" : "Netherite Flail",
+
+  "item.brass_armory.flintlock_pistol" : "Flintlock Pistol",
 
   "itemGroup.brass_armory": "Brass Armory",
 

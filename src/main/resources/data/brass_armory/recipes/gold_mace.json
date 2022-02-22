@@ -2,7 +2,7 @@
   "type" : "minecraft:crafting_shaped",
   "group" : "Brass Armory-Mace",
   "pattern": [
-    "PIP",
+    "PPP",
     "PIP",
     " I "
   ],
