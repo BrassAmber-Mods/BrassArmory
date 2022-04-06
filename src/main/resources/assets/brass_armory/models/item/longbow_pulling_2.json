@@ -1,0 +1,6 @@
+{
+    "parent": "brass_armory:item/longbow",
+    "textures": {
+        "layer0": "brass_armory:item/longbow_pulling_2"
+    }
+}

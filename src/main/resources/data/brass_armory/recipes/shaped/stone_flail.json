@@ -1,0 +1,32 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-Flail",
+  "pattern": [
+    "  S",
+    " IS",
+    "I P"
+  ],
+  "key": {
+    "P": [
+      {
+        "tag": "forge:cobblestone"
+      },
+      {
+        "item": "minecraft:blackstone"
+      },
+      {
+        "item": "minecraft:cobbled_deepslate"
+      }
+    ],
+    "S": {
+      "item": "minecraft:chain"
+    },
+    "I": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "brass_armory:stone_flail",
+    "count": 1
+  }
+}

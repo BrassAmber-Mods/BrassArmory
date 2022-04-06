@@ -1,0 +1,6 @@
+{
+	"parent": "brass_armory:item/diamond_spear",
+	"textures": {
+		"layer0": "brass_armory:item/fire_rod_extinguished"
+	}
+}

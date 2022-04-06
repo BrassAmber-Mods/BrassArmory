@@ -1,0 +1,21 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-BattleAxe",
+  "pattern": [
+    "PIP",
+    "PIP",
+    " I "
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:ingots/iron"
+    },
+    "I": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "brass_armory:iron_battleaxe",
+    "count": 1
+  }
+}

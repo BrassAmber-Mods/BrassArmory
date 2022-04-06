@@ -1,0 +1,6 @@
+{
+  "parent": "brass_armory:item/diamond_halberd_stance",
+  "textures": {
+    "layer0": "brass_armory:item/netherite/netherite_halberd"
+  }
+}

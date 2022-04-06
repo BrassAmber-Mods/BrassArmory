@@ -2,7 +2,7 @@ Spear-- +1 range, can be thrown a short distance [8 blocks]
 -arches as it flies
 -sticks into walls like arrows
 
-Throwing Knife-- Can be thrown a moderate distance [12 block]
+Dagger-- Can be thrown a moderate distance [12 block]
 -spins as it flys through the air [refer to yogbox for exact animation]
 -sticks into walls like arrows
 

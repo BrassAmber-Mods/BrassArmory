@@ -4,8 +4,6 @@ import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.block.RopeBlock;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.Material;
@@ -20,6 +18,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+
 @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Bus.MOD)
 public class BrassArmoryBlocks {
 
@@ -28,7 +27,7 @@ public class BrassArmoryBlocks {
 
     //------------------------------------MISC----------------------------------------------------------
 
-    public static final RegistryObject<RopeBlock> ROPE = registerBlock("rope", new RopeBlock(Block.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.WOOL).noOcclusion().noCollission()));
+    public static final RegistryObject<RopeBlock> ROPE = REGISTRY.register("rope", () -> new RopeBlock(Block.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.WOOL).noOcclusion().noCollission()));
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
@@ -36,15 +35,6 @@ public class BrassArmoryBlocks {
         BrassArmory.LOGGER.info("Set Block RenderTypes");
         RenderType cutoutRenderType = RenderType.cutout();
         ItemBlockRenderTypes.setRenderLayer(ROPE.get(), cutoutRenderType);
-    }
-
-    /**
-     * Helper method for inserting blocks into the registry.
-     */
-    private static <B extends Block> RegistryObject<B> registerBlock(String registryName, B block) {
-        // Blocks are registered before Items
-        BrassArmoryItems.REGISTRY.register(registryName, () -> new BlockItem(block, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
-        return REGISTRY.register(registryName, () -> block);
     }
 
     // Attach event handler for registry.

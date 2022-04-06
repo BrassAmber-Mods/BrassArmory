@@ -18,8 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ItemSupplier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -104,6 +103,19 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         }
     }
 
+    @Override
+    public void lavaHurt() {
+        ItemStack stack = this.getItem();
+        if (stack.getItem() instanceof TieredItem tieredItem) {
+            Tier tier = tieredItem.getTier();
+            if (tier != Tiers.NETHERITE && this.getOwner() instanceof LivingEntity livingOwner) {
+                stack.hurtAndBreak(tier != Tiers.WOOD ? 1 : 2, livingOwner, (living) -> living.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+            }
+            if (stack.getDamageValue() == stack.getMaxDamage()) this.kill();
+        }
+        super.lavaHurt();
+    }
+
     @Nullable
     @Override
     @ParametersAreNonnullByDefault
@@ -128,9 +140,9 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         if (this.isCritArrow()) damage *= 1.5F;
         damage *= this.getPower();
 
-        this.dealtDamage = true;
         if (victimEntity.hurt((new IndirectEntityDamageSource(this.onHitDamageSource(), this, ownerEntity == null ? this : ownerEntity)).setProjectile(), damage)) {
             if (victimEntity.getType() == EntityType.ENDERMAN) return;
+            if (this.isOnFire()) victimEntity.setSecondsOnFire(40);
 
             if (victimEntity instanceof LivingEntity livingVictim) {
                 if (ownerEntity instanceof LivingEntity livingOwner) {
@@ -141,6 +153,8 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
             }
         }
 
+        this.dealtDamage = true;
+
         this.setDeltaMovement(this.onHitDeltaMovement());
         this.playSound(this.onHitSoundEvent(), 1.0F, 1.0F);
     }
@@ -148,7 +162,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     protected abstract String onHitDamageSource();
 
     protected Vec3 onHitDeltaMovement() {
-        return this.getDeltaMovement().multiply(-0.01D, -0.1D, -0.01D);
+        return this.getDeltaMovement().multiply(0.95D, 0.95D, 0.95D);
     }
 
     protected abstract SoundEvent onHitSoundEvent();
@@ -183,6 +197,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
 
     @ParametersAreNonnullByDefault
     public void setItem(ItemStack weaponStack) {
+        weaponStack.setEntityRepresentation(this);
         this.entityData.set(DATA_LOYALTY_LEVEL, (byte)EnchantmentHelper.getLoyalty(weaponStack));
         if (!weaponStack.is(this.getDefaultItem()) || weaponStack.hasTag()) {
             this.entityData.set(DATA_ITEM_STACK, Util.make(weaponStack.copy(), (itemStack) -> itemStack.setCount(1)));
@@ -193,6 +208,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     @Nonnull
     public ItemStack getItem() {
         ItemStack itemstack = this.getItemRaw();
+        itemstack.setEntityRepresentation(this);
         return itemstack.isEmpty() ? new ItemStack(this.getDefaultItem()) : itemstack;
     }
 
@@ -202,6 +218,10 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
 
     public float getPower() {
         return this.power;
+    }
+
+    public boolean isInGround() {
+        return this.inGround;
     }
 
     @Override

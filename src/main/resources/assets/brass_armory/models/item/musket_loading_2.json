@@ -1,0 +1,38 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "brass_armory:item/guns/musket"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [0, -90, 40],
+      "translation": [-0.25, 0.75, -3.25],
+      "scale": [1.3, 1.3, 1]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [0, 90, -40],
+      "translation": [-0.25, 0.75, -3.25],
+      "scale": [1.3, 1.3, 1]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, -90, 65],
+      "translation": [0, 1, 0],
+      "scale": [1.34, 1.34, 1]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, 90, -65],
+      "translation": [0, 1, 0],
+      "scale": [1.34, 1.34, 1]
+    },
+    "ground": {
+      "rotation": [0, 0, 45],
+      "translation": [0, 4.25, 0],
+      "scale": [0.75, 0.75, 0.5]
+    },
+    "fixed": {
+      "rotation": [0, 0, 17],
+      "scale": [1.4, 1.4, 1]
+    }
+  }
+}

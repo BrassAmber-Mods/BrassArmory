@@ -1,0 +1,20 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern": [
+    "PIP",
+    "I  ",
+    "P  "
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:ingots/iron"
+    },
+    "I": {
+      "tag": "forge:cobblestone"
+    }
+  },
+  "result": {
+    "item": "brass_armory:iron_boomerang",
+    "count": 1
+  }
+}

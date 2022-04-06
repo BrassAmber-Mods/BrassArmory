@@ -1,0 +1,6 @@
+{
+	"parent": "brass_armory:item/diamond_dagger",
+	"textures": {
+		"layer0": "brass_armory:item/iron/iron_dagger"
+	}
+}

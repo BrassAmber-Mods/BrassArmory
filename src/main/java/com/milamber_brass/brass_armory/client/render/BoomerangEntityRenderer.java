@@ -30,13 +30,15 @@ public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
 
     @ParametersAreNonnullByDefault //Pretty much like Thrown Item Renderer, just makes it spin and updates the fuse state
     public void render(BoomerangEntity boomerangEntity, float v, float v1, PoseStack stack, MultiBufferSource bufferSource, int light) {
-        stack.pushPose();
-        stack.translate(0D, 0.1D, 0D);
-        stack.mulPose(Vector3f.XP.rotationDegrees(90F));
-        float spin = Math.min((float)boomerangEntity.tickCount, boomerangEntity.spin) * 8F;
-        stack.mulPose(Vector3f.ZN.rotationDegrees(spin));
-        this.itemRenderer.renderStatic(boomerangEntity.getItem(), ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, boomerangEntity.getId());
-        stack.popPose();
+        if (boomerangEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(boomerangEntity) < 12.25D)) {
+            stack.pushPose();
+            stack.translate(0D, 0.1D, 0D);
+            stack.mulPose(Vector3f.XP.rotationDegrees(90F));
+            float spin = Math.min((float) boomerangEntity.tickCount, boomerangEntity.spin) * 8F;
+            stack.mulPose(Vector3f.ZN.rotationDegrees(spin));
+            this.itemRenderer.renderStatic(boomerangEntity.getItem(), ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, boomerangEntity.getId());
+            stack.popPose();
+        }
     }
 
     @SuppressWarnings("deprecation")

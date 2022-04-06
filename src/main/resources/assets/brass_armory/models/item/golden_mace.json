@@ -1,0 +1,6 @@
+{
+	"parent": "brass_armory:item/diamond_mace",
+	"textures": {
+		"layer0": "brass_armory:item/gold/golden_mace"
+	}
+}

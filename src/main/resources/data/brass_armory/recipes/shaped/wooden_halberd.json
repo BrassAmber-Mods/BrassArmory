@@ -1,0 +1,24 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-Halberd",
+  "pattern": [
+    "D  ",
+    " A ",
+    "  S"
+  ],
+  "key": {
+    "D": {
+      "item": "brass_armory:wooden_dagger"
+    },
+    "A": {
+      "item": "minecraft:wooden_axe"
+    },
+    "S": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "brass_armory:wooden_halberd",
+    "count": 1
+  }
+}

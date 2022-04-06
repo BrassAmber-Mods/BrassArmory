@@ -1,9 +1,9 @@
 package com.milamber_brass.brass_armory.init;
 
-import com.milamber_brass.brass_armory.entity.bomb.BombType;
+import com.milamber_brass.brass_armory.entity.projectile.bomb.BombType;
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
-import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
+import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;

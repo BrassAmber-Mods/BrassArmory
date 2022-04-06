@@ -16,7 +16,7 @@ I          9
 D         10
 N         11
 
-Throwing Knife:
+Dagger:
 W          3
 G          3
 S          5

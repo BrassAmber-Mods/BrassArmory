@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "#",
+    "Y"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "item": "brass_armory:bomb"
+    },
+    "Y": {
+      "tag": "forge:feathers"
+    }
+  },
+  "result": {
+    "item": "brass_armory:ex_arrow",
+    "count": 4
+  }
+}

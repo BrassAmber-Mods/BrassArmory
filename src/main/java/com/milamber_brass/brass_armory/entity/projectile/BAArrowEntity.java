@@ -140,7 +140,6 @@ public class BAArrowEntity extends AbstractArrow {
         super.doPostHurtEffects(living);
         this.hitEntity = true;
         switch (ArrowType.byName(this.getEntityData().get(ARROW_TYPE))) {
-
             case DIRT:
                 this.level.setBlock(new BlockPos(this.getX(), this.getY(), this.getZ()), Blocks.DIRT.defaultBlockState(), 2);
                 break;
@@ -433,7 +432,7 @@ public class BAArrowEntity extends AbstractArrow {
         BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-f, -1.0D, -f), pos.offset(f, -1.0D, f))) {
-            if (blockpos.closerThan(this.position(), f)) {
+            if (blockpos.closerThan(this.blockPosition(), f)) {
                 blockpos$mutable.set(blockpos.getX(), blockpos.getY() + 1, blockpos.getZ());
                 BlockState blockstate1 = worldIn.getBlockState(blockpos$mutable);
                 if (blockstate1.isAir()) {

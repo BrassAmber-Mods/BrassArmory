@@ -1,0 +1,6 @@
+{
+  "parent": "brass_armory:item/musket_loaded",
+  "textures": {
+    "layer0": "brass_armory:item/guns/blunderbuss"
+  }
+}

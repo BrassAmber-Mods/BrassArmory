@@ -1,0 +1,29 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-BattleAxe",
+  "pattern": [
+    "PIP",
+    "PIP",
+    " I "
+  ],
+  "key": {
+    "P": [
+      {
+        "tag": "forge:cobblestone"
+      },
+      {
+        "item": "minecraft:blackstone"
+      },
+      {
+        "item": "minecraft:cobbled_deepslate"
+      }
+    ],
+    "I": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "brass_armory:stone_battleaxe",
+    "count": 1
+  }
+}

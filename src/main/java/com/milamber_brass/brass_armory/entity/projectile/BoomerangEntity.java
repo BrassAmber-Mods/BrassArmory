@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.entity.projectile;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.BoomerangItem;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -13,11 +14,14 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -31,15 +35,15 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     protected static final EntityDataAccessor<Float> DATA_PLAYER_Z = SynchedEntityData.defineId(BoomerangEntity.class, EntityDataSerializers.FLOAT);
 
     private Vec3 deltaFirstMovement;
-    private boolean wasInGround;
     public int spin = 0;
 
     public BoomerangEntity(EntityType<BoomerangEntity> entityType, Level level) {
         super(entityType, level);
     }
 
-    public BoomerangEntity(Level level, LivingEntity livingEntity, ItemStack spearStack) {
-        super(BrassArmoryEntityTypes.BOOMERANG.get(), livingEntity, level, spearStack);
+    public BoomerangEntity(Level level, LivingEntity livingEntity, ItemStack boomerangStack) {
+        super(BrassArmoryEntityTypes.BOOMERANG.get(), livingEntity, level, boomerangStack);
+        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, boomerangStack) > 0) this.setSecondsOnFire(100);
     }
 
     @Override
@@ -51,16 +55,19 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
+    public void setPower(float power) {
+        this.setNoGravity(power > 0.25F);
+        super.setPower(power);
+    }
+
+    @Override
     protected void loyaltyTick() {
-        ItemStack stack = this.getItem();
-        if (this.isInLava() && stack.getItem() instanceof TieredItem tieredItem) {
-            Tier tier = tieredItem.getTier();
-            if (tier != Tiers.NETHERITE && this.getOwner() instanceof LivingEntity livingOwner) {
-                stack.hurtAndBreak(tier != Tiers.WOOD ? 1 : 2, livingOwner, (living) -> living.broadcastBreakEvent(EquipmentSlot.MAINHAND));
-            }
+        BlockPos pos = this.blockPosition();
+        if (this.level.getBlockState(pos).getBlock() == Blocks.COBWEB) {
+            this.level.destroyBlock(pos, true, this.getOwner());
         }
 
-        if (this.wasInGround) return;
+        if (!this.isNoGravity()) return;
         double loyaltyLevel = (double)this.entityData.get(DATA_LOYALTY_LEVEL);
         if (!this.inGround || loyaltyLevel > 0D) {
             if (this.deltaFirstMovement == null) this.deltaFirstMovement = this.getDeltaMovement();
@@ -78,14 +85,11 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
 
                 Vec3 deltaDifference = new Vec3(this.entityData.get(DATA_PLAYER_X), this.entityData.get(DATA_PLAYER_Y), this.entityData.get(DATA_PLAYER_Z));
                 double dif = newMovement.length() / deltaDifference.length();
-                newMovement = deltaDifference.scale(dif * loyaltyLevel);
-            } else if (this.tickCount >= 70 || !this.isNoGravity()) this.deltaFirstMovement = this.deltaFirstMovement.add(0D, 0.025D, 0D);
+                newMovement = deltaDifference.scale(dif * (loyaltyLevel * 2));
+            } else if (this.tickCount >= 70) this.deltaFirstMovement = this.deltaFirstMovement.add(0D, 0.025D, 0D);
             this.setDeltaMovement(newMovement);
             this.spin++;
-        } else {
-            this.wasInGround = true;
-            this.setNoGravity(false);
-        }
+        } else this.setNoGravity(false);
     }
 
     @Override
@@ -97,14 +101,15 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
         if (!this.level.isClientSide() && hitResultEntity == owner ) {
             ItemStack boomerangStack = this.getItem();
             float crit;
-            if (this.wasInGround || !this.dealtDamage || this.isNoPhysics()) crit = 0;
+            if (!this.isNoGravity() || !this.dealtDamage || this.isNoPhysics()) crit = 0;
             else crit = BoomerangItem.getCrit(boomerangStack) + 20F;
 
             BoomerangItem.setCrit(boomerangStack, crit, this.level.getGameTime());
             this.setItem(boomerangStack);
+
             boolean flag = true;
-            if (owner.getMainHandItem().isEmpty()) owner.setItemInHand(InteractionHand.MAIN_HAND, boomerangStack);
-            else if (owner.getOffhandItem().isEmpty()) owner.setItemInHand(InteractionHand.OFF_HAND, boomerangStack);
+            if (owner.getMainHandItem().isEmpty() && this.pickup == Pickup.ALLOWED) owner.setItemInHand(InteractionHand.MAIN_HAND, boomerangStack);
+            else if (owner.getOffhandItem().isEmpty() && this.pickup == Pickup.ALLOWED) owner.setItemInHand(InteractionHand.OFF_HAND, boomerangStack);
             else flag = owner instanceof Player player && this.tryPickup(player);
             if (flag) {
                 owner.take(this, 1);
@@ -152,14 +157,13 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected Item getDefaultItem() {
-        return BrassArmoryItems.WOOD_BOOMERANG.get();
+        return BrassArmoryItems.WOODEN_BOOMERANG.get();
     }
 
     @Override
     @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.putBoolean("wasInGround", this.wasInGround);
         compoundTag.putDouble("BAX", this.deltaFirstMovement.x);
         compoundTag.putDouble("BAY", this.deltaFirstMovement.y);
         compoundTag.putDouble("BAZ", this.deltaFirstMovement.z);
@@ -169,7 +173,6 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.wasInGround = compoundTag.getBoolean("wasInGround");
         double x = compoundTag.getDouble("BAX");
         double y = compoundTag.getDouble("BAY");
         double z = compoundTag.getDouble("BAZ");

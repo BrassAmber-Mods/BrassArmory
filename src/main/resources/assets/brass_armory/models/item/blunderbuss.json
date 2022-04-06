@@ -1,0 +1,33 @@
+{
+  "parent": "brass_armory:item/musket",
+  "textures": {
+    "layer0": "brass_armory:item/guns/blunderbuss"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "menu": 1
+      },
+    "model": "brass_armory:item/blunderbuss_loading_1"
+    },
+    {
+      "predicate": {
+        "loading": 1
+      },
+      "model": "brass_armory:item/blunderbuss_loading_2"
+    },
+    {
+      "predicate": {
+        "loading": 1,
+        "status": 1
+      },
+      "model": "brass_armory:item/blunderbuss"
+    },
+    {
+      "predicate": {
+        "loaded": 1
+      },
+      "model": "brass_armory:item/blunderbuss_loaded"
+    }
+  ]
+}

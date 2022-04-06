@@ -1,0 +1,11 @@
+{
+  "parent": "brass_armory:item/diamond_halberd",
+  "textures": {
+    "layer0": "brass_armory:item/wood/wooden_halberd"
+  },
+  "overrides": [
+    {
+      "predicate": { "stance": 1 }, "model": "brass_armory:item/wooden_halberd_stance"
+    }
+  ]
+}

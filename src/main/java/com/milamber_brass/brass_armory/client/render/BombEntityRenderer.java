@@ -1,6 +1,6 @@
 package com.milamber_brass.brass_armory.client.render;
 
-import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
+import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
 import com.milamber_brass.brass_armory.item.BombItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;

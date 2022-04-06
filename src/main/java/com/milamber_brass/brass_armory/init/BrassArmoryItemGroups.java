@@ -11,7 +11,7 @@ public class BrassArmoryItemGroups {
         @Nonnull
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(BrassArmoryItems.DIAMOND_SPEAR.get());
+            return new ItemStack(BrassArmoryItems.DIAMOND_BATTLEAXE.get());
         }
     };
 

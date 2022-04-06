@@ -5,7 +5,7 @@
   },
   "overrides": [
     {
-      "predicate": { "blocking": 1 }, "model": "brass_armory:item/iron_halberd_block"
+      "predicate": { "stance": 1 }, "model": "brass_armory:item/iron_halberd_stance"
     }
   ]
 }

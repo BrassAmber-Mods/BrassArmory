@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
+import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -74,7 +75,7 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
                     ItemStack otherItemStack = player.getItemInHand(mainHand ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                     if (otherItemStack.getItem() instanceof MaceItem otherMace) {
                         otherMace.smash(player, level, vec, maceStack, otherItemStack);
-                        otherItemStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+                        maceStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.MAIN_HAND));
                         otherItemStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.OFF_HAND));
                     } else {
                         smash(player, level, vec, maceStack, null);
@@ -88,6 +89,7 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private void smash(Player player, Level level, Vec3 vec, ItemStack maceStack, @Nullable ItemStack otherMaceStack) {
         double x = vec.x; double y = vec.y; double z = vec.z;
         AABB aabb = (new AABB(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D)).inflate(8.0D);
@@ -120,7 +122,7 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
 
                     if (finalDMG > 0) {
                         entity.hurt(DamageSource.playerAttack(player), (totalDMG + bonusDMG) * seenPercent);
-                        player.crit(entity);
+                        if (entity instanceof LivingEntity) player.crit(entity);
                     }
                 }
                 if (entityDistance <= 5.0D && entity instanceof LivingEntity living) {
@@ -172,13 +174,7 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    public int getCustomUseDuration(ItemStack maceStack, Player player) {
-        return this.getUseDuration(maceStack) - player.getUseItemRemainingTicks();
-    }
-
-    @Override
-    public int getChargeDuration(ItemStack itemStack) {
-        return 30;
+    public float getChargeDuration(ItemStack itemStack) {
+        return 20;
     }
 }

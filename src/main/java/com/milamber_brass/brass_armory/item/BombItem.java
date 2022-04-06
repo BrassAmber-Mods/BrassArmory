@@ -1,7 +1,7 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.milamber_brass.brass_armory.entity.bomb.BombEntity;
-import com.milamber_brass.brass_armory.entity.bomb.BombType;
+import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
+import com.milamber_brass.brass_armory.entity.projectile.bomb.BombType;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -45,6 +45,7 @@ public class BombItem extends Item {
         return InteractionResultHolder.sidedSuccess(bombStack, level.isClientSide());
     }
 
+    @ParametersAreNonnullByDefault
     private void throwBomb(Level level, Player player, InteractionHand interactionHand, ItemStack bombStack, float power) {
         if (!level.isClientSide) {
             boolean mainHandFlag = interactionHand == InteractionHand.MAIN_HAND;
@@ -95,25 +96,29 @@ public class BombItem extends Item {
     @Override //Makes the bomb item not twitch in a player's hand while the fuse is burning
     @ParametersAreNonnullByDefault
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return !oldStack.getItem().equals(newStack.getItem());
+        return !oldStack.getItem().equals(newStack.getItem()) || slotChanged;
     }
 
     public BombType getBombType() {
         return this.bombType;
     }
 
+    @ParametersAreNonnullByDefault
     public static void setFuseLength(ItemStack bombStack, int fuse) {
         bombStack.getOrCreateTag().putInt("BrassArmoryFuseLength", Math.min(60, fuse));
     }
 
+    @ParametersAreNonnullByDefault
     public static int getFuseLength(ItemStack bombStack) {
         return bombStack.getOrCreateTag().getInt("BrassArmoryFuseLength");
     }
 
+    @ParametersAreNonnullByDefault
     public static void setFuseLit(ItemStack bombStack, boolean fuseLit) {
         bombStack.getOrCreateTag().putBoolean("BrassArmoryFuseLit", fuseLit);
     }
 
+    @ParametersAreNonnullByDefault
     public static boolean getFuseLit(ItemStack bombStack) {
         return bombStack.getOrCreateTag().getBoolean("BrassArmoryFuseLit");
     }

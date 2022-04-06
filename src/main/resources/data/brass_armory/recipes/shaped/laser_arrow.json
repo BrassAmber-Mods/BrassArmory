@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X",
+    "#",
+    "Y"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:rods/wooden"
+    },
+    "X": {
+      "item": "minecraft:redstone_block"
+    },
+    "Y": {
+      "tag": "forge:feathers"
+    }
+  },
+  "result": {
+    "item": "brass_armory:laser_arrow",
+    "count": 4
+  }
+}

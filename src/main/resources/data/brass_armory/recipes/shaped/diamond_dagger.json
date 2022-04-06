@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "group" : "Brass Armory-ThrowingKnife",
+  "pattern": [
+    "IP"
+  ],
+  "key": {
+    "P": {
+      "tag": "forge:gems/diamond"
+    },
+    "I": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "brass_armory:diamond_dagger",
+    "count": 1
+  }
+}
