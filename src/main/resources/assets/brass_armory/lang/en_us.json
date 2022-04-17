@@ -4,7 +4,7 @@
   "entity.brass_armory.wooden_spear": "Wooden Spear",
   "entity.brass_armory.bomb": "Bomb",
 
-  "block.brass_armory.rope" : "Rope",
+  "block.brass_armory.explorers_rope" : "Explorer's Rope",
   
   "item.brass_armory.dirt_arrow" : "Dirt Arrow",
   "item.brass_armory.ex_arrow" : "Ex Arrow",
@@ -71,18 +71,25 @@
   "item.brass_armory.diamond_flail" : "Diamond Flail",
   "item.brass_armory.netherite_flail" : "Netherite Flail",
 
+  "item.brass_armory.golden_spiky_ball" : "Golden Spiky Ball",
+  "item.brass_armory.wooden_spiky_ball" : "Wooden Spiky Ball",
+  "item.brass_armory.stone_spiky_ball" : "Stone Spiky Ball",
+  "item.brass_armory.iron_spiky_ball" : "Iron Spiky Ball",
+  "item.brass_armory.diamond_spiky_ball" : "Diamond Spiky Ball",
+  "item.brass_armory.netherite_spiky_ball" : "Netherite Spiky Ball",
+
   "item.brass_armory.flintlock_pistol" : "Flintlock Pistol",
   "item.brass_armory.musket" : "Musket",
   "item.brass_armory.blunderbuss" : "Blunderbuss",
   "item.brass_armory.gun_stock" : "Gun Stock",
-  "item.brass_armory.musket_barrel" : "Musket Barrel",
-  "item.brass_armory.blunderbuss_barrel" : "Blunderbuss Barrel",
+  "item.brass_armory.musket_parts" : "Musket Parts",
+  "item.brass_armory.blunderbuss_parts" : "Blunderbuss Parts",
   "item.brass_armory.musket_ball" : "Musket Ball",
   "item.brass_armory.bundle_shot" : "Bundle Shot",
 
   "item.brass_armory.longbow" : "Longbow",
   "item.brass_armory.fire_rod" : "Fire Rod",
-  "itemGroup.brass_armory": "Brass Armory",
+  "itemGroup.brass_armory": "Brass's Armory",
 
   "subtitles.brass_armory.entity.bomb.lit": "Bomb fuse lit",
   "subtitles.brass_armory.entity.bomb.throw": "Bomb flies",

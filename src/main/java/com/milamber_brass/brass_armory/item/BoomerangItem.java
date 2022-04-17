@@ -1,7 +1,7 @@
 package com.milamber_brass.brass_armory.item;
 
 import com.google.common.collect.ImmutableSet;
-import com.milamber_brass.brass_armory.entity.projectile.AbstractThrownWeaponEntity;
+import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BoomerangEntity;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
@@ -77,6 +77,7 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return super.canApplyAtEnchantingTable(stack, enchantment) || properEnchantments.contains(enchantment);
     }

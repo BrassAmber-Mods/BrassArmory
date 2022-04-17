@@ -54,7 +54,7 @@ public class BulletEntity extends AbstractArrow {
     @Override
     @ParametersAreNonnullByDefault
     protected void onHit(HitResult hitResult) {
-        if (this.hitPerTick > 8) {
+        if (++this.hitPerTick > 8) {
             this.discard();
             return;
         }
@@ -64,12 +64,11 @@ public class BulletEntity extends AbstractArrow {
             this.onHitEntity((EntityHitResult)hitResult);
             if (((EntityHitResult)hitResult).getEntity() instanceof LivingEntity) {
                 this.gameEvent(GameEvent.PROJECTILE_LAND, this.getOwner());
-            } else return;
+            }
         } else if (resultType == HitResult.Type.BLOCK) {
             this.onHitBlock((BlockHitResult)hitResult);
             this.gameEvent(GameEvent.PROJECTILE_LAND, this.getOwner());
         }
-        this.hitPerTick++;
     }
 
     @Override
@@ -80,17 +79,17 @@ public class BulletEntity extends AbstractArrow {
 
         if (blockState.getBlock() instanceof IronBarsBlock && blockState.getMaterial().equals(Material.GLASS)) {
             this.level.destroyBlock(pos, true, this.getOwner());
-            this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.8D));
         } else {
-            double solidity;
-            if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) solidity = 0.3D;
-            else if (blockState.is(BlockTags.MINEABLE_WITH_AXE)) solidity = 0.125D;
-            else solidity = 0D;
+            double hardness;
+            if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) hardness = 0.85D;
+            else if (blockState.is(BlockTags.MINEABLE_WITH_AXE)) hardness = 0.5D;
+            else hardness = 0D;
 
-            if (blockState.is(Tags.Blocks.STORAGE_BLOCKS)) solidity += 0.075D;
 
-            if (solidity > 0D && this.getDeltaMovement().length() > 0.55D) {
-                this.setDeltaMovement(ricochet(this.getDeltaMovement(), blockHitResult.getDirection().getAxis(), this.random, solidity));
+            if (hardness > 0D && this.getDeltaMovement().length() > 0.55D) {
+                if (blockState.is(Tags.Blocks.STORAGE_BLOCKS)) hardness += 0.1D;
+                this.setDeltaMovement(ricochet(this.getDeltaMovement(), blockHitResult.getDirection().getAxis(), this.random, hardness));
                 HitResult newHitResult = ProjectileUtil.getHitResult(this, this::canHitEntity);
                 if (newHitResult.getType() == BLOCK) this.onHit(newHitResult);
             } else super.onHitBlock(blockHitResult);
@@ -100,9 +99,9 @@ public class BulletEntity extends AbstractArrow {
     @Nonnull
     @ParametersAreNonnullByDefault
     public static Vec3 ricochet(Vec3 deltaMovement, Direction.Axis axis, Random random, double hardness) {
-        double newX = deltaMovement.x * (axis.equals(Direction.Axis.X) ? 0.75D + hardness : 0.9D);
-        double newY = deltaMovement.y * (axis.equals(Direction.Axis.Y) ? 0.75D + hardness : 0.9D);
-        double newZ = deltaMovement.z * (axis.equals(Direction.Axis.Z) ? 0.75D + hardness : 0.9D);
+        double newX = deltaMovement.x * (axis.equals(Direction.Axis.X) ? -hardness : hardness);
+        double newY = deltaMovement.y * (axis.equals(Direction.Axis.Y) ? -hardness : hardness);
+        double newZ = deltaMovement.z * (axis.equals(Direction.Axis.Z) ? -hardness : hardness);
         return new Vec3(newX, newY, newZ).add(random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D);
     }
 

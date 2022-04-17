@@ -1,10 +1,10 @@
 package com.milamber_brass.brass_armory.init;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.entity.projectile.*;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BouncyBombEntity;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.StickyBombEntity;
-import com.milamber_brass.brass_armory.entity.projectile.*;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -80,6 +80,19 @@ public class BrassArmoryEntityTypes {
                     .clientTrackingRange(4)
                     .updateInterval(10).build("battleaxe"));
 
+    public static final RegistryObject<EntityType<SpikyBallEntity>> SPIKY_BALL = ENTITY_TYPES.register("spiky_ball", () ->
+            EntityType.Builder.<SpikyBallEntity>of(SpikyBallEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10).build("spiky_ball"));
+
+    //------------------------------------------------------
+
+    public static final RegistryObject<EntityType<FlailHeadEntity>> FLAIL_HEAD = ENTITY_TYPES.register("flail_head", () ->
+            EntityType.Builder.<FlailHeadEntity>of(FlailHeadEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10).build("flail_head"));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);

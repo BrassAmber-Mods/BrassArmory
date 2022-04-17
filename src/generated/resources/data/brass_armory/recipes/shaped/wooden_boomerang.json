@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MLM",
+    "L  ",
+    "M  "
+  ],
+  "key": {
+    "M": {
+      "tag": "minecraft:planks"
+    },
+    "L": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "brass_armory:wooden_boomerang"
+  }
+}

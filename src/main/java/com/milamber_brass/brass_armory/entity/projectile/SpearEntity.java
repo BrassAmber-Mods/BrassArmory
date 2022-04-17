@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
 import com.milamber_brass.brass_armory.ArmoryUtil;
+import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.SpearItem;
@@ -28,7 +29,7 @@ public class SpearEntity extends AbstractThrownWeaponEntity {
     @Override
     @ParametersAreNonnullByDefault
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (entityHitResult.getEntity() instanceof LivingEntity living && this.getItem().getItem() instanceof SpearItem) {
+        if (entityHitResult.getEntity() instanceof LivingEntity living && living.getType() != EntityType.ENDERMAN && this.getItem().getItem() instanceof SpearItem) {
             ArmoryUtil.impaleLivingEntity(living, this.entityData.get(DATA_DAMAGE_VALUE), this.level.random);
         }
         super.onHitEntity(entityHitResult);

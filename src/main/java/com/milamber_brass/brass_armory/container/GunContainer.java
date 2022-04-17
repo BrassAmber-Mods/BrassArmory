@@ -107,7 +107,10 @@ public class GunContainer extends AbstractContainerMenu {
 
     @Nonnull
     public static MenuConstructor getServerContainer(ItemStack stack) {
-        return (id, playerInv, player) -> new GunContainer(id, playerInv, new ItemStackHandler(2), stack);
+        return (id, playerInv, player) -> {
+            stack.getOrCreateTag().putBoolean("InGunContainerMenu", true);
+            return new GunContainer(id, playerInv, new ItemStackHandler(2), stack);
+        };
     }
 
     @Override
@@ -128,6 +131,7 @@ public class GunContainer extends AbstractContainerMenu {
             AbstractGunItem.addStack(this.gunStack, ammoStack, "BAAmmo");
             AbstractGunItem.addStack(this.gunStack, powderStack, "BAPowder");
             AbstractGunItem.setLoad(this.gunStack, 1);
+            this.gunStack.getOrCreateTag().putBoolean("InGunContainerMenu", false);
         } else {
             player.drop(ammoStack, true);
             player.drop(powderStack, true);

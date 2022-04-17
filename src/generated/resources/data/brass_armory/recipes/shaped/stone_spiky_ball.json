@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " M ",
+    "MLM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:cobblestone"
+    },
+    "L": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "brass_armory:stone_spiky_ball"
+  }
+}

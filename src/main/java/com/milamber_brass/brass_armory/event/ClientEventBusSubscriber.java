@@ -13,7 +13,7 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmoryMenus;
 import com.milamber_brass.brass_armory.init.BrassArmoryModels;
 import com.milamber_brass.brass_armory.item.BombItem;
-import com.milamber_brass.brass_armory.item.FireRodItem;
+import com.milamber_brass.brass_armory.item.FlailItem;
 import com.milamber_brass.brass_armory.item.HalberdItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
@@ -45,9 +45,12 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(BrassArmoryEntityTypes.BA_ARROW.get(), BAArrowRenderer::new);
         EntityRenderers.register(BrassArmoryEntityTypes.BULLET.get(), BulletRenderer::new);
 
-        EntityRenderers.register(BrassArmoryEntityTypes.BOMB.get(), BombEntityRenderer::new);
-        EntityRenderers.register(BrassArmoryEntityTypes.BOUNCY_BOMB.get(), BombEntityRenderer::new);
-        EntityRenderers.register(BrassArmoryEntityTypes.STICKY_BOMB.get(), BombEntityRenderer::new);
+        EntityRenderers.register(BrassArmoryEntityTypes.BOMB.get(), RollingItemEntityRenderer::new);
+        EntityRenderers.register(BrassArmoryEntityTypes.BOUNCY_BOMB.get(), RollingItemEntityRenderer::new);
+        EntityRenderers.register(BrassArmoryEntityTypes.STICKY_BOMB.get(), RollingItemEntityRenderer::new);
+
+        EntityRenderers.register(BrassArmoryEntityTypes.SPIKY_BALL.get(), RollingItemEntityRenderer::new);
+        EntityRenderers.register(BrassArmoryEntityTypes.FLAIL_HEAD.get(), FlailHeadEntityRenderer::new);
 
         EntityRenderers.register(BrassArmoryEntityTypes.BOOMERANG.get(), BoomerangEntityRenderer::new);
         EntityRenderers.register(BrassArmoryEntityTypes.SPEAR.get(), SpearEntityRenderer::new);
@@ -66,9 +69,10 @@ public class ClientEventBusSubscriber {
                     Entity entity = living != null ? living : bombStack.getEntityRepresentation();
                     if (!BombItem.getFuseLit(bombStack) || entity == null) return 1.0F;
                     else {
-                        if (clientLevel == null && entity.level instanceof ClientLevel) clientLevel = (ClientLevel)entity.level;
+                        if (clientLevel == null && entity.level instanceof ClientLevel)
+                            clientLevel = (ClientLevel) entity.level;
                         if (clientLevel == null || !(bombStack.getItem() instanceof BombItem)) return 1.0F;
-                        return ((float)BombItem.getFuseLength(bombStack) / 60F);
+                        return ((float) BombItem.getFuseLength(bombStack) / 60F);
                     }
                 });
                 ItemProperties.register(BombType.getBombItem(bombType), new ResourceLocation("defused"), (bombStack, clientLevel, living, k) -> {
@@ -78,40 +82,48 @@ public class ClientEventBusSubscriber {
             }
 
             //HALBERDS
-            for (HalberdItem halberdItem : new HalberdItem[] {
+            for (HalberdItem halberdItem : new HalberdItem[]{
                     BrassArmoryItems.WOODEN_HALBERD.get(), BrassArmoryItems.STONE_HALBERD.get(),
                     BrassArmoryItems.IRON_HALBERD.get(), BrassArmoryItems.GOLDEN_HALBERD.get(),
-                    BrassArmoryItems.DIAMOND_HALBERD.get(), BrassArmoryItems.NETHERITE_HALBERD.get() }) {
+                    BrassArmoryItems.DIAMOND_HALBERD.get(), BrassArmoryItems.NETHERITE_HALBERD.get()}) {
                 ItemProperties.register(halberdItem, new ResourceLocation("stance"), (halberdStack, clientLevel, living, k) ->
                         HalberdItem.getStance(halberdStack) ? 1.0F : 0.0F);
             }
 
             //SPEARS
-            for (AbstractThrownWeaponItem spearItem : new AbstractThrownWeaponItem[] {
+            for (AbstractThrownWeaponItem spearItem : new AbstractThrownWeaponItem[]{
                     BrassArmoryItems.WOODEN_SPEAR.get(), BrassArmoryItems.STONE_SPEAR.get(),
                     BrassArmoryItems.IRON_SPEAR.get(), BrassArmoryItems.GOLDEN_SPEAR.get(),
                     BrassArmoryItems.DIAMOND_SPEAR.get(), BrassArmoryItems.NETHERITE_SPEAR.get(),
-                    BrassArmoryItems.FIRE_ROD.get() }) {
+                    BrassArmoryItems.FIRE_ROD.get(),
+                    BrassArmoryItems.WOODEN_FLAIL.get(), BrassArmoryItems.STONE_FLAIL.get(),
+                    BrassArmoryItems.IRON_FLAIL.get(), BrassArmoryItems.GOLDEN_FLAIL.get(),
+                    BrassArmoryItems.DIAMOND_FLAIL.get(), BrassArmoryItems.NETHERITE_FLAIL.get()}) {
                 ItemProperties.register(spearItem, new ResourceLocation("throwing"), (spearStack, clientLevel, living, k) ->
                         living != null && living.isUsingItem() && living.getUseItem() == spearStack ? 1.0F : 0.0F);
             }
 
             //FIRE RODS
-            for (FireRodItem fireRod : new FireRodItem[] {
-                    BrassArmoryItems.FIRE_ROD.get()}) {
-                ItemProperties.register(fireRod, new ResourceLocation("extinguished"), (fireRodStack, clientLevel, living, k) ->
-                        fireRodStack.getEntityRepresentation() instanceof FireRodEntity fireRodEntity && fireRodEntity.hasBeenExtinguished() ? 1.0F : 0.0F);
+            ItemProperties.register(BrassArmoryItems.FIRE_ROD.get(), new ResourceLocation("extinguished"), (fireRodStack, clientLevel, living, k) ->
+                    fireRodStack.getEntityRepresentation() instanceof FireRodEntity fireRodEntity && fireRodEntity.hasBeenExtinguished() ? 1.0F : 0.0F);
 
-                ItemProperties.register(BrassArmoryItems.FIRE_ROD.get(), new ResourceLocation("gui"), (fireRodStack, clientLevel, living, k) ->
-                        living == null || living.isHolding(BrassArmoryItems.FIRE_ROD.get()) ? 0.0F : 1.0F);
+            ItemProperties.register(BrassArmoryItems.FIRE_ROD.get(), new ResourceLocation("gui"), (fireRodStack, clientLevel, living, k) ->
+                    living == null || living.isHolding(BrassArmoryItems.FIRE_ROD.get()) ? 0.0F : 1.0F);
 
+            //FLAILS
+            for (FlailItem flailItem : new FlailItem[]{
+                    BrassArmoryItems.WOODEN_FLAIL.get(), BrassArmoryItems.STONE_FLAIL.get(),
+                    BrassArmoryItems.IRON_FLAIL.get(), BrassArmoryItems.GOLDEN_FLAIL.get(),
+                    BrassArmoryItems.DIAMOND_FLAIL.get(), BrassArmoryItems.NETHERITE_FLAIL.get()}) {
+                ItemProperties.register(flailItem, new ResourceLocation("no_head"), (stack, clientLevel, living, k) ->
+                        living != null && flailItem.isExtended(living, stack) ? 1.0F : 0.0F);
             }
 
             //GUNS
-            for (AbstractGunItem gunItem : new AbstractGunItem[] {
-                    BrassArmoryItems.FLINTLOCK_PISTOL.get(), BrassArmoryItems.MUSKET.get(), BrassArmoryItems.BLUNDERBUSS.get() }) {
+            for (AbstractGunItem gunItem : new AbstractGunItem[]{
+                    BrassArmoryItems.FLINTLOCK_PISTOL.get(), BrassArmoryItems.MUSKET.get(), BrassArmoryItems.BLUNDERBUSS.get()}) {
                 ItemProperties.register(gunItem, new ResourceLocation("loading"), (stack, clientLevel, living, k) ->
-                        living != null && living.isUsingItem() ? 1.0F : 0.0F);
+                        living != null && living.isUsingItem() && AbstractGunItem.getLoad(stack) == 1 ? 1.0F : 0.0F);
 
                 ItemProperties.register(gunItem, new ResourceLocation("status"), (stack, clientLevel, living, k) ->
                         living != null && living.isUsingItem() ? AbstractGunItem.getLoadProgress(stack) / 20F : 0.0F);
@@ -120,12 +132,12 @@ public class ClientEventBusSubscriber {
                         AbstractGunItem.getLoad(stack) == 2 ? 1.0F : 0.0F);
 
                 ItemProperties.register(gunItem, new ResourceLocation("menu"), (stack, clientLevel, living, k) ->
-                        living instanceof Player player && player.containerMenu instanceof GunContainer ? 1.0F : 0.0F);
+                        living instanceof Player player && player.containerMenu instanceof GunContainer && stack.hasTag() && stack.getOrCreateTag().getBoolean("InGunContainerMenu") ? 1.0F : 0.0F);
             }
 
             //LONGBOW
             ItemProperties.register(BrassArmoryItems.LONGBOW.get(), new ResourceLocation("pull"), (stack, clientLevel, living, k) ->
-                    living == null ? 0F : (living.getUseItem() != stack ? 0.0F : (float)(stack.getUseDuration() - living.getUseItemRemainingTicks()) / 30.0F));
+                    living == null ? 0F : (living.getUseItem() != stack ? 0.0F : (float) (stack.getUseDuration() - living.getUseItemRemainingTicks()) / 30.0F));
 
             ItemProperties.register(BrassArmoryItems.LONGBOW.get(), new ResourceLocation("pulling"), (stack, clientLevel, living, k) ->
                     living != null && living.isUsingItem() && living.getUseItem() == stack ? 1.0F : 0.0F);

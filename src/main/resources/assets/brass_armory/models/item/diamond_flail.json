@@ -25,18 +25,18 @@
 			"translation": [-0.75, 5.5, 2.25],
 			"scale": [0.68, 0.68, 0.68]
 		},
-		"ground": {
-			"translation": [0, 2.25, 0],
-			"scale": [0.75, 0.75, 0.5]
-		},
-		"gui": {
-			"rotation": [0, -180, 0],
-			"translation": [-0.5, 0.25, 0]
-		},
 		"fixed": {
 			"rotation": [0, 0, 6],
 			"translation": [-0.25, 0.5, 0],
 			"scale": [1.06, 1.06, 1]
 		}
-	}
+	},
+	"overrides": [
+		{
+			"predicate": { "throwing": 1 }, "model": "brass_armory:item/alts/diamond_flail_throwing"
+		},
+		{
+			"predicate": { "no_head": 1 }, "model": "brass_armory:item/alts/diamond_flail_no_head"
+		}
+	]
 }

@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.event;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.item.LongBowItem;
 import com.milamber_brass.brass_armory.item.MaceItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
@@ -10,7 +11,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.ItemInHandRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
@@ -19,10 +22,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -147,5 +153,12 @@ public class ClientEventSubscriber {
                 event.setFOV(event.getFOV() * (1.0F - f1 * (useItem instanceof LongBowItem ? 0.15F : 0.075F)));
             }
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent()
+    public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
+        RenderType cutoutRenderType = RenderType.cutout();
+        ItemBlockRenderTypes.setRenderLayer(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), cutoutRenderType);
     }
 }

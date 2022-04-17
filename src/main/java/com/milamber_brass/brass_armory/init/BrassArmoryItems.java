@@ -256,28 +256,48 @@ public class BrassArmoryItems {
 
     //---------------------------------------------------------------------------------------------------------
 
+    public static final RegistryObject<SpikyBallItem> GOLDEN_SPIKY_BALL =
+            REGISTRY.register("golden_spiky_ball", () -> new SpikyBallItem(Tiers.GOLD, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY), 16));
+
+    public static final RegistryObject<SpikyBallItem> WOODEN_SPIKY_BALL =
+            REGISTRY.register("wooden_spiky_ball", () -> new SpikyBallItem(Tiers.WOOD, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY), 32));
+
+    public static final RegistryObject<SpikyBallItem> STONE_SPIKY_BALL =
+            REGISTRY.register("stone_spiky_ball", () -> new SpikyBallItem(Tiers.STONE, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY), 8));
+
+    public static final RegistryObject<SpikyBallItem> IRON_SPIKY_BALL =
+            REGISTRY.register("iron_spiky_ball", () -> new SpikyBallItem(Tiers.IRON, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY), 4));
+
+    public static final RegistryObject<SpikyBallItem> DIAMOND_SPIKY_BALL =
+            REGISTRY.register("diamond_spiky_ball", () -> new SpikyBallItem(Tiers.DIAMOND, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY), 2));
+
+    public static final RegistryObject<SpikyBallItem> NETHERITE_SPIKY_BALL =
+            REGISTRY.register("netherite_spiky_ball", () -> new SpikyBallItem(Tiers.NETHERITE, new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY), 0));
+
+    //---------------------------------------------------------------------------------------------------------
+
     public static final RegistryObject<FlailItem> GOLDEN_FLAIL =
-            REGISTRY.register("golden_flail", () -> new FlailItem(Tiers.GOLD, 3,
+            REGISTRY.register("golden_flail", () -> new FlailItem(Tiers.GOLD, 3, GOLDEN_SPIKY_BALL.get(),
                     new Item.Properties().durability(32).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> WOODEN_FLAIL =
-            REGISTRY.register("wooden_flail", () -> new FlailItem(Tiers.WOOD, 3,
+            REGISTRY.register("wooden_flail", () -> new FlailItem(Tiers.WOOD, 3, WOODEN_SPIKY_BALL.get(),
                     new Item.Properties().durability(59).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> STONE_FLAIL =
-            REGISTRY.register("stone_flail", () -> new FlailItem(Tiers.STONE, 3,
+            REGISTRY.register("stone_flail", () -> new FlailItem(Tiers.STONE, 3, STONE_SPIKY_BALL.get(),
                     new Item.Properties().durability(131).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> IRON_FLAIL =
-            REGISTRY.register("iron_flail", () -> new FlailItem(Tiers.IRON, 3,
+            REGISTRY.register("iron_flail", () -> new FlailItem(Tiers.IRON, 3, IRON_SPIKY_BALL.get(),
                     new Item.Properties().durability(250).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> DIAMOND_FLAIL =
-            REGISTRY.register("diamond_flail", () -> new FlailItem(Tiers.DIAMOND, 3,
+            REGISTRY.register("diamond_flail", () -> new FlailItem(Tiers.DIAMOND, 3, DIAMOND_SPIKY_BALL.get(),
                     new Item.Properties().durability(1562).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<FlailItem> NETHERITE_FLAIL =
-            REGISTRY.register("netherite_flail", () -> new FlailItem(Tiers.NETHERITE, 3,
+            REGISTRY.register("netherite_flail", () -> new FlailItem(Tiers.NETHERITE, 3, NETHERITE_SPIKY_BALL.get(),
                     new Item.Properties().defaultDurability(2031).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     //---------------------------------------------------------------------------------------------------------
@@ -297,11 +317,11 @@ public class BrassArmoryItems {
     public static final RegistryObject<Item> GUN_STOCK =
             REGISTRY.register("gun_stock", () -> new Item(new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<Item> MUSKET_BARREL =
-            REGISTRY.register("musket_barrel", () -> new Item(new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+    public static final RegistryObject<Item> MUSKET_PARTS =
+            REGISTRY.register("musket_parts", () -> new Item(new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<Item> BLUNDERBUSS_BARREL =
-            REGISTRY.register("blunderbuss_barrel", () -> new Item(new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+    public static final RegistryObject<Item> BLUNDERBUSS_PARTS =
+            REGISTRY.register("blunderbuss_parts", () -> new Item(new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     public static final RegistryObject<Item> MUSKET_BALL =
             REGISTRY.register("musket_ball", () -> new Item(new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY).stacksTo(16)));
@@ -314,8 +334,8 @@ public class BrassArmoryItems {
     public static final RegistryObject<LongBowItem> LONGBOW =
             REGISTRY.register("longbow", () -> new LongBowItem(new Item.Properties().defaultDurability(512).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
-    public static final RegistryObject<BlockItem> ROPE_ITEM =
-            REGISTRY.register("rope", () -> new BlockItem(BrassArmoryBlocks.ROPE.get(), new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+    public static final RegistryObject<BlockItem> EXPLORERS_ROPE =
+            REGISTRY.register("explorers_rope", () -> new BlockItem(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     // Attach event handler for registry.
     public static void register(IEventBus eventBus) {

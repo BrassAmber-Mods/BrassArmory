@@ -1,0 +1,6 @@
+{
+	"parent": "brass_armory:item/alts/diamond_flail_throwing",
+	"textures": {
+		"layer0": "brass_armory:item/iron/iron_flail"
+	}
+}

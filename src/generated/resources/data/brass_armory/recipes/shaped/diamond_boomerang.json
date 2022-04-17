@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MLM",
+    "L  ",
+    "M  "
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:gems/diamond"
+    },
+    "L": {
+      "tag": "forge:ingots/gold"
+    }
+  },
+  "result": {
+    "item": "brass_armory:diamond_boomerang"
+  }
+}

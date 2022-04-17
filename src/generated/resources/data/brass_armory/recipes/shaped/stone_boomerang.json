@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MLM",
+    "L  ",
+    "M  "
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:cobblestone"
+    },
+    "L": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "brass_armory:stone_boomerang"
+  }
+}

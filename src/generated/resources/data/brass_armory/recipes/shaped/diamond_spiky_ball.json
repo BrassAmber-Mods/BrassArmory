@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " M ",
+    "MLM",
+    " M "
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:gems/diamond"
+    },
+    "L": {
+      "tag": "forge:ingots/gold"
+    }
+  },
+  "result": {
+    "item": "brass_armory:diamond_spiky_ball"
+  }
+}

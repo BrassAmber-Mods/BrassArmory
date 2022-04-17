@@ -2,5 +2,13 @@
 	"parent": "brass_armory:item/diamond_flail",
 	"textures": {
 		"layer0": "brass_armory:item/gold/golden_flail"
-	}
+	},
+	"overrides": [
+		{
+			"predicate": { "throwing": 1 }, "model": "brass_armory:item/alts/golden_flail_throwing"
+		},
+		{
+			"predicate": { "no_head": 1 }, "model": "brass_armory:item/alts/golden_flail_no_head"
+		}
+	]
 }

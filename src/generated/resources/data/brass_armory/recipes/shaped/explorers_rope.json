@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:string"
+    }
+  },
+  "result": {
+    "item": "brass_armory:explorers_rope",
+    "count": 3
+  }
+}

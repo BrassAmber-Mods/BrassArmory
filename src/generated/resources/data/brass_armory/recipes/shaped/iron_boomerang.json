@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MLM",
+    "L  ",
+    "M  "
+  ],
+  "key": {
+    "M": {
+      "tag": "forge:ingots/iron"
+    },
+    "L": {
+      "tag": "forge:cobblestone"
+    }
+  },
+  "result": {
+    "item": "brass_armory:iron_boomerang"
+  }
+}

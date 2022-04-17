@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem.BASE_ATTACK_RANGE_UUID;
 
-public class HalberdItem extends TieredItem implements Vanishable {
+public class HalberdItem extends TieredItem implements Vanishable {//Uses vanilla TieredItem since its so different anyway, might change later though
     protected Multimap<Attribute, AttributeModifier> axeModifiers;
     protected final float axeDamage;
     protected final float axeSpeed;

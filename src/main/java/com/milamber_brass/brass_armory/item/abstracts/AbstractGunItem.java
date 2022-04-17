@@ -55,6 +55,10 @@ public abstract class AbstractGunItem extends ProjectileWeaponItem implements Va
         this.recoil = recoil;
     }
 
+    public double getDamageMultiplier() {
+        return this.damageMultiplier;
+    }
+
     @Nonnull
     @Override
     @ParametersAreNonnullByDefault
@@ -79,12 +83,8 @@ public abstract class AbstractGunItem extends ProjectileWeaponItem implements Va
                     MenuProvider container = new SimpleMenuProvider(GunContainer.getServerContainer(stack), TextComponent.EMPTY);
                     NetworkHooks.openGui((ServerPlayer) player, container);
                 }
-                return InteractionResultHolder.consume(player.getItemInHand(interactionHand));
             }
-            case 1 -> {
-                player.startUsingItem(interactionHand);
-                return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
-            }
+            case 1 -> player.startUsingItem(interactionHand);
             default -> {
                 Vec3 view = player.getViewVector(level.isClientSide ? Minecraft.getInstance().getFrameTime() : 0F).scale(-this.recoil);
                 player.push(view.x, view.y, view.z);
@@ -118,9 +118,9 @@ public abstract class AbstractGunItem extends ProjectileWeaponItem implements Va
                         }
                     }
                 }
-                return InteractionResultHolder.consume(player.getItemInHand(interactionHand));
             }
         }
+        return InteractionResultHolder.consume(player.getItemInHand(interactionHand));
     }
 
     @Override

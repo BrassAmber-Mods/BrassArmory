@@ -11,6 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 public class StickyBombEntity extends BombEntity {
 
     public StickyBombEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
@@ -49,23 +51,34 @@ public class StickyBombEntity extends BombEntity {
         return flag;
     }
 
-    @Override //Overrides the bouncing logic for sticky logic
-    protected void bombOnHit(HitResult hitResult) {
-        if (hitResult instanceof EntityHitResult entityHit && !this.level.isClientSide) {
-            Entity mount = entityHit.getEntity();
-            if (this.getOwner() != mount && mount instanceof LivingEntity) this.startRiding(entityHit.getEntity());
+    @Override
+    @ParametersAreNonnullByDefault
+    protected void onHit(HitResult hitResult) {
+        super.onHit(hitResult);
+        this.setDeltaMovement(0, 0, 0);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        if (!this.level.isClientSide) {
+            Entity mount = entityHitResult.getEntity();
+            if (this.getOwner() != mount && mount instanceof LivingEntity) this.startRiding(entityHitResult.getEntity());
         }
-        if (hitResult instanceof BlockHitResult) {
-            Vec3 movement = this.getDeltaMovement();
-            for (double d = 0D; true; d += 0.025D) {
-                Vec3 newMovement = movement.multiply(d, d, d);
-                if (this.isStuck(newMovement)) {
-                    this.moveTo(this.position().add(newMovement));
-                    break;
-                }
+        super.onHitEntity(entityHitResult);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    protected void onHitBlock(BlockHitResult blockHitResult) {
+        Vec3 movement = this.getDeltaMovement();
+        for (double d = 0D; true; d += 0.025D) {
+            Vec3 newMovement = movement.multiply(d, d, d);
+            if (this.isStuck(newMovement)) {
+                this.moveTo(this.position().add(newMovement));
+                break;
             }
         }
-        this.setDeltaMovement(0, 0, 0);
     }
 
     @Override

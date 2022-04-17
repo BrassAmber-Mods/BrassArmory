@@ -4,7 +4,7 @@ package com.milamber_brass.brass_armory.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.ArmoryUtil;
-import com.milamber_brass.brass_armory.entity.projectile.AbstractThrownWeaponEntity;
+import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.SpearEntity;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import net.minecraft.world.entity.Entity;
@@ -36,11 +36,12 @@ public class SpearItem extends AbstractThrownWeaponItem {
 
     @Override
     @ParametersAreNonnullByDefault
-    protected ImmutableMultimap.Builder<Attribute, AttributeModifier> setDefaultModifiers(Tier tier, int attackDamage, float attackSpeed) {
+    protected ImmutableMultimap.Builder<Attribute, AttributeModifier> setDefaultModifiers(float attackDamage, float attackSpeed) {
         return null;
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (this.defaultModifiers == null) {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();

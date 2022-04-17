@@ -2,7 +2,6 @@ package com.milamber_brass.brass_armory.client.gui;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.container.GunContainer;
-import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -44,9 +43,9 @@ public class GunScreen extends AbstractContainerScreen<GunContainer> {
             LocalPlayer player = mc.player;
             if (player == null) return;
             ItemStack stack = ItemStack.EMPTY;
-            if (player.getMainHandItem().getItem() instanceof AbstractGunItem) {
+            if (player.getMainHandItem().hasTag() && player.getMainHandItem().getOrCreateTag().getBoolean("InGunContainerMenu")) {
                 stack = player.getMainHandItem();
-            } else if (player.getOffhandItem().getItem() instanceof AbstractGunItem) {
+            } else if (player.getOffhandItem().hasTag() && player.getOffhandItem().getOrCreateTag().getBoolean("InGunContainerMenu")) {
                 stack = player.getOffhandItem();
             }
             this.itemRenderer.renderAndDecorateItem(stack, i + 80, j + 24);

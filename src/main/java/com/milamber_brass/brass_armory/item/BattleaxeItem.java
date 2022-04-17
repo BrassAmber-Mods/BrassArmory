@@ -1,6 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.milamber_brass.brass_armory.entity.projectile.AbstractThrownWeaponEntity;
+import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BattleaxeEntity;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;

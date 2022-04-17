@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  S",
+    " SC",
+    "S M"
+  ],
+  "key": {
+    "M": {
+      "item": "brass_armory:diamond_spiky_ball"
+    },
+    "S": {
+      "tag": "forge:rods/wooden"
+    },
+    "C": {
+      "item": "minecraft:chain"
+    }
+  },
+  "result": {
+    "item": "brass_armory:diamond_flail"
+  }
+}

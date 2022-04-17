@@ -12,7 +12,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
@@ -20,16 +20,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class BulletRenderer<T extends BulletEntity> extends EntityRenderer<T> {
-    private static final ResourceLocation RIFT_LOCATION = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/guns/cannonball.png");
-    private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(RIFT_LOCATION);
+    private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/guns/cannonball.png");
+    private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(RESOURCE_LOCATION);
 
     private final ModelPart core;
 
-    public BulletRenderer(EntityRendererProvider.Context rendererProvider) {
-        super(rendererProvider);
+    public BulletRenderer(Context context) {
+        super(context);
         this.shadowRadius = 0.025F;
 
-        ModelPart modelpart = rendererProvider.bakeLayer(BrassArmoryModels.BULLET_MODEL);
+        ModelPart modelpart = context.bakeLayer(BrassArmoryModels.BULLET_MODEL);
         this.core = modelpart.getChild("core");
     }
 
@@ -41,11 +41,13 @@ public class BulletRenderer<T extends BulletEntity> extends EntityRenderer<T> {
     }
 
     @Nonnull
+    @Override
     @ParametersAreNonnullByDefault
     public ResourceLocation getTextureLocation(T p_114482_) {
-        return RIFT_LOCATION;
+        return RESOURCE_LOCATION;
     }
 
+    @Override
     @ParametersAreNonnullByDefault
     public void render(T rift, float v, float v1, PoseStack stack, MultiBufferSource buffer, int light) {
         stack.pushPose();

@@ -37,7 +37,7 @@ public class ServerEventSubscriber {
     @SubscribeEvent
     @ParametersAreNonnullByDefault
     public static void WandererTradesEvent(WandererTradesEvent event) {
-        event.getRareTrades().add(new BasicItemListing(10, BrassArmoryItems.BOMB.get().getDefaultInstance(), 8, 4, 1));
-        event.getRareTrades().add(new BasicItemListing(20, BrassArmoryItems.LONGBOW.get().getDefaultInstance(), 3, 6, 1));
+        event.getRareTrades().add(new BasicItemListing(8, BrassArmoryItems.BOMB.get().getDefaultInstance(), 8, 4, 4));
+        event.getRareTrades().add(new BasicItemListing(10, BrassArmoryItems.LONGBOW.get().getDefaultInstance(), 3, 6, 1));
     }
 }

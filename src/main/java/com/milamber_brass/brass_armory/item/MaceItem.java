@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
+import com.milamber_brass.brass_armory.item.abstracts.AbstractTieredWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -18,7 +19,6 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class MaceItem extends SwordItem implements ICustomAnimationItem {
-
+public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimationItem {
     public MaceItem(Tiers tier, int attackDamageIn, Properties builderIn) {
         super(tier, attackDamageIn, -3.2F, builderIn);
     }
@@ -97,8 +96,8 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
 
         boolean otherMaceFlag = otherMaceStack != null;
 
-        float maceDamage = ((MaceItem)maceStack.getItem()).getDamage() * 1.5F;
-        float otherMaceDamage = otherMaceFlag ? ((MaceItem)otherMaceStack.getItem()).getDamage() * 1.5F : 0F;
+        float maceDamage = ((MaceItem)maceStack.getItem()).getAttackDamage() * 1.5F;
+        float otherMaceDamage = otherMaceFlag ? ((MaceItem)otherMaceStack.getItem()).getAttackDamage() * 1.5F : 0F;
         for (Entity entity : entitiesInRange) {
             if (entity != player && !(entity instanceof ItemEntity) && !(entity instanceof TamableAnimal pet && pet.getOwner() == player)) {
                 double entityDistance = Math.sqrt(entity.distanceToSqr(vec));
@@ -108,9 +107,9 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
                     float maceEnchantment;
                     float otherMaceEnchantment;
 
-                    if (entity instanceof LivingEntity) {
-                        maceEnchantment = EnchantmentHelper.getDamageBonus(maceStack, ((LivingEntity) entity).getMobType());
-                        otherMaceEnchantment = otherMaceFlag ? EnchantmentHelper.getDamageBonus(otherMaceStack, ((LivingEntity) entity).getMobType()) : 0F;
+                    if (entity instanceof LivingEntity living) {
+                        maceEnchantment = EnchantmentHelper.getDamageBonus(maceStack, living.getMobType());
+                        otherMaceEnchantment = otherMaceFlag ? EnchantmentHelper.getDamageBonus(otherMaceStack, living.getMobType()) : 0F;
                     } else {
                         maceEnchantment = EnchantmentHelper.getDamageBonus(maceStack, MobType.UNDEFINED);
                         otherMaceEnchantment = otherMaceFlag ? EnchantmentHelper.getDamageBonus(otherMaceStack, MobType.UNDEFINED) : 0F;
@@ -145,7 +144,7 @@ public class MaceItem extends SwordItem implements ICustomAnimationItem {
                     Vec3 newVec = new Vec3(newPos.getX() + r.nextDouble(), newPos.getY() + 1D + r.nextDouble() * 2D, newPos.getZ() + r.nextDouble());
                     double newVecToVec = newVec.distanceTo(vec);
                     if (!level.getBlockState(newPos).isAir() && newVecToVec <= 5.0D) {
-                        for (int i = 0; i < r.nextInt((int)Math.abs(newVecToVec - 6.0D) * 32); i++) {
+                        for (int i = 0; i < r.nextInt(Math.max((int)Math.abs(newVecToVec - 5.0D), 1) * 32); i++) {
                             level.addParticle(new DustParticleOptions(new Vector3f(new Vec3(0.98D,0.94D,0.9D)), 0.8F), newVec.x, newVec.y, newVec.z, 0.0D, 0.0D, 0.0D);
                         }
                     }

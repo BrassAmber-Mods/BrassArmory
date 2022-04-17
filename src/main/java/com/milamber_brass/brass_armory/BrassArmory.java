@@ -25,7 +25,6 @@ public class BrassArmory {
     public BrassArmory() {
         // Register
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        //TODO: Move block renderers into the client package and their registration too!
         BrassArmoryBlocks.register(eventBus);
         BrassArmoryItems.register(eventBus);
         BrassArmoryEntityTypes.register(eventBus);

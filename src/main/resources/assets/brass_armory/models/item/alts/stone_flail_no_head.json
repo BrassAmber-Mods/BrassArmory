@@ -1,0 +1,6 @@
+{
+	"parent": "brass_armory:item/diamond_flail",
+	"textures": {
+		"layer0": "brass_armory:item/stone/stone_flail_no_head"
+	}
+}

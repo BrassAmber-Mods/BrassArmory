@@ -5,8 +5,8 @@ license="All rights reserved."
 
 [[mods]]
     modId="brass_armory"
-    version="1.6-alpha"
-    displayName="Brass Armory"
+    version="1.0-beta"
+    displayName="Brass's Armory"
     credits="Inspired by Balkon's Weapons Mod"
     authors="Brass_herbalist, Milamber, DerToaster98, Xrated_junior, jodlodi and FireControl1847"
     description='''

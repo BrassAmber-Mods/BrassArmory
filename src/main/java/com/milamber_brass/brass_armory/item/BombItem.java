@@ -7,7 +7,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -48,9 +47,7 @@ public class BombItem extends Item {
     @ParametersAreNonnullByDefault
     private void throwBomb(Level level, Player player, InteractionHand interactionHand, ItemStack bombStack, float power) {
         if (!level.isClientSide) {
-            boolean mainHandFlag = interactionHand == InteractionHand.MAIN_HAND;
-            HumanoidArm humanoidarm = mainHandFlag ? player.getMainArm() : player.getMainArm().getOpposite();
-            BombEntity bomb = BombType.playerBombEntityFromType(this.bombType, level, player, humanoidarm);
+            BombEntity bomb = BombType.playerBombEntityFromType(this.bombType, level, player, interactionHand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite());
             bomb.setItem(bombStack);
             bomb.setFuse(getFuseLength(bombStack));
             bomb.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, power, 0.25F);
