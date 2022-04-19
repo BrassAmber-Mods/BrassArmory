@@ -8,10 +8,7 @@ import com.milamber_brass.brass_armory.container.GunContainer;
 import com.milamber_brass.brass_armory.entity.projectile.FireRodEntity;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombType;
-import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
-import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import com.milamber_brass.brass_armory.init.BrassArmoryMenus;
-import com.milamber_brass.brass_armory.init.BrassArmoryModels;
+import com.milamber_brass.brass_armory.init.*;
 import com.milamber_brass.brass_armory.item.BombItem;
 import com.milamber_brass.brass_armory.item.FlailItem;
 import com.milamber_brass.brass_armory.item.HalberdItem;
@@ -19,6 +16,8 @@ import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -58,6 +57,7 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(BrassArmoryEntityTypes.DAGGER.get(), ThrownWeaponEntityRenderer::new);
         EntityRenderers.register(BrassArmoryEntityTypes.BATTLEAXE.get(), ThrownWeaponEntityRenderer::new);
 
+        ItemBlockRenderTypes.setRenderLayer(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), RenderType.cutout());
 
         event.enqueueWork(() -> {
             MenuScreens.register(BrassArmoryMenus.GUN_MENU.get(), GunScreen::new);
