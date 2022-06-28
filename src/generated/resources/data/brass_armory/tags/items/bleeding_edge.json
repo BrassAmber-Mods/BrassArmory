@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "brass_armory:katana",
+    "brass_armory:golden_dagger",
+    "brass_armory:wooden_dagger",
+    "brass_armory:stone_dagger",
+    "brass_armory:iron_dagger",
+    "brass_armory:diamond_dagger",
+    "brass_armory:netherite_dagger"
+  ]
+}

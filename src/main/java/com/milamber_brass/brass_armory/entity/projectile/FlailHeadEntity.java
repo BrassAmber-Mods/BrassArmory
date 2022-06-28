@@ -13,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -73,6 +72,10 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
 
     @Override
     public void tick() {
+        if (this.tickCount > 200) {
+            this.kill();
+            return;
+        }
         this.hitPerTick = 0;
         if (this.entityData.get(DATA_OWNER) == Integer.MAX_VALUE && this.getOwner() != null) this.entityData.set(DATA_OWNER, this.getOwner().getId());
         super.tick();
@@ -107,7 +110,7 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         if (!this.onGround && entityHitResult.getEntity() instanceof LivingEntity living && this.getOwner() != null && this.getOwner().getUUID() != living.getUUID()) {
             super.onHitEntity(entityHitResult);
-            living.setDeltaMovement(this.getDeltaMovement().multiply(1D, 0D, 1D).add(0, Math.min(living.getDeltaMovement().y, living.getDeltaMovement().y / 2D), 0));
+            living.knockback(this.getDeltaMovement().length() * 0.25D, this.getX() - living.getX(), this.getZ() - living.getZ());
         }
     }
 
@@ -179,22 +182,21 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected String onHitDamageSource() {
-        return "BAFlail";
+        return "flail";
     }
 
     @Override
     protected SoundEvent onHitSoundEvent() {
-        return BrassArmorySounds.BOMB_HIT.get();//TODO:SOUNDS
+        return BrassArmorySounds.FLAIL_HIT.get();
     }
 
-    @NotNull
     @Override
-    protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.TRIDENT_HIT_GROUND;
+    protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
+        return BrassArmorySounds.FLAIL_HIT.get();
     }
 
     @Override
     protected Item getDefaultItem() {
-        return BrassArmoryItems.WOODEN_DAGGER.get();
+        return BrassArmoryItems.WOODEN_SPIKY_BALL.get();
     }
 }

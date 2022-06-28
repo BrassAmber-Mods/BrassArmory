@@ -1,12 +1,17 @@
 package com.milamber_brass.brass_armory.item;
 
+import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -64,7 +69,7 @@ public class LongBowItem extends BowItem {
                         level.addFreshEntity(abstractarrow);
                     }
 
-                    level.playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1.0F, 1.0F / (level.getRandom().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
                     if (!flag1 && !player.getAbilities().instabuild) {
                         itemstack.shrink(1);
                         if (itemstack.isEmpty()) {
@@ -72,6 +77,7 @@ public class LongBowItem extends BowItem {
                         }
                     }
 
+                    if (player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.LONGBOW.trigger(serverPlayer);
                     player.awardStat(Stats.ITEM_USED.get(this));
                 }
             }
@@ -82,10 +88,5 @@ public class LongBowItem extends BowItem {
         float f = (float)duration / 30.0F;
         f = (f * f + f * 2.0F) / 3.0F;
         return Math.min(f, 1.0F);
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack p_41456_) {
-        return super.isEnchantable(p_41456_);
     }
 }

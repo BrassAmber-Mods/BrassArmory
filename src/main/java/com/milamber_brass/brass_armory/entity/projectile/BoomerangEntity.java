@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.entity.projectile;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.BoomerangItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -142,18 +143,18 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected String onHitDamageSource() {
-        return "BABoomerang";
+        return "boomerang";
     }
 
     @Override
     protected SoundEvent onHitSoundEvent() {
-        return SoundEvents.TRIDENT_HIT;
+        return BrassArmorySounds.BOOMERANG_HIT.get();
     }
 
     @NotNull
     @Override
     protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.TRIDENT_HIT_GROUND;
+        return BrassArmorySounds.BOOMERANG_HIT_GROUND.get();
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.milamber_brass.brass_armory.init.*;
 import com.milamber_brass.brass_armory.item.BombItem;
 import com.milamber_brass.brass_armory.item.FlailItem;
 import com.milamber_brass.brass_armory.item.HalberdItem;
+import com.milamber_brass.brass_armory.item.KatanaItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -34,10 +35,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Bus.MOD, value = Dist.CLIENT)
 public class ClientEventBusSubscriber {
     @SubscribeEvent
-    @ParametersAreNonnullByDefault
     public static void clientSetup(FMLClientSetupEvent event) {
         BrassArmory.LOGGER.debug("Running client setup.");
         // Register spear and arrow entity rendering handlers
@@ -67,6 +68,7 @@ public class ClientEventBusSubscriber {
                 //Sets up alternative item models for all possible fuse states
                 ItemProperties.register(BombType.getBombItem(bombType), new ResourceLocation("bomb_fuse"), (bombStack, clientLevel, living, k) -> {
                     Entity entity = living != null ? living : bombStack.getEntityRepresentation();
+                    if (bombStack.getOrCreateTag().getBoolean("GuiDisplay")) return 0.8F;
                     if (!BombItem.getFuseLit(bombStack) || entity == null) return 1.0F;
                     else {
                         if (clientLevel == null && entity.level instanceof ClientLevel)
@@ -75,6 +77,7 @@ public class ClientEventBusSubscriber {
                         return ((float) BombItem.getFuseLength(bombStack) / 60F);
                     }
                 });
+
                 ItemProperties.register(BombType.getBombItem(bombType), new ResourceLocation("defused"), (bombStack, clientLevel, living, k) -> {
                     Entity entity = living != null ? living : bombStack.getEntityRepresentation();
                     return (entity instanceof BombEntity bomb && bomb.getDefused()) ? 1.0F : 0.0F;
@@ -82,7 +85,7 @@ public class ClientEventBusSubscriber {
             }
 
             //HALBERDS
-            for (HalberdItem halberdItem : new HalberdItem[]{
+            for (HalberdItem halberdItem : new HalberdItem[] {
                     BrassArmoryItems.WOODEN_HALBERD.get(), BrassArmoryItems.STONE_HALBERD.get(),
                     BrassArmoryItems.IRON_HALBERD.get(), BrassArmoryItems.GOLDEN_HALBERD.get(),
                     BrassArmoryItems.DIAMOND_HALBERD.get(), BrassArmoryItems.NETHERITE_HALBERD.get()}) {
@@ -91,7 +94,7 @@ public class ClientEventBusSubscriber {
             }
 
             //SPEARS
-            for (AbstractThrownWeaponItem spearItem : new AbstractThrownWeaponItem[]{
+            for (AbstractThrownWeaponItem thrownWeaponItem : new AbstractThrownWeaponItem[] {
                     BrassArmoryItems.WOODEN_SPEAR.get(), BrassArmoryItems.STONE_SPEAR.get(),
                     BrassArmoryItems.IRON_SPEAR.get(), BrassArmoryItems.GOLDEN_SPEAR.get(),
                     BrassArmoryItems.DIAMOND_SPEAR.get(), BrassArmoryItems.NETHERITE_SPEAR.get(),
@@ -99,7 +102,7 @@ public class ClientEventBusSubscriber {
                     BrassArmoryItems.WOODEN_FLAIL.get(), BrassArmoryItems.STONE_FLAIL.get(),
                     BrassArmoryItems.IRON_FLAIL.get(), BrassArmoryItems.GOLDEN_FLAIL.get(),
                     BrassArmoryItems.DIAMOND_FLAIL.get(), BrassArmoryItems.NETHERITE_FLAIL.get()}) {
-                ItemProperties.register(spearItem, new ResourceLocation("throwing"), (spearStack, clientLevel, living, k) ->
+                ItemProperties.register(thrownWeaponItem, new ResourceLocation("throwing"), (spearStack, clientLevel, living, k) ->
                         living != null && living.isUsingItem() && living.getUseItem() == spearStack ? 1.0F : 0.0F);
             }
 
@@ -111,7 +114,7 @@ public class ClientEventBusSubscriber {
                     living == null || living.isHolding(BrassArmoryItems.FIRE_ROD.get()) ? 0.0F : 1.0F);
 
             //FLAILS
-            for (FlailItem flailItem : new FlailItem[]{
+            for (FlailItem flailItem : new FlailItem[] {
                     BrassArmoryItems.WOODEN_FLAIL.get(), BrassArmoryItems.STONE_FLAIL.get(),
                     BrassArmoryItems.IRON_FLAIL.get(), BrassArmoryItems.GOLDEN_FLAIL.get(),
                     BrassArmoryItems.DIAMOND_FLAIL.get(), BrassArmoryItems.NETHERITE_FLAIL.get()}) {
@@ -120,7 +123,7 @@ public class ClientEventBusSubscriber {
             }
 
             //GUNS
-            for (AbstractGunItem gunItem : new AbstractGunItem[]{
+            for (AbstractGunItem gunItem : new AbstractGunItem[] {
                     BrassArmoryItems.FLINTLOCK_PISTOL.get(), BrassArmoryItems.MUSKET.get(), BrassArmoryItems.BLUNDERBUSS.get()}) {
                 ItemProperties.register(gunItem, new ResourceLocation("loading"), (stack, clientLevel, living, k) ->
                         living != null && living.isUsingItem() && AbstractGunItem.getLoad(stack) == 1 ? 1.0F : 0.0F);
@@ -141,6 +144,10 @@ public class ClientEventBusSubscriber {
 
             ItemProperties.register(BrassArmoryItems.LONGBOW.get(), new ResourceLocation("pulling"), (stack, clientLevel, living, k) ->
                     living != null && living.isUsingItem() && living.getUseItem() == stack ? 1.0F : 0.0F);
+
+            //KATANA
+            ItemProperties.register(BrassArmoryItems.KATANA.get(), new ResourceLocation("withering"), (stack, clientLevel, living, k) ->
+                    (float)KatanaItem.getWither(stack) / 100F);
         });
     }
 
@@ -150,7 +157,6 @@ public class ClientEventBusSubscriber {
     }
 
     @SubscribeEvent
-    @ParametersAreNonnullByDefault
     public static void TextureStitchEvent(TextureStitchEvent.Pre event) {
         if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
             event.addSprite(GunContainer.EMPTY_POWDER_SLOT);

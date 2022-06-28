@@ -3,9 +3,9 @@ package com.milamber_brass.brass_armory.entity.projectile;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -49,7 +49,7 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     protected void onHitBlock(BlockHitResult result) {
         ItemStack battleaxeStack = this.getItem();
         if (battleaxeStack.getItem() instanceof TieredItem tieredItem) {
-            BlockPos pos = result.getBlockPos();//TODO, better sound
+            BlockPos pos = result.getBlockPos();
             BlockState hitBlockState = this.level.getBlockState(pos);
             if (hitBlockState.getBlock() instanceof DoorBlock || hitBlockState.getBlock() instanceof TrapDoorBlock) {
                 boolean flag = !TierSortingRegistry.getTiersLowerThan(Tiers.DIAMOND).contains(tieredItem.getTier());
@@ -66,18 +66,18 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected String onHitDamageSource() {
-        return "BABattleaxe";
+        return "battleaxe";
     }
 
     @Override
     protected SoundEvent onHitSoundEvent() {
-        return SoundEvents.TRIDENT_HIT;//TODO:SOUNDS
+        return BrassArmorySounds.BATTLEAXE_HIT.get();
     }
 
     @NotNull
     @Override
     protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.TRIDENT_HIT_GROUND;
+        return BrassArmorySounds.BATTLEAXE_HIT_GROUND.get();
     }
 
     @Override

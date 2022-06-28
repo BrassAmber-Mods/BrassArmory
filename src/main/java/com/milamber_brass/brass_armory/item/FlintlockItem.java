@@ -1,6 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.milamber_brass.brass_armory.init.BrassArmoryTags;
+import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

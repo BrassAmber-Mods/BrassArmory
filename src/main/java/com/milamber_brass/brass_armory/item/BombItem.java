@@ -1,8 +1,10 @@
 package com.milamber_brass.brass_armory.item;
 
+import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombType;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -31,6 +33,7 @@ public class BombItem extends Item {
         ItemStack bombStack = player.getItemInHand(interactionHand);
         if (!getFuseLit(bombStack)) {
             if (!player.isUnderWater()) {
+                if (player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.THROW_BOMB.trigger(serverPlayer);
                 setFuseLit(bombStack, true);
                 setFuseLength(bombStack, 60);
                 player.getCooldowns().addCooldown(bombStack.getItem(), 5);

@@ -1,0 +1,44 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "brass_armory:item/katanas/katana"
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [25, -90, 55],
+			"translation": [0, 15.35, 5.5],
+			"scale": [2, 2, 1]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [25, 90, -55],
+			"translation": [0, 15.35, 5.5],
+			"scale": [2, 2, 1]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, -95, 15],
+			"translation": [3, 0, -4],
+			"scale": [2, 2, 1]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, -95, 105],
+			"translation": [3, 0, -4],
+			"scale": [2, 2, 1]
+		},
+		"ground": {
+			"scale": [1, 1, 1]
+		}
+	},
+	"overrides": [
+		{ "predicate": { "withering": 0.0 }, "model": "brass_armory:item/katana" },
+		{ "predicate": { "withering": 0.1 }, "model": "brass_armory:item/katanas/0" },
+		{ "predicate": { "withering": 0.2 }, "model": "brass_armory:item/katanas/1" },
+		{ "predicate": { "withering": 0.3 }, "model": "brass_armory:item/katanas/2" },
+		{ "predicate": { "withering": 0.4 }, "model": "brass_armory:item/katanas/3" },
+		{ "predicate": { "withering": 0.5 }, "model": "brass_armory:item/katanas/4" },
+		{ "predicate": { "withering": 0.6 }, "model": "brass_armory:item/katanas/5" },
+		{ "predicate": { "withering": 0.7 }, "model": "brass_armory:item/katanas/6" },
+		{ "predicate": { "withering": 0.8 }, "model": "brass_armory:item/katanas/7" },
+		{ "predicate": { "withering": 0.9 }, "model": "brass_armory:item/katanas/8" },
+		{ "predicate": { "withering": 1.0 }, "model": "brass_armory:item/katanas/9" }
+	]
+}

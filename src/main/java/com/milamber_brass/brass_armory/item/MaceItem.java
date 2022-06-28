@@ -1,5 +1,7 @@
 package com.milamber_brass.brass_armory.item;
 
+import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractTieredWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import com.mojang.math.Vector3f;
@@ -7,11 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -73,23 +75,23 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                     boolean mainHand = player.getUsedItemHand() == InteractionHand.MAIN_HAND;
                     ItemStack otherItemStack = player.getItemInHand(mainHand ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                     if (otherItemStack.getItem() instanceof MaceItem otherMace) {
-                        otherMace.smash(player, level, vec, maceStack, otherItemStack);
+                        otherMace.smash((ServerPlayer)player, level, vec, maceStack, otherItemStack);
                         maceStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.MAIN_HAND));
                         otherItemStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.OFF_HAND));
                     } else {
-                        smash(player, level, vec, maceStack, null);
+                        smash((ServerPlayer)player, level, vec, maceStack, null);
                         maceStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(player.getUsedItemHand()));
                     }
                 } else {
                     smashParticles(vec, level, blockPos);
-                    level.playSound(player, vec.x, vec.y, vec.z, SoundEvents.DRAGON_FIREBALL_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    level.playSound(player, vec.x, vec.y, vec.z, BrassArmorySounds.MACE_SMASH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 }
             }
         }
     }
 
     @ParametersAreNonnullByDefault
-    private void smash(Player player, Level level, Vec3 vec, ItemStack maceStack, @Nullable ItemStack otherMaceStack) {
+    private void smash(ServerPlayer player, Level level, Vec3 vec, ItemStack maceStack, @Nullable ItemStack otherMaceStack) {
         double x = vec.x; double y = vec.y; double z = vec.z;
         AABB aabb = (new AABB(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D)).inflate(8.0D);
         List<Entity> entitiesInRange = level.getEntitiesOfClass(Entity.class, aabb, Entity::isAlive);
@@ -98,6 +100,9 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
 
         float maceDamage = ((MaceItem)maceStack.getItem()).getAttackDamage() * 1.5F;
         float otherMaceDamage = otherMaceFlag ? ((MaceItem)otherMaceStack.getItem()).getAttackDamage() * 1.5F : 0F;
+
+        boolean hitAtLeastOne = false;
+
         for (Entity entity : entitiesInRange) {
             if (entity != player && !(entity instanceof ItemEntity) && !(entity instanceof TamableAnimal pet && pet.getOwner() == player)) {
                 double entityDistance = Math.sqrt(entity.distanceToSqr(vec));
@@ -120,8 +125,10 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                     float finalDMG = (totalDMG + bonusDMG) * seenPercent;
 
                     if (finalDMG > 0) {
-                        entity.hurt(DamageSource.playerAttack(player), (totalDMG + bonusDMG) * seenPercent);
-                        if (entity instanceof LivingEntity) player.crit(entity);
+                        if (entity.hurt(new EntityDamageSource("brass_armory.mace_smash", player), (totalDMG + bonusDMG) * seenPercent)) {
+                            if (entity instanceof LivingEntity) player.crit(entity);
+                            hitAtLeastOne = true;
+                        }
                     }
                 }
                 if (entityDistance <= 5.0D && entity instanceof LivingEntity living) {
@@ -129,6 +136,9 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                 }
             }
         }
+
+        if (otherMaceFlag && hitAtLeastOne) BrassArmoryAdvancements.MACE_SMASH_TRIGGER.trigger(player);
+
         if (!player.getAbilities().instabuild) {
             player.getCooldowns().addCooldown(maceStack.getItem(), 600);
             if (otherMaceFlag) player.getCooldowns().addCooldown(otherMaceStack.getItem(), 600);

@@ -6,7 +6,9 @@ import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.SpearEntity;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -60,6 +62,11 @@ public class SpearItem extends AbstractThrownWeaponItem {
             ArmoryUtil.impaleLivingEntity(living, (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE), player.level.random);
         }
         return false;
+    }
+
+    @Override
+    public @NotNull SoundEvent throwSound() {
+        return BrassArmorySounds.SPEAR_THROW.get();
     }
 
     @NotNull

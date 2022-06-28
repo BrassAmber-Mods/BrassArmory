@@ -3,8 +3,10 @@ package com.milamber_brass.brass_armory.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.milamber_brass.brass_armory.entity.projectile.FlailHeadEntity;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -57,6 +59,11 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         stack.hurtAndBreak(1, entityLiving, (player1) -> player1.broadcastBreakEvent(InteractionHand.MAIN_HAND));
         super.releaseUsing(stack, level, entityLiving, timeLeft);
+    }
+
+    @Override
+    public @NotNull SoundEvent throwSound() {
+        return BrassArmorySounds.FLAIL_THROW.get();
     }
 
     public boolean isExtended(LivingEntity living, ItemStack stack) {

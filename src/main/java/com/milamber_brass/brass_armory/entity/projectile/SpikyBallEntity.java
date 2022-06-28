@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SpikyBallEntity extends AbstractRollableItemProjectile {
+    public static final DamageSource DAMAGE_SOURCE = (new DamageSource("brass_armory.spiky_ball")).bypassArmor();
 
     public SpikyBallEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
         super(entityType, level);
@@ -43,8 +44,8 @@ public class SpikyBallEntity extends AbstractRollableItemProjectile {
         super.tick();
         Item item = this.getItem().getItem();
         if (this.tickCount > 10 && item instanceof SpikyBallItem spikyBallItem) {
-            for (Entity entity : this.level.getEntities(this, this.getBoundingBox(), Entity::isAlive)) {//TODO DamageSources everywhere
-                if (entity instanceof LivingEntity living && living.hurt(new DamageSource("spiky_bastard_lol_this_is_a_placeholder"), spikyBallItem.getTier().getAttackDamageBonus() / 2F) && this.random.nextInt(99) < spikyBallItem.breakChance) {
+            for (Entity entity : this.level.getEntities(this, this.getBoundingBox(), Entity::isAlive)) {
+                if (entity instanceof LivingEntity living && living.hurt(DAMAGE_SOURCE, spikyBallItem.getTier().getAttackDamageBonus() / 2F) && this.random.nextInt(99) < spikyBallItem.breakChance) {
                     this.discard();
                     return;
                 }
@@ -71,7 +72,7 @@ public class SpikyBallEntity extends AbstractRollableItemProjectile {
 
     @Override
     protected SoundEvent getSoundEvent() {
-        return BrassArmorySounds.BOMB_HIT.get();
+        return BrassArmorySounds.SPIKY_BALL_HIT.get();
     }
 
     @Override

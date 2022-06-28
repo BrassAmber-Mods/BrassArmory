@@ -1,9 +1,9 @@
 package com.milamber_brass.brass_armory.init;
 
-import com.milamber_brass.brass_armory.entity.projectile.bomb.BombType;
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
+import com.milamber_brass.brass_armory.entity.projectile.bomb.BombType;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -12,10 +12,11 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
 
     static void init() {
@@ -24,7 +25,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.DIRT);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -35,7 +36,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.EXPLOSION);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -46,7 +47,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.FROST);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -57,7 +58,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.GRASS);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -68,7 +69,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.LASER);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -79,7 +80,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.ROPE);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -90,7 +91,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.SLIME);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -101,7 +102,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.WARP);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -112,7 +113,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.FIRE);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -123,7 +124,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
              * Return the projectile entity spawned by this dispense behavior.
              */
             @Override
-            protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+            protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                 AbstractArrow abstractarrowentity = new BAArrowEntity(worldIn, position.x(), position.y(), position.z(), ArrowType.CONCUSSION);
                 abstractarrowentity.pickup = AbstractArrow.Pickup.ALLOWED;
                 return abstractarrowentity;
@@ -134,8 +135,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
             DispenserBlock.registerBehavior(BombType.getBombItem(bombType), new AbstractProjectileDispenseBehavior() {
                 @Override
                 @ParametersAreNonnullByDefault
-                @Nonnull
-                protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+                protected @NotNull Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
                     BombEntity bomb = BombType.vec3BombEntityFromType(bombType, worldIn, position.x(), position.y(), position.z());
                     bomb.setItem(stackIn);
                     return bomb;

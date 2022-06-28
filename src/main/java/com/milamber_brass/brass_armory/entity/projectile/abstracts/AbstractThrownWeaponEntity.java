@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -28,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public abstract class AbstractThrownWeaponEntity extends AbstractArrow implements ItemSupplier {
     protected static final EntityDataAccessor<ItemStack> DATA_ITEM_STACK = SynchedEntityData.defineId(AbstractThrownWeaponEntity.class, EntityDataSerializers.ITEM_STACK);
     protected static final EntityDataAccessor<Integer> DATA_LOYALTY_LEVEL = SynchedEntityData.defineId(AbstractThrownWeaponEntity.class, EntityDataSerializers.INT);
@@ -116,7 +118,6 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
 
     @Nullable
     @Override
-    @ParametersAreNonnullByDefault
     protected EntityHitResult findHitEntity(Vec3 pointOne, Vec3 pointTwo) {
         EntityHitResult result = super.findHitEntity(pointOne, pointTwo);
         if (result != null && result.getEntity() instanceof LivingEntity living) {
@@ -126,8 +127,8 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected void onHitEntity(EntityHitResult entityHitResult) {
+        if (this.isNoPhysics()) return;
         Entity victimEntity = entityHitResult.getEntity();
         Entity ownerEntity = this.getOwner();
 
@@ -137,7 +138,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         if (this.isCritArrow()) damage *= 1.5F;
         if (this.getItem().getItem() instanceof AbstractThrownWeaponItem item) damage *= this.getDeltaMovement().length() / item.getThrowMultiplier();
 
-        if (victimEntity.hurt((new IndirectEntityDamageSource(this.onHitDamageSource(), this, ownerEntity == null ? this : ownerEntity)).setProjectile(), damage)) {
+        if (victimEntity.hurt((new IndirectEntityDamageSource("brass_armory." + this.onHitDamageSource(), this, ownerEntity == null ? this : ownerEntity)).setProjectile(), damage)) {
             if (victimEntity.getType() == EntityType.ENDERMAN) return;
             if (this.isOnFire()) victimEntity.setSecondsOnFire(40);
 
@@ -165,7 +166,6 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     protected abstract SoundEvent onHitSoundEvent();
 
     @Override
-    @ParametersAreNonnullByDefault
     protected boolean tryPickup(Player player) {
         return super.tryPickup(player) || this.isNoPhysics() && this.ownedBy(player) && player.getInventory().add(this.getPickupItem());
     }
@@ -175,7 +175,6 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     protected abstract SoundEvent getDefaultHitGroundSoundEvent();
 
     @Override
-    @ParametersAreNonnullByDefault
     public void playerTouch(Player player) {
         if (this.ownedBy(player) || this.getOwner() == null) super.playerTouch(player);
     }
@@ -192,7 +191,6 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         return this.getItem();
     }
 
-    @ParametersAreNonnullByDefault
     public void setItem(ItemStack weaponStack) {
         weaponStack.setEntityRepresentation(this);
         this.entityData.set(DATA_LOYALTY_LEVEL, EnchantmentHelper.getLoyalty(weaponStack));
@@ -209,6 +207,11 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         return itemstack.isEmpty() ? new ItemStack(this.getDefaultItem()) : itemstack;
     }
 
+    @Override
+    public @NotNull Component getName() {
+        return this.getPickupItem().getItem().getName(this.getPickupItem());
+    }
+
     public void setPower(float power) {
         this.power = power;
     }
@@ -222,7 +225,6 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         ItemStack weaponStack = this.getItemRaw();
@@ -234,7 +236,6 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         this.setItem(ItemStack.of(compoundTag.getCompound("WeaponStack")));

@@ -5,12 +5,16 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "mixins": [
+    "LivingEntityMixin",
+    "MobMixin",
+    "PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "refmap": "brass_armory.mixin-refmap.json",
   "client": [
+    "GuiMixin",
     "HumanoidModelMixin"
   ]
 }

@@ -1,7 +1,7 @@
 package com.milamber_brass.brass_armory.item.abstracts;
 
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -15,6 +15,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -76,12 +77,14 @@ public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem 
                     if (playerEntity.getAbilities().instabuild) thrownWeapon.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                     else if (this.shrinkItem()) stack.shrink(1);
                     level.addFreshEntity(thrownWeapon);
-                    level.playSound(null, thrownWeapon, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    level.playSound(null, thrownWeapon, this.throwSound(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 }
                 playerEntity.awardStat(Stats.ITEM_USED.get(this));
             }
         }
     }
+
+    public abstract @NotNull SoundEvent throwSound();
 
     protected boolean shrinkItem() {
         return true;

@@ -27,7 +27,7 @@ public class SpikyBallItem extends TieredItem {
     @ParametersAreNonnullByDefault
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack stack = player.getItemInHand(interactionHand);
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), BrassArmorySounds.BOMB_THROW.get(), SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));//TODO sounds
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), BrassArmorySounds.SPIKY_BALL_THROW.get(), SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
             SpikyBallEntity spikyBall = new SpikyBallEntity(player, level, interactionHand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite());
             spikyBall.setItem(stack);

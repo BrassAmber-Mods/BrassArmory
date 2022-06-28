@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.init;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.item.BABaseArrowItem;
 import com.milamber_brass.brass_armory.item.BombItem;
+import com.milamber_brass.brass_armory.item.KatanaItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
 import com.milamber_brass.brass_armory.item.ammo_behaviour.AbstractAmmoBehaviour;
 import net.minecraft.core.NonNullList;
@@ -49,6 +50,7 @@ public class BrassArmoryItemGroups {
         @Override
         @ParametersAreNonnullByDefault
         public void fillItemList(NonNullList<ItemStack> itemStacks) {
+            List<KatanaItem> katanaItems = new ArrayList<>();
             List<TieredItem> tieredItems = new ArrayList<>();
             List<BowItem> bowItems = new ArrayList<>();
             List<AbstractGunItem> gunItems = new ArrayList<>();
@@ -58,7 +60,10 @@ public class BrassArmoryItemGroups {
             List<BlockItem> blockItems = new ArrayList<>();
 
             List<Item> allItems = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.getCreativeTabs().contains(this)).filter(item -> {
-                if (item instanceof TieredItem tieredItem) {
+                if (item instanceof KatanaItem katanaItem) {
+                    katanaItems.add(katanaItem);
+                    return false;
+                } else if (item instanceof TieredItem tieredItem) {
                     tieredItems.add(tieredItem);
                     return false;
                 } else if (item instanceof BowItem bowItem) {
@@ -95,7 +100,7 @@ public class BrassArmoryItemGroups {
                 return tieredItem.getTier().getAttackDamageBonus();
             })).forEach(item -> item.fillItemCategory(this, itemStacks));
 
-
+            katanaItems.forEach(item -> item.fillItemCategory(this, itemStacks));
             gunItems.stream().sorted(Comparator.comparingDouble(AbstractGunItem::getDamageMultiplier)).forEach(item -> item.fillItemCategory(this, itemStacks));
             ammoItems.forEach(item -> item.fillItemCategory(this, itemStacks));
             bombItems.forEach(item -> item.fillItemCategory(this, itemStacks));

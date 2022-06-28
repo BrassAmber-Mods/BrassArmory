@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile.bomb;
 
+import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectile;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
@@ -10,6 +11,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -105,6 +107,7 @@ public class BombEntity extends AbstractRollableItemProjectile {
     @Override
     @ParametersAreNonnullByDefault //Pick up bomb if hand is empty
     public InteractionResult interact(Player player, InteractionHand hand) {
+        if (!this.defused && !this.onGround && player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.CATCH_BOMB.trigger(serverPlayer);
         return this.defused ? InteractionResult.PASS : super.interact(player, hand);
     }
 

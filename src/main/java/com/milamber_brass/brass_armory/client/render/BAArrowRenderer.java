@@ -3,6 +3,8 @@ package com.milamber_brass.brass_armory.client.render;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.projectile.ArrowType;
 import com.milamber_brass.brass_armory.entity.projectile.BAArrowEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -10,8 +12,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @OnlyIn(Dist.CLIENT)
+@ParametersAreNonnullByDefault
 public class BAArrowRenderer extends ArrowRenderer<BAArrowEntity> {
 
     public static final ResourceLocation RES_ARROW = new ResourceLocation("textures/entity/projectiles/arrow.png");
@@ -31,6 +35,11 @@ public class BAArrowRenderer extends ArrowRenderer<BAArrowEntity> {
         super(manager);
     }
 
+    @Override
+    public void render(BAArrowEntity arrow, float yaw, float partialTicks, PoseStack stack, MultiBufferSource source, int light) {
+        if (!arrow.isInvisible()) super.render(arrow, yaw, partialTicks, stack, source, light);
+    }
+
     /**
      * Returns the location of an entity's texture.
      */
@@ -38,27 +47,16 @@ public class BAArrowRenderer extends ArrowRenderer<BAArrowEntity> {
     @Nonnull
     public ResourceLocation getTextureLocation(BAArrowEntity entity) {
         ArrowType arrowType = entity.getArrowType();
-        if (arrowType == ArrowType.DIRT) {
-            return RES_DIRT_ARROW;
-        } else if (arrowType == ArrowType.EXPLOSION) {
-            return RES_EX_ARROW;
-        } else if (arrowType == ArrowType.FROST) {
-            return RES_FROST_ARROW;
-        } else if (arrowType == ArrowType.GRASS) {
-            return RES_GRASS_ARROW;
-        } else if (arrowType == ArrowType.LASER) {
-            return RES_LASER_ARROW;
-        } else if (arrowType == ArrowType.ROPE) {
-            return RES_ROPE_ARROW;
-        } else if (arrowType == ArrowType.SLIME) {
-            return RES_SLIME_ARROW;
-        } else if (arrowType == ArrowType.WARP) {
-            return RES_WARP_ARROW;
-        } else if (arrowType == ArrowType.FIRE) {
-            return RES_FIRE_ARROW;
-        } else if (arrowType == ArrowType.CONCUSSION) {
-            return RES_CONCUSS_ARROW;
-        }
+        if (arrowType == ArrowType.DIRT) return RES_DIRT_ARROW;
+        else if (arrowType == ArrowType.EXPLOSION) return RES_EX_ARROW;
+        else if (arrowType == ArrowType.FROST) return RES_FROST_ARROW;
+        else if (arrowType == ArrowType.GRASS) return RES_GRASS_ARROW;
+        else if (arrowType == ArrowType.LASER) return RES_LASER_ARROW;
+        else if (arrowType == ArrowType.ROPE) return RES_ROPE_ARROW;
+        else if (arrowType == ArrowType.SLIME) return RES_SLIME_ARROW;
+        else if (arrowType == ArrowType.WARP) return RES_WARP_ARROW;
+        else if (arrowType == ArrowType.FIRE) return RES_FIRE_ARROW;
+        else if (arrowType == ArrowType.CONCUSSION) return RES_CONCUSS_ARROW;
         return RES_ARROW;
     }
 

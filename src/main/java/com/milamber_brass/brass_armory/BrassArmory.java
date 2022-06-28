@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory;
 
+import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.event.ClientEventBusSubscriber;
 import com.milamber_brass.brass_armory.init.*;
 import com.mojang.logging.LogUtils;
@@ -29,7 +30,9 @@ public class BrassArmory {
         BrassArmoryItems.register(eventBus);
         BrassArmoryEntityTypes.register(eventBus);
         BrassArmorySounds.register(eventBus);
-        BrassArmoryMenus.REGISTRY.register(eventBus);
+        BrassArmoryMenus.register(eventBus);
+        BrassArmoryEffects.register(eventBus);
+        BrassArmoryParticles.register(eventBus);
         BrassArmoryAmmoBehaviours.register();
         eventBus.addListener(ClientEventBusSubscriber::clientSetup);
     }
@@ -39,6 +42,7 @@ public class BrassArmory {
         LOGGER.debug("Running common setup.");
         // Register custom dispenser behavior
         BrassArmoryDispenseBehaviors.init();
+        BrassArmoryAdvancements.init();
     }
 
     // Helper method for resource locations
@@ -46,5 +50,4 @@ public class BrassArmory {
     public static ResourceLocation locate(String name) {
         return new ResourceLocation(BrassArmory.MOD_ID, name);
     }
-
 }

@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -119,6 +120,11 @@ public abstract class AbstractRollableItemProjectile extends ThrowableItemProjec
     protected abstract SoundEvent getSoundEvent();
 
     protected abstract float getVolumeMultiplier();
+
+    @Override
+    public @NotNull Component getName() {
+        return this.getItem().getItem().getName(this.getItem());
+    }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {

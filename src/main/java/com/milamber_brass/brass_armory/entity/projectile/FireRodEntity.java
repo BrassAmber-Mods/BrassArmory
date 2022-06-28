@@ -1,29 +1,25 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.FireRodItem;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class FireRodEntity extends AbstractThrownWeaponEntity {
     public FireRodEntity(EntityType<FireRodEntity> entityType, Level level) {
         super(entityType, level);
@@ -45,23 +41,9 @@ public class FireRodEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        BlockPos pos = blockHitResult.getBlockPos();
-        BlockState state = this.level.getBlockState(pos);
-        Entity owner = this.getOwner();
-        if (CampfireBlock.canLight(state) || CandleBlock.canLight(state) || CandleCakeBlock.canLight(state)) {
-            this.level.setBlock(pos, state.setValue(BlockStateProperties.LIT, Boolean.TRUE), 11);
-            this.level.gameEvent(owner, GameEvent.BLOCK_PLACE, pos);
-        } else {
-            BlockPos relativePos = pos.relative(blockHitResult.getDirection());
-            if (BaseFireBlock.canBePlacedAt(level, relativePos, blockHitResult.getDirection())) {
-                BlockState relativeState = BaseFireBlock.getState(level, relativePos);
-                this.level.setBlock(relativePos, relativeState, 11);
-                this.level.gameEvent(owner, GameEvent.BLOCK_PLACE, pos);
-            }
-        }
+        ArmoryUtil.blockHitSetOnFire(blockHitResult, this.level, this.getOwner());
     }
 
     @Override
@@ -75,18 +57,18 @@ public class FireRodEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected String onHitDamageSource() {
-        return "BAFireRod";
+        return "fire_rod";
     }
 
     @Override
     protected SoundEvent onHitSoundEvent() {
-        return SoundEvents.TRIDENT_HIT;//TODO:SOUNDS
+        return BrassArmorySounds.FIRE_ROD_HIT.get();
     }
 
     @NotNull
     @Override
     protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.TRIDENT_HIT_GROUND;
+        return BrassArmorySounds.FIRE_ROD_HIT_GROUND.get();
     }
 
     @Override

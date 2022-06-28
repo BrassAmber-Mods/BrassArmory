@@ -1,11 +1,13 @@
 {
+  "itemGroup.brass_armory": "Brass's Armory",
 
-  "entity.brass_armory.dirt_arrow_entity" : "Dirt Arrow",
-  "entity.brass_armory.wooden_spear": "Wooden Spear",
-  "entity.brass_armory.bomb": "Bomb",
+
+  "entity.brass_armory.bullet": "Bullet",
+
 
   "block.brass_armory.explorers_rope" : "Explorer's Rope",
-  
+
+
   "item.brass_armory.dirt_arrow" : "Dirt Arrow",
   "item.brass_armory.ex_arrow" : "Ex Arrow",
   "item.brass_armory.frost_arrow" : "Frost Arrow",
@@ -23,7 +25,6 @@
   "item.brass_armory.iron_boomerang" : "Iron Boomerang",
   "item.brass_armory.diamond_boomerang" : "Diamond Boomerang",
   "item.brass_armory.netherite_boomerang" : "Netherite Boomerang",
-
 
   "item.brass_armory.bomb" : "Bomb",
   "item.brass_armory.bouncy_bomb" : "Bouncy Bomb",
@@ -89,12 +90,90 @@
 
   "item.brass_armory.longbow" : "Longbow",
   "item.brass_armory.fire_rod" : "Fire Rod",
-  "itemGroup.brass_armory": "Brass's Armory",
 
-  "subtitles.brass_armory.entity.bomb.lit": "Bomb fuse lit",
-  "subtitles.brass_armory.entity.bomb.throw": "Bomb flies",
-  "subtitles.brass_armory.entity.bomb.fuse": "Bomb fuse hisses",
-  "subtitles.brass_armory.entity.bomb.hit": "Bomb hit",
-  "subtitles.brass_armory.entity.bomb.bouncy_hit": "Bouncy Bomb hit",
-  "subtitles.brass_armory.entity.bomb.sticky_hit": "Sticky Bomb hit"
+  "item.brass_armory.katana" : "Katana",
+  "item.brass_armory.katana_wilted": "Wilted Katana",
+  "item.brass_armory.katana_withered" : "Withered Katana",
+
+
+  "death.attack.brass_armory.battleaxe": "%1$s was struck down by %2$s's thrown BattleAxe",
+  "death.attack.brass_armory.boomerang": "%1$s was hit by %2$s's thrown Boomerang",
+  "death.attack.brass_armory.dagger": "%1$s was stabbed by %2$s's thrown Dagger",
+  "death.attack.brass_armory.fire_rod": "%1$s got burned by %2$s's thrown Fire Rod",
+  "death.attack.brass_armory.flail": "%1$s got pummeled by %2$s's Flail",
+  "death.attack.brass_armory.spear": "%1$s got impaled by %2$s's thrown Spear",
+
+  "death.attack.brass_armory.impale": "%1$s got impaled to the bone by %2$s",
+  "death.attack.brass_armory.bleed": "%1$s bled out",
+  "death.attack.brass_armory.spiky_ball": "%1$s stepped on a spiky ball",
+  "death.attack.brass_armory.mace_smash": "%1$s was decimated by a smash attack",
+
+
+  "effect.brass_armory.bleed": "Bleed",
+
+
+  "subtitles.brass_armory.item.bomb.lit": "Bomb fuse lit",
+  "subtitles.brass_armory.item.bomb.throw": "Bomb flies",
+  "subtitles.brass_armory.item.bomb.fuse": "Bomb fuse hisses",
+  "subtitles.brass_armory.item.bomb.hit": "Bomb hit",
+  "subtitles.brass_armory.item.bomb.bouncy_hit": "Bouncy Bomb hit",
+  "subtitles.brass_armory.item.bomb.sticky_hit": "Sticky Bomb hit",
+
+  "subtitles.brass_armory.item.spiky_ball.throw": "Spiky Ball flies",
+  "subtitles.brass_armory.item.spiky_ball.hit": "Spiky Ball hit",
+
+  "subtitles.brass_armory.item.flail.throw": "Flail flies",
+  "subtitles.brass_armory.item.flail.hit": "Flail hit",
+
+  "subtitles.brass_armory.item.spear.throw": "Spear flies",
+  "subtitles.brass_armory.item.spear.hit": "Spear impales",
+  "subtitles.brass_armory.item.spear.hit_ground": "Spear lands",
+
+  "subtitles.brass_armory.item.dagger.throw": "Dagger flies",
+  "subtitles.brass_armory.item.dagger.hit": "Dagger stabs",
+  "subtitles.brass_armory.item.dagger.hit_ground": "Dagger lands",
+
+  "subtitles.brass_armory.item.battleaxe.throw": "Battleaxe flies",
+  "subtitles.brass_armory.item.battleaxe.hit": "Battleaxe hits",
+  "subtitles.brass_armory.item.battleaxe.hit_ground": "Battleaxe lands",
+
+  "subtitles.brass_armory.item.boomerang.throw": "Boomerang flies",
+  "subtitles.brass_armory.item.boomerang.hit": "Boomerang hits",
+  "subtitles.brass_armory.item.boomerang.hit_ground": "Boomerang lands",
+
+  "subtitles.brass_armory.item.fire_rod.throw": "Fire Rod flies",
+  "subtitles.brass_armory.item.fire_rod.hit": "Fire Rod impales",
+  "subtitles.brass_armory.item.fire_rod.hit_ground": "Fire Rod lands",
+
+  "subtitles.brass_armory.item.mace.smash": "Mace smashes",
+
+  "subtitles.brass_armory.item.gun.load": "Gun loads",
+  "subtitles.brass_armory.item.gun.shoot": "Gun fires",
+
+  "subtitles.brass_armory.item.katana.small_upgrade": "Katana beckons",
+  "subtitles.brass_armory.item.katana.large_upgrade": "Katana grows",
+
+
+  "advancement.brass_armory.root.desc": "Arm yourself!",
+
+  "advancement.brass_armory.katana": "Fine Foreign Forging",
+  "advancement.brass_armory.katana.desc": "Trade for a Katana with a Wandering Trader",
+
+  "advancement.brass_armory.withered_katana": "Secrets of the Craft",
+  "advancement.brass_armory.withered_katana.desc": "Witness the Wither overtake your blade and transform",
+
+  "advancement.brass_armory.mace_smash": "Ground-breaking!",
+  "advancement.brass_armory.mace_smash.desc": "Hit an enemy by smashing with two maces at once",
+
+  "advancement.brass_armory.light_bomb": "Hot potato",
+  "advancement.brass_armory.light_bomb.desc": "Light a bomb",
+
+  "advancement.brass_armory.bomb_catch": "Catch!",
+  "advancement.brass_armory.bomb_catch.desc": "Catch a lit bomb mid air",
+
+  "advancement.brass_armory.longbow": "Eyes on the Horizon..",
+  "advancement.brass_armory.longbow.desc": "Fire a Longbow",
+
+  "advancement.brass_armory.long_distance_warp_arrow": "Fast-Travel",
+  "advancement.brass_armory.long_distance_warp_arrow.desc": "Warp over 100 blocks away with a Warp Arrow"
 }

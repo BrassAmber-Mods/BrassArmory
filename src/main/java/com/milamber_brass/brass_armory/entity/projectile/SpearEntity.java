@@ -4,9 +4,9 @@ import com.milamber_brass.brass_armory.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.SpearItem;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -37,18 +37,18 @@ public class SpearEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected String onHitDamageSource() {
-        return "BASpear";
+        return "spear";
     }
 
     @Override
     protected SoundEvent onHitSoundEvent() {
-        return SoundEvents.TRIDENT_HIT;//TODO:SOUNDS
+        return BrassArmorySounds.SPEAR_HIT.get();
     }
 
     @NotNull
     @Override
     protected SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.TRIDENT_HIT_GROUND;
+        return BrassArmorySounds.SPEAR_HIT_GROUND.get();
     }
 
     @Override

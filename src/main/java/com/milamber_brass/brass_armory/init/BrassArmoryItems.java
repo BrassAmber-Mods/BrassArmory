@@ -7,6 +7,7 @@ import com.milamber_brass.brass_armory.item.*;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -336,6 +337,11 @@ public class BrassArmoryItems {
 
     public static final RegistryObject<BlockItem> EXPLORERS_ROPE =
             REGISTRY.register("explorers_rope", () -> new BlockItem(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY)));
+
+    //---------------------------------------------------------------------------------------------------------
+
+    public static final RegistryObject<SwordItem> KATANA =
+            REGISTRY.register("katana", () -> new KatanaItem(Tiers.IRON, 3, -2F, true, new Item.Properties().defaultDurability(512).tab(BrassArmoryItemGroups.BRASS_ARMORY)));
 
     // Attach event handler for registry.
     public static void register(IEventBus eventBus) {

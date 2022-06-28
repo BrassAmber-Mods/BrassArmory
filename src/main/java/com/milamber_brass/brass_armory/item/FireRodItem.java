@@ -4,8 +4,10 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.FireRodEntity;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -68,6 +70,11 @@ public class FireRodItem extends AbstractThrownWeaponItem {
     @Override
     protected AbstractThrownWeaponEntity getEntity(Level level, LivingEntity living, ItemStack weaponStack) {
         return new FireRodEntity(level, living, weaponStack);
+    }
+
+    @Override
+    public @NotNull SoundEvent throwSound() {
+        return BrassArmorySounds.FIRE_ROD_THROW.get();
     }
 
     @Override

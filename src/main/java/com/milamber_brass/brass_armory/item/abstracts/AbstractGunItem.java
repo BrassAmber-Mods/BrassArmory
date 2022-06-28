@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.item.abstracts;
 
 import com.google.common.collect.Lists;
 import com.milamber_brass.brass_armory.container.GunContainer;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.ammo_behaviour.AbstractAmmoBehaviour;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -11,7 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
@@ -97,7 +98,7 @@ public abstract class AbstractGunItem extends ProjectileWeaponItem implements Va
                         });
                     }
 
-                    level.playSound(null, player, SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    level.playSound(null, player, this.getGunShootSound(), SoundSource.PLAYERS, 1.0F, 1.0F);
                     setLoad(stack, 0);
                     clearStack(stack, "BAAmmo");
                     clearStack(stack, "BAPowder");
@@ -123,6 +124,10 @@ public abstract class AbstractGunItem extends ProjectileWeaponItem implements Va
         return InteractionResultHolder.consume(player.getItemInHand(interactionHand));
     }
 
+    protected SoundEvent getGunShootSound() {
+        return BrassArmorySounds.GUN_SHOOT.get();
+    }
+
     @Override
     public void onUsingTick(ItemStack stack, LivingEntity entityLiving, int count) {
         setLoadProgress(stack, getLoadProgress(stack) + this.loadSpeed);
@@ -137,9 +142,13 @@ public abstract class AbstractGunItem extends ProjectileWeaponItem implements Va
             } else {
                 setLoad(stack, 2);
                 player.getCooldowns().addCooldown(stack.getItem(), 5);
-                player.level.playSound(player, player, SoundEvents.DISPENSER_DISPENSE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                player.level.playSound(player, player, this.getGunLoadSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
             }
         }
+    }
+
+    protected SoundEvent getGunLoadSound() {
+        return BrassArmorySounds.GUN_LOAD.get();
     }
 
     public boolean isOneHanded() {

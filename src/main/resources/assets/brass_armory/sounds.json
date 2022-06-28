@@ -1,8 +1,42 @@
 {
-  "entity.bomb.lit": { "subtitle": "subtitles.brass_armory.entity.bomb.lit", "sounds": [ "fire/ignite" ] },
-  "entity.bomb.throw": { "subtitle": "subtitles.brass_armory.entity.bomb.throw", "sounds": [ "random/bow" ] },
-  "entity.bomb.fuse": { "subtitle": "subtitles.brass_armory.entity.bomb.fuse", "sounds": [ "random/fizz" ] },
-  "entity.bomb.hit": { "subtitle": "subtitles.brass_armory.entity.bomb.hit", "sounds": [ "mob/zombie/metal1", "mob/zombie/metal2", "mob/zombie/metal3" ] },
-  "entity.bomb.bouncy_hit": { "subtitle": "subtitles.brass_armory.entity.bomb.bouncy_hit", "sounds": [ "mob/slime/small1", "mob/slime/small2", "mob/slime/small3", "mob/slime/small4", "mob/slime/small5" ] },
-  "entity.bomb.sticky_hit": { "subtitle": "subtitles.brass_armory.entity.bomb.sticky_hit", "sounds": [ "mob/slime/small1", "mob/slime/small2", "mob/slime/small3", "mob/slime/small4", "mob/slime/small5" ] }
+  "item.bomb.lit": { "subtitle": "subtitles.brass_armory.item.bomb.lit", "sounds": [ "fire/ignite" ] },
+  "item.bomb.throw": { "subtitle": "subtitles.brass_armory.item.bomb.throw", "sounds": [ "random/bow" ] },
+  "item.bomb.fuse": { "subtitle": "subtitles.brass_armory.item.bomb.fuse", "sounds": [ "random/fizz" ] },
+  "item.bomb.hit": { "subtitle": "subtitles.brass_armory.item.bomb.hit", "sounds": [ "mob/zombie/metal1", "mob/zombie/metal2", "mob/zombie/metal3" ] },
+  "item.bomb.bouncy_hit": { "subtitle": "subtitles.brass_armory.item.bomb.bouncy_hit", "sounds": [ "mob/slime/small1", "mob/slime/small2", "mob/slime/small3", "mob/slime/small4", "mob/slime/small5" ] },
+  "item.bomb.sticky_hit": { "subtitle": "subtitles.brass_armory.item.bomb.sticky_hit", "sounds": [ "mob/slime/small1", "mob/slime/small2", "mob/slime/small3", "mob/slime/small4", "mob/slime/small5" ] },
+
+  "item.spiky_ball.throw": { "subtitle": "subtitles.brass_armory.item.spiky_ball.throw", "sounds": [ "random/bow" ] },
+  "item.spiky_ball.hit": { "subtitle": "subtitles.brass_armory.item.spiky_ball.hit", "sounds": [ "mob/zombie/metal1", "mob/zombie/metal2", "mob/zombie/metal3" ] },
+
+  "item.flail.throw": { "subtitle": "subtitles.brass_armory.item.flail.throw", "sounds": [ "random/bow" ] },
+  "item.flail.hit": { "subtitle": "subtitles.brass_armory.item.flail.hit", "sounds": [ "mob/zombie/metal1", "mob/zombie/metal2", "mob/zombie/metal3" ] },
+
+  "item.spear.throw": { "subtitle": "subtitles.brass_armory.item.spear.throw", "sounds": [ "item/trident/throw1", "item/trident/throw2" ] },
+  "item.spear.hit": { "subtitle": "subtitles.brass_armory.item.spear.hit", "sounds": [ "item/trident/pierce1", "item/trident/pierce2", "item/trident/pierce3" ] },
+  "item.spear.hit_ground": { "subtitle": "subtitles.brass_armory.item.spear.hit_ground", "sounds": [ { "name": "item/trident/ground_impact1", "volume": 0.8 }, { "name": "item/trident/ground_impact2", "volume": 0.8 }, { "name": "item/trident/ground_impact3", "volume": 0.8 }, { "name": "item/trident/ground_impact4", "volume": 0.8 } ] },
+
+  "item.dagger.throw": { "subtitle": "subtitles.brass_armory.item.dagger.throw", "sounds": [ { "name": "item/trident/throw1", "volume": 0.9, "pitch": 1.1 }, { "name": "item/trident/throw2", "volume": 0.9, "pitch": 1.1 } ] },
+  "item.dagger.hit": { "subtitle": "subtitles.brass_armory.item.dagger.hit", "sounds": [ "item/trident/pierce1", "item/trident/pierce2", "item/trident/pierce3" ] },
+  "item.dagger.hit_ground": { "subtitle": "subtitles.brass_armory.item.dagger.hit_ground", "sounds": [ { "name": "item/trident/ground_impact1", "volume": 0.7, "pitch": 1.35 }, { "name": "item/trident/ground_impact2", "volume": 0.7, "pitch": 1.35 }, { "name": "item/trident/ground_impact3", "volume": 0.7, "pitch": 1.35 }, { "name": "item/trident/ground_impact3", "volume": 0.7, "pitch": 1.35 }] },
+
+  "item.battleaxe.throw": { "subtitle": "subtitles.brass_armory.item.battleaxe.throw", "sounds": [ { "name": "item/trident/throw1", "volume": 0.9, "pitch": 0.94 }, { "name": "item/trident/throw2", "volume": 0.9, "pitch": 0.94 } ] },
+  "item.battleaxe.hit": { "subtitle": "subtitles.brass_armory.item.battleaxe.hit", "sounds": [ "item/trident/pierce1", "item/trident/pierce2", "item/trident/pierce3" ] },
+  "item.battleaxe.hit_ground": { "subtitle": "subtitles.brass_armory.item.battleaxe.hit_ground", "sounds": [ { "name": "item/trident/ground_impact1", "volume": 0.7, "pitch": 0.8 }, { "name": "item/trident/ground_impact2", "volume": 0.7, "pitch": 0.8 }, { "name": "item/trident/ground_impact3", "volume": 0.7, "pitch": 0.8 }, { "name": "item/trident/ground_impact3", "volume": 0.7, "pitch": 0.8 }] },
+
+  "item.boomerang.throw": { "subtitle": "subtitles.brass_armory.item.boomerang.throw", "sounds": [ { "name": "item/trident/throw1", "volume": 0.9, "pitch": 1.03 }, { "name": "item/trident/throw2", "volume": 0.9, "pitch": 1.03 } ] },
+  "item.boomerang.hit": { "subtitle": "subtitles.brass_armory.item.boomerang.hit", "sounds": [ "item/trident/pierce1", "item/trident/pierce2", "item/trident/pierce3" ] },
+  "item.boomerang.hit_ground": { "subtitle": "subtitles.brass_armory.item.boomerang.hit_ground", "sounds": [ { "name": "item/trident/ground_impact1", "volume": 0.5, "pitch": 1.03 }, { "name": "item/trident/ground_impact2", "volume": 0.5, "pitch": 1.03 }, { "name": "item/trident/ground_impact3", "volume": 0.5, "pitch": 1.03 }, { "name": "item/trident/ground_impact3", "volume": 0.5, "pitch": 1.03 }] },
+
+  "item.fire_rod.throw": { "subtitle": "subtitles.brass_armory.item.fire_rod.throw", "sounds": [ "item/trident/throw1", "item/trident/throw2" ] },
+  "item.fire_rod.hit": { "subtitle": "subtitles.brass_armory.item.fire_rod.hit", "sounds": [ "item/trident/pierce1", "item/trident/pierce2", "item/trident/pierce3" ] },
+  "item.fire_rod.hit_ground": { "subtitle": "subtitles.brass_armory.item.fire_rod.hit_ground", "sounds": [ { "name": "item/trident/ground_impact1", "volume": 0.8 }, { "name": "item/trident/ground_impact2", "volume": 0.8 }, { "name": "item/trident/ground_impact3", "volume": 0.8 }, { "name": "item/trident/ground_impact4", "volume": 0.8 } ] },
+
+  "item.mace.smash": { "subtitle": "subtitles.brass_armory.item.mace.smash", "sounds": [ "random/explode1", "random/explode2", "random/explode3", "random/explode4" ] },
+
+  "item.gun.load": { "subtitle": "subtitles.brass_armory.item.gun.load", "sounds": [ "random/click" ] },
+  "item.gun.shoot": { "subtitle": "subtitles.brass_armory.item.gun.shoot", "sounds": [ "random/explode1", "random/explode2", "random/explode3", "random/explode4" ] },
+
+  "item.katana.small_upgrade": { "subtitle": "subtitles.brass_armory.item.katana.small_upgrade", "sounds": [ "mob/wither/idle1", "mob/wither/idle2", "mob/wither/idle3", "mob/wither/idle4" ] },
+  "item.katana.large_upgrade": { "subtitle": "subtitles.brass_armory.item.katana.large_upgrade", "sounds": [ "mob/wither/death" ] }
 }

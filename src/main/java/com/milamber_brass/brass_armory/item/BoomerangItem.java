@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.item;
 import com.google.common.collect.ImmutableSet;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.BoomerangEntity;
+import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import net.minecraft.client.Minecraft;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +21,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,6 +36,11 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
 
     public BoomerangItem(Tier tier, int attackDamage, float attackSpeed, Properties properties) {
         super(tier, attackDamage, attackSpeed, 18F, 1.25F, properties);
+    }
+
+    @Override
+    public @NotNull SoundEvent throwSound() {
+        return BrassArmorySounds.BOOMERANG_THROW.get();
     }
 
     @Nonnull

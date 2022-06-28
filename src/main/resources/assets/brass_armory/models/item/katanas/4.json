@@ -1,0 +1,6 @@
+{
+  "parent": "brass_armory:item/katana",
+  "textures": {
+    "layer0": "brass_armory:item/katanas/4"
+  }
+}

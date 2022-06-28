@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +24,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.FOVModifierEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -36,10 +35,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 
+@ParametersAreNonnullByDefault
 @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
 public class ClientEventSubscriber {
     @SubscribeEvent
-    @ParametersAreNonnullByDefault
     public static void RenderHandEvent(RenderHandEvent event) {Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
 
@@ -120,7 +119,6 @@ public class ClientEventSubscriber {
     }
 
     @SubscribeEvent
-    @ParametersAreNonnullByDefault
     public static void RenderPlayerEvent(RenderPlayerEvent.Pre event) {
         Player player = event.getPlayer();
         if (player.getMainHandItem().getItem() instanceof AbstractGunItem && AbstractGunItem.getLoad(player.getMainHandItem()) == 2) {
@@ -135,28 +133,26 @@ public class ClientEventSubscriber {
     }
 
     @SubscribeEvent
-    @ParametersAreNonnullByDefault
-    public static void FOVUpdate(EntityViewRenderEvent.FieldOfView event) {
-        if (event.getCamera().getEntity() instanceof LivingEntity living && living.isUsingItem()) {
-            ItemStack useStack = living.getUseItem();
+    public static void FOVUpdate(FOVModifierEvent event) {
+        Player player = event.getEntity();
+        if (player.isUsingItem()) {
+            ItemStack useStack = player.getUseItem();
             Item useItem = useStack.getItem();
             if (useItem instanceof LongBowItem || useItem instanceof ICustomAnimationItem || useItem instanceof AbstractThrownWeaponItem) {
-                float i = living.getTicksUsingItem() + (float) event.getPartialTicks();
-
                 float f9;
                 if (useItem instanceof AbstractThrownWeaponItem thrownWeaponItem) f9 = thrownWeaponItem.chargeDuration;
                 else if (useItem instanceof ICustomAnimationItem customAnimationItem) f9 = customAnimationItem.getChargeDuration(useStack);
                 else f9 = 30F;
 
-                float f1 = i / f9;
+                float f1 = player.getTicksUsingItem() / f9;
                 f1 = f1 > 1.0F ? 1.0F : f1 * f1;
-                event.setFOV(event.getFOV() * (1.0F - f1 * (useItem instanceof LongBowItem ? 0.15F : 0.075F)));
+                event.setNewfov(event.getFov() * (1.0F - f1 * (useItem instanceof LongBowItem ? 0.15F : 0.075F)));
             }
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent()
+    @SubscribeEvent
     public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
         RenderType cutoutRenderType = RenderType.cutout();
         ItemBlockRenderTypes.setRenderLayer(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), cutoutRenderType);
