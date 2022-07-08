@@ -64,7 +64,7 @@ public class ServerEventSubscriber {
 
     @SubscribeEvent
     public static void PotionApplicableEvent(PotionEvent.PotionApplicableEvent event) {
-        if (event.getEntity() instanceof LivingEntity living && (living.getMobType() == MobType.UNDEAD || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
+        if (event.getPotionEffect().getEffect().equals(BrassArmoryEffects.BLEEDING.get()) && event.getEntity() instanceof LivingEntity living && (living.getMobType() == MobType.UNDEAD || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
             event.setResult(Event.Result.DENY);
             return;
         }

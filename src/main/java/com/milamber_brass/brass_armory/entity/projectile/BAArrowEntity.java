@@ -18,6 +18,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -183,8 +184,10 @@ public class BAArrowEntity extends AbstractArrow {
                 if (this.level.getBlockState(resultPos).is(Blocks.DIRT)) {
                     this.level.setBlock(resultPos, Blocks.GRASS_BLOCK.defaultBlockState(), 2);
                 }
-                if (this.level instanceof ServerLevel serverLevel && serverLevel.getBlockState(resultPos).getMaterial().equals(Material.DIRT)) {
-                    BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), this.level, resultPos, FakePlayerFactory.getMinecraft(serverLevel));
+                if (this.level instanceof ServerLevel serverLevel && serverLevel.getBlockState(resultPos).is(BlockTags.DIRT)) {
+                    if (!BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), this.level, resultPos, FakePlayerFactory.getMinecraft(serverLevel))) {
+                        BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), this.level, resultPos.above(), FakePlayerFactory.getMinecraft(serverLevel));
+                    }
                 }
                 this.discard();
                 break;
