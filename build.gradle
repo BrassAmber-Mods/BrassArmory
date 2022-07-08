@@ -20,7 +20,7 @@ mixin {
 
 version = "1.18.2-1.1-beta"
 group = "com.milamber_brass.brass_armory"
-archivesBaseName = "brass_armory-"
+archivesBaseName = "brass_armory"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
