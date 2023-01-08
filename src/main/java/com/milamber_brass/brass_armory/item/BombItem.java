@@ -1,34 +1,40 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
-import com.milamber_brass.brass_armory.entity.projectile.bomb.BombType;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import net.minecraft.data.models.blockstates.PropertyDispatch.TriFunction;
+import net.minecraft.data.models.blockstates.PropertyDispatch.QuadFunction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class BombItem extends Item {
-    private final BombType bombType;
+    public final TriFunction<Level, LivingEntity, @Nullable HumanoidArm, BombEntity> newBombFunction;
+    public final QuadFunction<Level, Double, Double, Double, BombEntity> newPosBombFunction;
 
-    public BombItem(Properties properties, BombType bombType) {
+    public BombItem(Properties properties, TriFunction<Level, LivingEntity, @Nullable HumanoidArm, BombEntity> newBombFunction, QuadFunction<Level, Double, Double, Double, BombEntity> newPosBombFunction) {
         super(properties);
-        this.bombType = bombType;
+        this.newBombFunction = newBombFunction;
+        this.newPosBombFunction = newPosBombFunction;
     }
 
-    @Override //Light bomb if it's not lit, if it is, throw it
-    @ParametersAreNonnullByDefault
     @Nonnull
+    @Override //Light bomb if it's not lit, if it is, throw it
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack bombStack = player.getItemInHand(interactionHand);
         if (!getFuseLit(bombStack)) {
@@ -47,10 +53,9 @@ public class BombItem extends Item {
         return InteractionResultHolder.sidedSuccess(bombStack, level.isClientSide());
     }
 
-    @ParametersAreNonnullByDefault
-    private void throwBomb(Level level, Player player, InteractionHand interactionHand, ItemStack bombStack, float power) {
+    private void throwBomb(@Nonnull Level level, Player player, InteractionHand interactionHand, ItemStack bombStack, float power) {
         if (!level.isClientSide) {
-            BombEntity bomb = BombType.playerBombEntityFromType(this.bombType, level, player, interactionHand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite());
+            BombEntity bomb = this.newBombFunction.apply(level, player, interactionHand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite());
             bomb.setItem(bombStack);
             bomb.setFuse(getFuseLength(bombStack));
             bomb.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, power, 0.25F);
@@ -67,8 +72,7 @@ public class BombItem extends Item {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    public void inventoryTick(ItemStack bombStack, Level level, Entity entity, int i, boolean b) {
+    public void inventoryTick(ItemStack bombStack, Level level, Entity entity, int slot, boolean selected) {
         if (getFuseLit(bombStack)) {
             if (!level.isClientSide) {
                 int fuse = getFuseLength(bombStack) - 1;
@@ -94,31 +98,22 @@ public class BombItem extends Item {
     }
 
     @Override //Makes the bomb item not twitch in a player's hand while the fuse is burning
-    @ParametersAreNonnullByDefault
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return !oldStack.getItem().equals(newStack.getItem()) || slotChanged;
     }
 
-    public BombType getBombType() {
-        return this.bombType;
-    }
-
-    @ParametersAreNonnullByDefault
     public static void setFuseLength(ItemStack bombStack, int fuse) {
         bombStack.getOrCreateTag().putInt("BrassArmoryFuseLength", Math.min(60, fuse));
     }
 
-    @ParametersAreNonnullByDefault
     public static int getFuseLength(ItemStack bombStack) {
         return bombStack.getOrCreateTag().getInt("BrassArmoryFuseLength");
     }
 
-    @ParametersAreNonnullByDefault
     public static void setFuseLit(ItemStack bombStack, boolean fuseLit) {
         bombStack.getOrCreateTag().putBoolean("BrassArmoryFuseLit", fuseLit);
     }
 
-    @ParametersAreNonnullByDefault
     public static boolean getFuseLit(ItemStack bombStack) {
         return bombStack.getOrCreateTag().getBoolean("BrassArmoryFuseLit");
     }

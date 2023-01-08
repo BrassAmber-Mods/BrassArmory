@@ -37,8 +37,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRenderer<T> {
-    private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/iron/iron_link.png");
-    private final ItemRenderer itemRenderer;
+    protected static final ResourceLocation IRON_LINK = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/iron/iron_link.png");
+    protected static final ResourceLocation NETHERITE_LINK = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/netherite/netherite_link.png");
+    protected static final ResourceLocation GOLD_LINK = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/gold/golden_link.png");
+    protected final ItemRenderer itemRenderer;
 
     public FlailHeadEntityRenderer(Context context) {
         super(context);
@@ -47,6 +49,7 @@ public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRe
         this.shadowStrength = 0.75F;
     }
 
+    @Override
     public void render(T flailHead, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         if (flailHead.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(flailHead) < 12.25D)) {
             poseStack.pushPose();
@@ -62,21 +65,18 @@ public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRe
             poseStack.popPose();
             super.render(flailHead, yaw, partialTicks, poseStack, bufferSource, light);
             Entity entity = flailHead.getOwner();
-            if (entity instanceof LivingEntity living) this.renderLeash(flailHead, partialTicks, poseStack, bufferSource, light, flailHead.getItem(), living);
+            if (entity instanceof LivingEntity living) this.renderLinks(flailHead, partialTicks, poseStack, bufferSource, light, flailHead.getItem(), living);
         }
     }
 
-    //TODO CLEAN
-    private <E extends LivingEntity> void renderLeash(T flailHead, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light, ItemStack stack, E owner) {
+    private <E extends LivingEntity> void renderLinks(T flailHead, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light, ItemStack stack, E owner) {
         poseStack.pushPose();
         int right = owner.getMainArm() == HumanoidArm.RIGHT ? 1 : -1;
-        if (!(owner.getMainHandItem().getItem() instanceof FlailItem)) {
-            right = -right;
-        }
+        if (!(owner.getMainHandItem().getItem() instanceof FlailItem)) right = -right;
 
         float attackAnim = owner.getAttackAnim(partialTicks);
         float sin1 = Mth.sin(Mth.sqrt(attackAnim) * (float)Math.PI);
-        float v4 = Mth.lerp(partialTicks, owner.yBodyRotO, owner.yBodyRot) * ((float)Math.PI / 180F);
+        float v4 = Mth.lerp(partialTicks, owner.yBodyRotO, owner.yBodyRot) * Mth.DEG_TO_RAD;
         double sin = Mth.sin(v4);
         double cos = Mth.cos(v4);
         double v = (double)right * 0.35D;
@@ -133,23 +133,20 @@ public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRe
         poseStack.popPose();
     }
 
-    private static void vertex(VertexConsumer p_114712_, Matrix4f p_114713_, Matrix3f p_114714_, int p_114715_, float p_114716_, int p_114717_, int p_114718_, int p_114719_) {
-        p_114712_.vertex(p_114713_, p_114716_ - 0.5F, (float)p_114717_ - 0.5F, 0.0F).color(255, 255, 255, 255).uv((float)p_114718_, (float)p_114719_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_114715_).normal(p_114714_, 0.0F, 1.0F, 0.0F).endVertex();
+    private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, Matrix3f matrix3f, int light, float v, int i, int j, int k) {
+        vertexConsumer.vertex(matrix4f, v - 0.5F, (float)i - 0.5F, 0.0F).color(255, 255, 255, 255).uv((float)j, (float)k).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
     }
 
     @Nonnull
     @Override
     public ResourceLocation getTextureLocation(FlailHeadEntity flailHead) {
-        return RESOURCE_LOCATION;
+        return IRON_LINK;
     }
 
     @Nonnull
-    private ResourceLocation getLinkTextureLocation(FlailHeadEntity flailHead, Tier tier) {
-        if (Tiers.NETHERITE.equals(tier)) {
-            return new ResourceLocation(BrassArmory.MOD_ID,"textures/item/netherite/netherite_link.png");
-        } else if (Tiers.GOLD.equals(tier) || Tiers.DIAMOND.equals(tier)) {
-            return new ResourceLocation(BrassArmory.MOD_ID,"textures/item/gold/golden_link.png");
-        }
+    protected ResourceLocation getLinkTextureLocation(FlailHeadEntity flailHead, Tier tier) {
+        if (Tiers.NETHERITE.equals(tier)) return NETHERITE_LINK;
+        else if (Tiers.GOLD.equals(tier) || Tiers.DIAMOND.equals(tier)) return GOLD_LINK;
         return getTextureLocation(flailHead);
     }
 }

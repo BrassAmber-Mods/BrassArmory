@@ -18,7 +18,7 @@ import static net.minecraft.client.gui.GuiComponent.GUI_ICONS_LOCATION;
 
 @Mixin(Gui.class)
 @ParametersAreNonnullByDefault
-public class GuiMixin {
+public abstract class GuiMixin {
     private static final ResourceLocation BLEEDING_ICONS_LOCATION = new ResourceLocation(BrassArmory.MOD_ID, "textures/gui/bleed.png");
 
     @Inject(method = "renderHearts", at = @At(value = "HEAD"), remap = true)

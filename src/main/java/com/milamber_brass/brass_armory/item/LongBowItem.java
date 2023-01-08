@@ -1,6 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

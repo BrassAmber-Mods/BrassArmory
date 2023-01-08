@@ -1,6 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
-import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectile;
+import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectileEntity;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
@@ -9,6 +9,7 @@ import com.milamber_brass.brass_armory.item.FlailItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -116,6 +117,11 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
+        if (this.tickCount > 200) {
+            this.discard();
+            return;
+        }
+
         if (this.hitPerTick == 0) this.onHitEffects();
         if (++this.hitPerTick > 8) {
             this.discard();
@@ -131,7 +137,7 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
         BlockState blockstate = this.level.getBlockState(pos);
         blockstate.onProjectileHit(this.level, blockstate, blockHitResult, this);
         Direction.Axis axis = blockHitResult.getDirection().getAxis();
-        Vec3 movement = AbstractRollableItemProjectile.bounce(this.getDeltaMovement(), axis, 0.2D);
+        Vec3 movement = AbstractRollableItemProjectileEntity.bounce(this.getDeltaMovement(), axis, 0.2D);
         this.setDeltaMovement(movement);
         HitResult newHitResult = ProjectileUtil.getHitResult(this, this::canHitEntity);
         if (newHitResult.getType() == BLOCK) {
@@ -160,6 +166,11 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
+    public @NotNull Component getName() {
+        return this.getTypeName();
+    }
+
+    @Override
     protected boolean tryPickup(Player player) {
         if (this.isNoPhysics() && this.ownedBy(player)) {
             player.getCooldowns().addCooldown(this.getItem().getItem(), 5);
@@ -169,15 +180,15 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    public void load(CompoundTag compoundTag) {
-        this.hitTick  = compoundTag.getLong("BAHitTick");
-        super.load(compoundTag);
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
+        compoundTag.putLong("BAHitTick", this.hitTick);
+        super.addAdditionalSaveData(compoundTag);
     }
 
     @Override
-    public boolean save(CompoundTag compoundTag) {
-        compoundTag.putLong("BAHitTick", this.hitTick);
-        return super.save(compoundTag);
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
+        this.hitTick  = compoundTag.getLong("BAHitTick");
     }
 
     @Override

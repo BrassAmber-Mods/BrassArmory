@@ -1,10 +1,11 @@
 package com.milamber_brass.brass_armory;
 
-import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
-import com.milamber_brass.brass_armory.event.ClientEventBusSubscriber;
 import com.milamber_brass.brass_armory.init.*;
+import com.milamber_brass.brass_armory.util.ArmoryCooldownCache;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,7 +25,8 @@ public class BrassArmory {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public BrassArmory() {
-        // Register
+        MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, BrassArmoryCapabilities::addCapabilities);
+
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         BrassArmoryBlocks.register(eventBus);
         BrassArmoryItems.register(eventBus);
@@ -33,19 +35,20 @@ public class BrassArmory {
         BrassArmoryMenus.register(eventBus);
         BrassArmoryEffects.register(eventBus);
         BrassArmoryParticles.register(eventBus);
-        BrassArmoryAmmoBehaviours.register();
-        eventBus.addListener(ClientEventBusSubscriber::clientSetup);
+        BrassArmoryRecipes.register(eventBus);
+
+        eventBus.addListener(BrassArmoryCapabilities::capabilitySetup);
     }
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
-        LOGGER.debug("Running common setup.");
-        // Register custom dispenser behavior
         BrassArmoryDispenseBehaviors.init();
+        BrassArmoryGunBehaviours.init();
         BrassArmoryAdvancements.init();
+        ArmoryCooldownCache.init();
+        BrassArmoryPackets.init();
     }
 
-    // Helper method for resource locations
     @Nonnull
     public static ResourceLocation locate(String name) {
         return new ResourceLocation(BrassArmory.MOD_ID, name);

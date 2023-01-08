@@ -245,8 +245,8 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         this.setPower(compoundTag.getFloat("ThrownWeaponPower"));
     }
 
-    @Override
     @NotNull
+    @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

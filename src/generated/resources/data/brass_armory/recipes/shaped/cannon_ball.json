@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "SSS",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:stone"
+    }
+  },
+  "result": {
+    "item": "brass_armory:cannon_ball"
+  }
+}

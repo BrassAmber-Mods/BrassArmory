@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class FireRodItem extends AbstractThrownWeaponItem {
     protected final float attackDamage;
     protected final float attackSpeed;
@@ -39,13 +40,11 @@ public class FireRodItem extends AbstractThrownWeaponItem {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected ImmutableMultimap.Builder<Attribute, AttributeModifier> setDefaultModifiers(float attackDamage, float attackSpeed) {
         return null;
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (this.defaultModifiers == null) {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
@@ -58,7 +57,6 @@ public class FireRodItem extends AbstractThrownWeaponItem {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         if (!entity.level.isClientSide && entity instanceof LivingEntity living) {
             living.setRemainingFireTicks(60);
@@ -83,13 +81,11 @@ public class FireRodItem extends AbstractThrownWeaponItem {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public boolean isEnchantable(ItemStack stack) {
         return false;
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return false;
     }

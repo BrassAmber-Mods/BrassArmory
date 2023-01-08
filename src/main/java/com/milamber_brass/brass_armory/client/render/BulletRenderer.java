@@ -15,10 +15,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@OnlyIn(Dist.CLIENT)
+@ParametersAreNonnullByDefault
 public class BulletRenderer<T extends BulletEntity> extends EntityRenderer<T> {
     private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/guns/cannonball.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(RESOURCE_LOCATION);
@@ -42,13 +46,11 @@ public class BulletRenderer<T extends BulletEntity> extends EntityRenderer<T> {
 
     @Nonnull
     @Override
-    @ParametersAreNonnullByDefault
     public ResourceLocation getTextureLocation(T p_114482_) {
         return RESOURCE_LOCATION;
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void render(T rift, float v, float v1, PoseStack stack, MultiBufferSource buffer, int light) {
         stack.pushPose();
         stack.scale(1.5F, 1.5F, 1.5F);

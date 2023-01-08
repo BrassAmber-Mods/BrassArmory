@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "brass_armory:flintlock_pistol",
+    "brass_armory:musket",
+    "brass_armory:blunderbuss"
+  ]
+}

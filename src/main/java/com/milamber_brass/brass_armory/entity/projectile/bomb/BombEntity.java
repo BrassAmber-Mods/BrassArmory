@@ -1,10 +1,13 @@
 package com.milamber_brass.brass_armory.entity.projectile.bomb;
 
-import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
-import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectile;
+import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
+import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectileEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.BombItem;
+import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,7 +33,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-public class BombEntity extends AbstractRollableItemProjectile {
+@ParametersAreNonnullByDefault
+public class BombEntity extends AbstractRollableItemProjectileEntity {
     private static final EntityDataAccessor<Integer> DATA_FUSE = SynchedEntityData.defineId(BombEntity.class, EntityDataSerializers.INT);
     private boolean defused;
 
@@ -48,6 +52,10 @@ public class BombEntity extends AbstractRollableItemProjectile {
         this.defused = false;
     }
 
+    public BombEntity(Level level, LivingEntity livingEntity) {
+        this(level, livingEntity, null);
+    }
+
     public BombEntity(Level level, double x, double y, double z) {
         super(BrassArmoryEntityTypes.BOMB.get(), x, y, z, level);
         this.setFuse(60);
@@ -60,14 +68,10 @@ public class BombEntity extends AbstractRollableItemProjectile {
         this.entityData.define(DATA_FUSE, 80);
     }
 
-    protected BombType getBombType() {
-        return BombType.NORMAL;
-    }
-
-    @Override
     @NotNull
+    @Override
     protected Item getDefaultItem() {
-        return BombType.getBombItem(this.getBombType());
+        return BrassArmoryItems.BOMB.get();
     }
 
     @Override
@@ -77,7 +81,7 @@ public class BombEntity extends AbstractRollableItemProjectile {
         this.setFuse(newFuse);
         if (newFuse <= 0) {
             this.discard();
-            if (!this.defused && !this.level.isClientSide) explode(this.level, this);
+            if (!this.defused && !this.level.isClientSide) explode(this.level);
         }
         if (!this.defused) {
             if (this.level.isClientSide && level.getRandom().nextInt(2) == 1) {
@@ -98,14 +102,12 @@ public class BombEntity extends AbstractRollableItemProjectile {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void thunderHit(ServerLevel serverLevel, LightningBolt lightningBolt) {
         this.explode(this.level);
     }
 
     @Nonnull
-    @Override
-    @ParametersAreNonnullByDefault //Pick up bomb if hand is empty
+    @Override //Pick up bomb if hand is empty
     public InteractionResult interact(Player player, InteractionHand hand) {
         if (!this.defused && !this.onGround && player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.CATCH_BOMB.trigger(serverPlayer);
         return this.defused ? InteractionResult.PASS : super.interact(player, hand);
@@ -114,15 +116,14 @@ public class BombEntity extends AbstractRollableItemProjectile {
     @Nonnull
     @Override
     public ItemStack getItem() {
-        ItemStack bombStack = super.getItem();
-        BombItem.setFuseLit(bombStack, true);
-        BombItem.setFuseLength(bombStack, this.getFuse());
-        bombStack.setEntityRepresentation(this);
-        return bombStack;
+        return Util.make(super.getItem(), stack -> {
+            BombItem.setFuseLit(stack, true);
+            BombItem.setFuseLength(stack, this.getFuse());
+            stack.setEntityRepresentation(this);
+        });
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected void onHitBlock(BlockHitResult blockHitResult) {
         if (this.hitPerTick == 7) {
             this.explode(this.level);
@@ -133,7 +134,7 @@ public class BombEntity extends AbstractRollableItemProjectile {
 
     @Override
     protected double getBounceMultiplier() {
-        return this.getBombType().getBounceMultiplier();
+        return 0.3D;
     }
 
     @Override
@@ -143,7 +144,7 @@ public class BombEntity extends AbstractRollableItemProjectile {
 
     @Override
     protected float getVolumeMultiplier() {
-        return this.getBombType().getVolumeMultiplier();
+        return 0.5F;
     }
 
     @Override
@@ -151,24 +152,22 @@ public class BombEntity extends AbstractRollableItemProjectile {
         return 0.25D;
     }
 
-    @ParametersAreNonnullByDefault
-    private void explode(Level level) {
-        this.discard();
+    protected void explode(Level level) {
+        if (!this.isRemoved()) this.discard();
         if (!level.isClientSide) explode(level, this);
     }
 
     public static void explode(Level level, Entity victim) {
-        Entity bomb = victim instanceof BombEntity ? victim : null;
+        BombEntity bomb = victim instanceof BombEntity bombEntity ? bombEntity : null;
         if (bomb != null && bomb.getVehicle() != null) victim = bomb.getVehicle();
-        level.explode(bomb, victim.getX(), victim.getY() + (double)(victim.getEyeHeight() * 0.5F), victim.getZ(), 2.0F, Explosion.BlockInteraction.BREAK);
+
+        ArmoryUtil.explode(level, bomb, victim.position().add(0.0D, victim.getBbHeight() * 0.5F, 0.0D), 2.0F, bomb != null && bomb.isOnFire(), Explosion.BlockInteraction.DESTROY);
     }
 
-    @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putShort("Fuse", (short)this.getFuse());
     }
 
-    @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         this.setFuse(compoundTag.getShort("Fuse"));
     }

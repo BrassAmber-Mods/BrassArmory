@@ -1,0 +1,29 @@
+{
+  "parent": "brass_armory:achievements/cannon",
+  "display": {
+    "icon": {
+      "item": "brass_armory:siege_round"
+    },
+    "title": {
+      "translate": "advancement.brass_armory.siege"
+    },
+    "description": {
+      "translate": "advancement.brass_armory.siege.desc"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "siege": {
+      "trigger": "brass_armory:siege",
+      "conditions": {}
+    }
+  },
+  "requirements": [
+    [
+      "siege"
+    ]
+  ]
+}

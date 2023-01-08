@@ -27,9 +27,9 @@ public class DaggerItem extends AbstractThrownWeaponItem implements ICustomAnima
     protected final float attackSpeed;
     protected final float attackReachBonus;
 
-    public DaggerItem(Tier tier, int attackDamage, float attackSpeed, float attackReachBonus, Properties properties) {
+    public DaggerItem(Tier tier, float attackDamage, float attackSpeed, float attackReachBonus, Properties properties) {
         super(tier, attackDamage, attackSpeed, 10F, 1.05F, properties);
-        this.attackDamage = (float)attackDamage + tier.getAttackDamageBonus();
+        this.attackDamage = attackDamage + tier.getAttackDamageBonus();
         this.attackSpeed = attackSpeed;
         this.attackReachBonus = attackReachBonus;
     }

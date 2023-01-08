@@ -15,7 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -29,7 +29,7 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     protected final SpikyBallItem head;
     protected final float attackDamage;
 
-    public FlailItem(Tiers tier, float attackDamageIn, SpikyBallItem head, Properties properties) {
+    public FlailItem(Tier tier, float attackDamageIn, SpikyBallItem head, Properties properties) {
         super(tier, attackDamageIn, -2.6F, 10F, 1F, properties);
         this.head = head;
         this.attackDamage = attackDamageIn + tier.getAttackDamageBonus();
@@ -44,7 +44,6 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected ImmutableMultimap.Builder<Attribute, AttributeModifier> setDefaultModifiers(float attackDamage, float attackSpeed) {
         return null;
     }
@@ -91,7 +90,6 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return super.canApplyAtEnchantingTable(stack, enchantment) && enchantment != Enchantments.LOYALTY;
     }

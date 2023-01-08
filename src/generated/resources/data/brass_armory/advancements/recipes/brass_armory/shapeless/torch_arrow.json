@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "brass_armory:shapeless/torch_arrow"
+    ]
+  },
+  "criteria": {
+    "has_arrows": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "minecraft:arrows"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "brass_armory:shapeless/torch_arrow"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_arrows",
+      "has_the_recipe"
+    ]
+  ]
+}

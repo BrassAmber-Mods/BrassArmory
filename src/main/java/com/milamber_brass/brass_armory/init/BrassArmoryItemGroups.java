@@ -1,11 +1,9 @@
 package com.milamber_brass.brass_armory.init;
 
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.item.BABaseArrowItem;
-import com.milamber_brass.brass_armory.item.BombItem;
-import com.milamber_brass.brass_armory.item.KatanaItem;
-import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
-import com.milamber_brass.brass_armory.item.ammo_behaviour.AbstractAmmoBehaviour;
+import com.milamber_brass.brass_armory.behaviour.GunBehaviours;
+import com.milamber_brass.brass_armory.data.BrassArmoryTags;
+import com.milamber_brass.brass_armory.item.*;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
@@ -53,11 +51,14 @@ public class BrassArmoryItemGroups {
             List<KatanaItem> katanaItems = new ArrayList<>();
             List<TieredItem> tieredItems = new ArrayList<>();
             List<BowItem> bowItems = new ArrayList<>();
-            List<AbstractGunItem> gunItems = new ArrayList<>();
+            List<FlintlockItem> gunItems = new ArrayList<>();
             List<Item> ammoItems = new ArrayList<>();
             List<BombItem> bombItems = new ArrayList<>();
-            List<BABaseArrowItem> arrowItems = new ArrayList<>();
+            List<SpecialArrowItem> arrowItems = new ArrayList<>();
             List<BlockItem> blockItems = new ArrayList<>();
+            List<WarpCrystalItem> warpCrystalItems = new ArrayList<>();
+            List<GliderItem> gliderItems = new ArrayList<>();
+            List<Item> cannonStuff = new ArrayList<>();
 
             List<Item> allItems = ForgeRegistries.ITEMS.getValues().stream().filter(item -> item.getCreativeTabs().contains(this)).filter(item -> {
                 if (item instanceof KatanaItem katanaItem) {
@@ -69,19 +70,28 @@ public class BrassArmoryItemGroups {
                 } else if (item instanceof BowItem bowItem) {
                     bowItems.add(bowItem);
                     return false;
-                } else if (item instanceof AbstractGunItem gunItem) {
+                } else if (item instanceof CannonItem || (item.getDefaultInstance().is(BrassArmoryTags.Items.CANNON_AMMO) && !item.getDefaultInstance().is(BrassArmoryTags.Items.BOMB))) {
+                    cannonStuff.add(item);
+                    return false;
+                } else if (item instanceof FlintlockItem gunItem) {
                     gunItems.add(gunItem);
                     return false;
                 } else if (item instanceof BombItem bombItem) {
                     bombItems.add(bombItem);
                     return false;
-                } else if (item instanceof BABaseArrowItem arrowItem) {
+                } else if (item instanceof SpecialArrowItem arrowItem) {
                     arrowItems.add(arrowItem);
                     return false;
                 } else if (item instanceof BlockItem blockItem) {
                     blockItems.add(blockItem);
                     return false;
-                } else if (AbstractAmmoBehaviour.itemHasAmmoBehaviour(item)) {
+                } else if (item instanceof WarpCrystalItem warpCrystalItem) {
+                    warpCrystalItems.add(warpCrystalItem);
+                    return false;
+                } else if (item instanceof GliderItem gliderItem) {
+                    gliderItems.add(gliderItem);
+                    return false;
+                } else if (GunBehaviours.itemHasAmmoBehaviour(item)) {
                     ammoItems.add(item);
                     return false;
                 }
@@ -101,13 +111,24 @@ public class BrassArmoryItemGroups {
             })).forEach(item -> item.fillItemCategory(this, itemStacks));
 
             katanaItems.forEach(item -> item.fillItemCategory(this, itemStacks));
-            gunItems.stream().sorted(Comparator.comparingDouble(AbstractGunItem::getDamageMultiplier)).forEach(item -> item.fillItemCategory(this, itemStacks));
+
+            allItems.forEach(item -> item.fillItemCategory(this, itemStacks));
+            //Adventure items
+            blockItems.forEach(item -> item.fillItemCategory(this, itemStacks));
+            warpCrystalItems.stream().sorted(Comparator.comparingInt(WarpCrystalItem::getMaxDistance)).forEach(item -> item.fillItemCategory(this, itemStacks));
+
+            gliderItems.forEach(item -> item.fillItemCategory(this, itemStacks));
+
+            gunItems.stream().sorted(Comparator.comparingDouble(FlintlockItem::getDamageMultiplier)).forEach(item -> item.fillItemCategory(this, itemStacks));
             ammoItems.forEach(item -> item.fillItemCategory(this, itemStacks));
             bombItems.forEach(item -> item.fillItemCategory(this, itemStacks));
-            allItems.forEach(item -> item.fillItemCategory(this, itemStacks));
+
             bowItems.forEach(item -> item.fillItemCategory(this, itemStacks));
             arrowItems.forEach(item -> item.fillItemCategory(this, itemStacks));
-            blockItems.forEach(item -> item.fillItemCategory(this, itemStacks));
+
+            cannonStuff.remove(BrassArmoryItems.CARCASS_ROUND.get());
+            cannonStuff.forEach(item -> item.fillItemCategory(this, itemStacks));
+            BrassArmoryItems.CARCASS_ROUND.get().fillItemCategory(this, itemStacks);
         }
     };
 

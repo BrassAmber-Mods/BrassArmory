@@ -6,9 +6,14 @@
     "  S"
   ],
   "key": {
-    "T": {
-      "item": "minecraft:torch"
-    },
+    "T": [
+      {
+        "item": "minecraft:coal"
+      },
+      {
+        "item": "minecraft:charcoal"
+      }
+    ],
     "S": {
       "tag": "forge:rods/wooden"
     }

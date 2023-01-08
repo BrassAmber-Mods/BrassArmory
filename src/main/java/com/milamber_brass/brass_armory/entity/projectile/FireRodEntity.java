@@ -1,6 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
-import com.milamber_brass.brass_armory.ArmoryUtil;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;

@@ -6,15 +6,26 @@
   "minVersion": "0.8",
   "mixins": [
     "LivingEntityMixin",
+    "LootTableMixin",
     "MobMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "ProjectileMixin",
+    "ServerGamePacketListenerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "refmap": "brass_armory.mixin-refmap.json",
   "client": [
+    "AbstractSoundInstanceMixin",
+    "CapeLayerMixin",
     "GuiMixin",
-    "HumanoidModelMixin"
+    "HumanoidModelMixin",
+    "ItemRendererMixin",
+    "LevelRendererMixin",
+    "LocalPlayerMixin",
+    "MouseHandlerMixin",
+    "MultiPlayerGameModeMixin",
+    "PlayerItemInHandLayerMixin"
   ]
 }

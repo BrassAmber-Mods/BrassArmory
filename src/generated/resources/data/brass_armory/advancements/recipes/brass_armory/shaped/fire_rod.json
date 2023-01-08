@@ -6,13 +6,25 @@
     ]
   },
   "criteria": {
-    "has_item": {
+    "has_coal": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:torch"
+              "minecraft:coal"
+            ]
+          }
+        ]
+      }
+    },
+    "has_charcoal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:charcoal"
             ]
           }
         ]
@@ -27,7 +39,8 @@
   },
   "requirements": [
     [
-      "has_item",
+      "has_coal",
+      "has_charcoal",
       "has_the_recipe"
     ]
   ]

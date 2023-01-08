@@ -34,9 +34,24 @@
 
   "item.mace.smash": { "subtitle": "subtitles.brass_armory.item.mace.smash", "sounds": [ "random/explode1", "random/explode2", "random/explode3", "random/explode4" ] },
 
-  "item.gun.load": { "subtitle": "subtitles.brass_armory.item.gun.load", "sounds": [ "random/click" ] },
+  "item.gun.open": { "subtitle": "subtitles.brass_armory.item.gun.clicks", "sounds": [ "random/click" ] },
+  "item.gun.close": { "subtitle": "subtitles.brass_armory.item.gun.clicks", "sounds": [ "random/click" ] },
+  "item.gun.load": { "subtitle": "subtitles.brass_armory.item.gun.load", "sounds": [ "item/armor/equip_iron4" ] },
   "item.gun.shoot": { "subtitle": "subtitles.brass_armory.item.gun.shoot", "sounds": [ "random/explode1", "random/explode2", "random/explode3", "random/explode4" ] },
 
+  "item.bullet.hit": { "subtitle": "subtitles.brass_armory.item.bullet.hit", "sounds": [ { "name": "item/trident/pierce1", "volume": 0.8, "pitch": 1.1 }, { "name": "item/trident/pierce2", "volume": 0.8, "pitch": 1.1 }, { "name": "item/trident/pierce3", "volume": 0.8, "pitch": 1.1 } ] },
+
+  "item.cannon.open": { "subtitle": "subtitles.brass_armory.item.cannon.open", "sounds": [ "block/iron_trapdoor/open1", "block/iron_trapdoor/open2" ] },
+  "item.cannon.close": { "subtitle": "subtitles.brass_armory.item.cannon.close", "sounds": [ "block/iron_trapdoor/open3", "block/iron_trapdoor/open4" ] },
+  "item.cannon.shoot": { "subtitle": "subtitles.brass_armory.item.cannon.shoot", "sounds": [ "random/explode1", "random/explode2", "random/explode3", "random/explode4" ] },
+  "item.cannon.fuse": { "subtitle": "subtitles.brass_armory.item.cannon.fuse", "sounds": [ "random/fizz" ] },
+  "item.cannon.move": { "subtitle": "subtitles.brass_armory.item.cannon.move", "sounds": [ "minecart/base" ] },
+
   "item.katana.small_upgrade": { "subtitle": "subtitles.brass_armory.item.katana.small_upgrade", "sounds": [ "mob/wither/idle1", "mob/wither/idle2", "mob/wither/idle3", "mob/wither/idle4" ] },
-  "item.katana.large_upgrade": { "subtitle": "subtitles.brass_armory.item.katana.large_upgrade", "sounds": [ "mob/wither/death" ] }
+  "item.katana.large_upgrade": { "subtitle": "subtitles.brass_armory.item.katana.large_upgrade", "sounds": [ "mob/wither/death" ] },
+
+  "item.warp_crystal.heart_beat_one": { "subtitle": "subtitles.brass_armory.item.warp_crystal.heart_beat", "sounds": [ "mob/pig/step1" ] },
+  "item.warp_crystal.heart_beat_two": { "subtitle": "subtitles.brass_armory.item.warp_crystal.heart_beat", "sounds": [ "mob/pig/step4", "mob/pig/step5" ] },
+  "item.warp_crystal.warp": { "subtitle": "subtitles.brass_armory.item.warp_crystal.warp", "sounds": [ "mob/endermen/portal", "mob/endermen/portal2" ] },
+  "item.warp_crystal.whisper": { "subtitle": "subtitles.brass_armory.item.warp_crystal.whisper", "sounds": [ "mob/endermen/idle1", "mob/endermen/idle2", "mob/endermen/idle3", "mob/endermen/idle4", "mob/endermen/idle5" ] }
 }

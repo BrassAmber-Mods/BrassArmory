@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class BloodParticle extends TextureSheetParticle {
     BloodParticle(ClientLevel level, double x, double y, double z) {
@@ -47,13 +48,12 @@ public class BloodParticle extends TextureSheetParticle {
 
     protected void postMoveUpdate() { }
 
-    @OnlyIn(Dist.CLIENT)
     static class FallParticle extends BloodParticle {
         protected final ParticleOptions landParticle;
 
         FallParticle(ClientLevel level, double x, double y, double z, ParticleOptions particleOptions) {
             super(level, x, y, z);
-            this.lifetime = (int)(64.0D / (Math.random() * 0.8D + 0.2D));
+            this.lifetime = (int)(64.0D / (Math.random() * 0.8D + 0.1D));
             this.landParticle = particleOptions;
         }
 
@@ -65,7 +65,6 @@ public class BloodParticle extends TextureSheetParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class LandParticle extends BloodParticle {
         LandParticle(ClientLevel level, double x, double y, double z) {
             super(level, x, y, z);
@@ -73,7 +72,6 @@ public class BloodParticle extends TextureSheetParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class BloodFallProvider implements ParticleProvider<SimpleParticleType> {
         protected final SpriteSet sprite;
 
@@ -89,7 +87,6 @@ public class BloodParticle extends TextureSheetParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class BloodLandProvider implements ParticleProvider<SimpleParticleType> {
         protected final SpriteSet sprite;
 

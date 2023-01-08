@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "brass_armory:item/glider",
+    "layer1": "brass_armory:item/glider_overlay"
+  }
+}

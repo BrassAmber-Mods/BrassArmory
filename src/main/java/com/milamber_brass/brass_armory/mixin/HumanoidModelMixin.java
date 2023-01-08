@@ -1,7 +1,7 @@
 package com.milamber_brass.brass_armory.mixin;
 
-import com.milamber_brass.brass_armory.container.GunContainer;
-import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
+import com.milamber_brass.brass_armory.inventory.GunContainer;
+import com.milamber_brass.brass_armory.item.FlintlockItem;
 import com.milamber_brass.brass_armory.item.MaceItem;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -48,30 +48,30 @@ public abstract class HumanoidModelMixin {
                 this.leftArm.xRot = this.savedLeftRot * 0.5F - (float) Math.PI;
                 this.leftArm.yRot = 0.0F;
             } else {
-                if (living.getUseItem().getItem() instanceof AbstractGunItem) {
+                if (living.getUseItem().getItem() instanceof FlintlockItem) {
                     HumanoidArm mainArm = living.getMainArm();
                     InteractionHand hand = living.getUsedItemHand();
                     boolean rightArm = (mainArm == HumanoidArm.RIGHT && hand == InteractionHand.MAIN_HAND) || (mainArm == HumanoidArm.LEFT && hand == InteractionHand.OFF_HAND);
-                    this.holdLoadingGun(rightArm, AbstractGunItem.getLoadProgress(living.getUseItem()), true);
+                    this.holdLoadingGun(rightArm, FlintlockItem.getLoadProgress(living.getUseItem()), true);
                 }
             }
         } else {
-            if (living.getMainHandItem().getItem() instanceof AbstractGunItem gunItem) {
-                switch(AbstractGunItem.getLoad(living.getMainHandItem())) {
+            if (living.getMainHandItem().getItem() instanceof FlintlockItem gunItem) {
+                switch(FlintlockItem.getLoad(living.getMainHandItem())) {
                     case 0:
-                        if (living instanceof Player player && player.containerMenu instanceof GunContainer)
-                            this.holdLoadingGun(living.getMainArm() == HumanoidArm.RIGHT, AbstractGunItem.getLoadProgress(living.getUseItem()), false);
+                        if (living instanceof Player player && player.containerMenu instanceof GunContainer<?>)
+                            this.holdLoadingGun(living.getMainArm() == HumanoidArm.RIGHT, FlintlockItem.getLoadProgress(living.getUseItem()), false);
                         break;
                     case 2:
                         if (gunItem.isOneHanded())
                             this.holdLoadedGun(living.getMainArm() != HumanoidArm.RIGHT, true, !living.getOffhandItem().isEmpty());
                 }
             }
-            if (living.getOffhandItem().getItem() instanceof AbstractGunItem gunItem) {
-                switch(AbstractGunItem.getLoad(living.getOffhandItem())) {
+            if (living.getOffhandItem().getItem() instanceof FlintlockItem gunItem) {
+                switch(FlintlockItem.getLoad(living.getOffhandItem())) {
                     case 0:
-                        if (living instanceof Player player && player.containerMenu instanceof GunContainer)
-                            this.holdLoadingGun(living.getMainArm() == HumanoidArm.LEFT, AbstractGunItem.getLoadProgress(living.getUseItem()), false);
+                        if (living instanceof Player player && player.containerMenu instanceof GunContainer<?>)
+                            this.holdLoadingGun(living.getMainArm() == HumanoidArm.LEFT, FlintlockItem.getLoadProgress(living.getUseItem()), false);
                         break;
                     case 2:
                         if (gunItem.isOneHanded())

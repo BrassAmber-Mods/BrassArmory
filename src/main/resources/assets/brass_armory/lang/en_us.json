@@ -3,6 +3,7 @@
 
 
   "entity.brass_armory.bullet": "Bullet",
+  "entity.brass_armory.flail_head": "Flail Head",
 
 
   "block.brass_armory.explorers_rope" : "Explorer's Rope",
@@ -17,7 +18,8 @@
   "item.brass_armory.slime_arrow" : "Slime Arrow",
   "item.brass_armory.warp_arrow" : "Warp Arrow",
   "item.brass_armory.fire_arrow" : "Fire Arrow",
-  "item.brass_armory.concussion_arrow" : "Concussion Arrow",
+  "item.brass_armory.confusion_arrow" : "Confusion Arrow",
+  "item.brass_armory.torch_arrow" : "Torch Arrow",
 
   "item.brass_armory.wooden_boomerang" : "Wooden Boomerang",
   "item.brass_armory.golden_boomerang" : "Golden Boomerang",
@@ -87,6 +89,11 @@
   "item.brass_armory.blunderbuss_parts" : "Blunderbuss Parts",
   "item.brass_armory.musket_ball" : "Musket Ball",
   "item.brass_armory.bundle_shot" : "Bundle Shot",
+  "item.brass_armory.cannon" : "Cannon",
+  "item.brass_armory.cannon_ball" : "Cannon Ball",
+  "item.brass_armory.carcass_round" : "Carcass Round",
+  "item.brass_armory.dragon_round" : "Dragon Round",
+  "item.brass_armory.siege_round" : "Siege Round",
 
   "item.brass_armory.longbow" : "Longbow",
   "item.brass_armory.fire_rod" : "Fire Rod",
@@ -94,6 +101,15 @@
   "item.brass_armory.katana" : "Katana",
   "item.brass_armory.katana_wilted": "Wilted Katana",
   "item.brass_armory.katana_withered" : "Withered Katana",
+
+  "item.brass_armory.glider" : "Glider",
+  "item.brass_armory.quiver" : "Quiver",
+
+  "item.brass_armory.petty_warp_crystal" : "Petty Warp Crystal",
+  "item.brass_armory.lesser_warp_crystal" : "Lesser Warp Crystal",
+  "item.brass_armory.common_warp_crystal" : "Common Warp Crystal",
+  "item.brass_armory.greater_warp_crystal" : "Greater Warp Crystal",
+  "item.brass_armory.grand_warp_crystal" : "Grand Warp Crystal",
 
 
   "death.attack.brass_armory.battleaxe": "%1$s was struck down by %2$s's thrown BattleAxe",
@@ -106,10 +122,12 @@
   "death.attack.brass_armory.impale": "%1$s got impaled to the bone by %2$s",
   "death.attack.brass_armory.bleed": "%1$s bled out",
   "death.attack.brass_armory.spiky_ball": "%1$s stepped on a spiky ball",
+  "death.attack.brass_armory.spiky_ball.player": "%1$s stepped on %2$s's spiky ball",
   "death.attack.brass_armory.mace_smash": "%1$s was decimated by a smash attack",
 
 
   "effect.brass_armory.bleed": "Bleed",
+  "effect.brass_armory.confusion": "Confusion",
 
 
   "subtitles.brass_armory.item.bomb.lit": "Bomb fuse lit",
@@ -147,11 +165,26 @@
 
   "subtitles.brass_armory.item.mace.smash": "Mace smashes",
 
+  "subtitles.brass_armory.item.gun.open": "Gun clicks",
+  "subtitles.brass_armory.item.gun.close": "Gun clicks",
+  "subtitles.brass_armory.item.gun.clicks": "Gun clicks",
   "subtitles.brass_armory.item.gun.load": "Gun loads",
   "subtitles.brass_armory.item.gun.shoot": "Gun fires",
 
+  "subtitles.brass_armory.item.bullet.hit": "Bullet lands",
+
+  "subtitles.brass_armory.item.cannon.open": "Cannon rumbles",
+  "subtitles.brass_armory.item.cannon.close": "Cannon rumbles",
+  "subtitles.brass_armory.item.cannon.shoot": "Cannon fires",
+  "subtitles.brass_armory.item.cannon.fuse": "Cannon fuse hisses",
+  "subtitles.brass_armory.item.cannon.move": "Cannon turns",
+
   "subtitles.brass_armory.item.katana.small_upgrade": "Katana beckons",
   "subtitles.brass_armory.item.katana.large_upgrade": "Katana grows",
+
+  "subtitles.brass_armory.item.warp_crystal.heart_beat": "Heart beats",
+  "subtitles.brass_armory.item.warp_crystal.warp": "Crystal Warps",
+  "subtitles.brass_armory.item.warp_crystal.whisper": "Crystal Whispers",
 
 
   "advancement.brass_armory.root.desc": "Arm yourself!",
@@ -175,5 +208,17 @@
   "advancement.brass_armory.longbow.desc": "Fire a Longbow",
 
   "advancement.brass_armory.long_distance_warp_arrow": "Fast-Travel",
-  "advancement.brass_armory.long_distance_warp_arrow.desc": "Warp over 100 blocks away with a Warp Arrow"
+  "advancement.brass_armory.long_distance_warp_arrow.desc": "Warp over 100 blocks away with a Warp Arrow",
+
+  "advancement.brass_armory.gun": "Locked and Loaded",
+  "advancement.brass_armory.gun.desc": "Load a Flintlock Gun",
+
+  "advancement.brass_armory.cannon": "Superior Firepower",
+  "advancement.brass_armory.cannon.desc": "Fire a Cannon",
+
+  "advancement.brass_armory.siege": "Revenge",
+  "advancement.brass_armory.siege.desc": "Oh man",
+
+  "advancement.brass_armory.dragon_round": "Skies Above!",
+  "advancement.brass_armory.dragon_round.desc": "Weaponize the Ender Dragon's breath"
 }

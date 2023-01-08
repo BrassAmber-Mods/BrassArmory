@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "brass_armory:cannon_ball",
+    "brass_armory:carcass_round",
+    "brass_armory:siege_round",
+    "#brass_armory:bomb"
+  ]
+}

@@ -2,7 +2,7 @@ package com.milamber_brass.brass_armory.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.milamber_brass.brass_armory.ArmoryUtil;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -40,12 +40,12 @@ public class HalberdItem extends TieredItem implements Vanishable {//Uses vanill
     protected final float spearSpeed;
     protected final float spearReach;
 
-    public HalberdItem(Tier tier, int axeDamage, float axeSpeed, float axeReach, int spearDamage, float spearSpeed, float spearReach, Properties properties) {
+    public HalberdItem(Tier tier, float axeDamage, float axeSpeed, float axeReach, float spearDamage, float spearSpeed, float spearReach, Properties properties) {
         super(tier, properties);
-        this.axeDamage = (float) axeDamage + tier.getAttackDamageBonus();
+        this.axeDamage = axeDamage + tier.getAttackDamageBonus();
         this.axeSpeed = axeSpeed;
         this.axeReach = axeReach;
-        this.spearDamage = (float) spearDamage + tier.getAttackDamageBonus();
+        this.spearDamage = spearDamage + tier.getAttackDamageBonus();
         this.spearSpeed = spearSpeed;
         this.spearReach = spearReach;
     }

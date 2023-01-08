@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "brass_armory:bomb",
+    "brass_armory:bouncy_bomb",
+    "brass_armory:sticky_bomb"
+  ]
+}

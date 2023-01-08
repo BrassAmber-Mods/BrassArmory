@@ -14,11 +14,12 @@ apply plugin: 'eclipse'
 apply plugin: 'org.spongepowered.mixin'
 
 mixin {
+    //noinspection GroovyAssignabilityCheck
     add sourceSets.main, "brass_armory.mixin-refmap.json"
     config 'brass_armory.mixin.json'
 }
 
-version = "1.18.2-1.1-beta"
+version = "1.18.2-1.0"
 group = "com.milamber_brass.brass_armory"
 archivesBaseName = "brass_armory"
 
@@ -31,14 +32,10 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run/client')
-
-            // Logging Data
             property 'forge.logging.markers', 'REGISTRIES'
-
-            // Logging Level
             property 'forge.logging.console.level', 'debug'
-
-            // Source Sets
+            //noinspection GroovyAssignabilityCheck
+            args '--username', 'Dev1'
             mods {
                 brass_armory {
                     source sourceSets.main
@@ -48,14 +45,8 @@ minecraft {
 
         server {
             workingDirectory project.file('run/server')
-
-            // Logging Data
             property 'forge.logging.markers', 'REGISTRIES'
-
-            // Logging Level
             property 'forge.logging.console.level', 'debug'
-
-            // Source Sets
             mods {
                 brass_armory {
                     source sourceSets.main
@@ -65,17 +56,10 @@ minecraft {
 
         data {
             workingDirectory project.file('run/data')
-
-            // Logging Data
             property 'forge.logging.markers', 'REGISTRIES'
-
-            // Logging Level
             property 'forge.logging.console.level', 'debug'
-
-            // Specify mod id for generation, output directory, and where to look for existing resources
+            //noinspection GroovyAssignabilityCheck
             args '--mod', 'brass_armory', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            // Source Sets
             mods {
                 brass_armory {
                     source sourceSets.main
@@ -88,12 +72,31 @@ minecraft {
 // Include generated resources
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+repositories {
+    maven {
+        name 'progwm\'s Maven'
+        url 'https://dvs1.progwml6.com/files/maven'
+    }
+    maven {
+        name 'Curseforge Maven'
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.52'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.2.0'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    runtimeOnly fg.deobf('curse.maven:jade-324717:3845190')
+
+    //compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.195:api")
+    implementation fg.deobf("mezz.jei:jei-1.18.2:9.7.0.195")
 }
 
 jar {
+    //noinspection GroovyAssignabilityCheck
     manifest {
         attributes([
             "Specification-Title": "brass_armory",

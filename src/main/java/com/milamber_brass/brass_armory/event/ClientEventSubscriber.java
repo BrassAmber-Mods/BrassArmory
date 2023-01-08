@@ -1,21 +1,26 @@
 package com.milamber_brass.brass_armory.event;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.client.sound.CannonSoundInstance;
+import com.milamber_brass.brass_armory.entity.CannonEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
+import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
+import com.milamber_brass.brass_armory.item.FlintlockItem;
 import com.milamber_brass.brass_armory.item.LongBowItem;
 import com.milamber_brass.brass_armory.item.MaceItem;
-import com.milamber_brass.brass_armory.item.abstracts.AbstractGunItem;
+import com.milamber_brass.brass_armory.item.WarpCrystalItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -24,10 +29,12 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVModifierEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -35,11 +42,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 
+@OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
 public class ClientEventSubscriber {
     @SubscribeEvent
-    public static void RenderHandEvent(RenderHandEvent event) {Minecraft mc = Minecraft.getInstance();
+    public static void onRenderHand(RenderHandEvent event) {
+        Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
 
         if (player != null && player.isUsingItem()) {
@@ -59,14 +68,15 @@ public class ClientEventSubscriber {
                     ItemStack itemStack = event.getItemStack();
                     if (doubleMace) poseStack.pushPose();
 
-                    float f8 = (float) itemStack.getUseDuration() - (float) player.getUseItemRemainingTicks();
+                    float f8 = (float)itemStack.getUseDuration() - (float)player.getUseItemRemainingTicks();
+                    float f9 = f8 + event.getPartialTicks();;
                     poseStack.translate(k * 0.56F, -0.52F, -0.72F);
                     if (itemStack.getItem() instanceof ICustomAnimationItem animationItem) {
                         float maxCharge = animationItem.getChargeDuration(itemStack);
-                        float v = Math.min(f8, maxCharge);
+                        float v = Math.min(f9, maxCharge);
                         event.setCanceled(true);
                         float m = v / (maxCharge * 10F);
-                        double sineWave = Math.sin(f8 * 200D) * 0.002D;
+                        double sineWave = Math.sin(f8 * 75D) * 0.004D;
 
                         poseStack.translate(0, sineWave + m, m);
                         poseStack.mulPose(Vector3f.XP.rotationDegrees(-13.935F + m * 200F));
@@ -78,7 +88,7 @@ public class ClientEventSubscriber {
                         poseStack.mulPose(Vector3f.XP.rotationDegrees(-13.935F));
                         poseStack.mulPose(Vector3f.YP.rotationDegrees(k * 35.3F));
                         poseStack.mulPose(Vector3f.ZP.rotationDegrees(k * -9.785F));
-                        float f12 = f8 / 30.0F;
+                        float f12 = f9 / 30.0F;
                         f12 = (f12 * f12 + f12 * 2.0F) / 3.0F;
                         if (f12 > 1.0F) f12 = 1.0F;
 
@@ -97,7 +107,7 @@ public class ClientEventSubscriber {
                         poseStack.mulPose(Vector3f.XP.rotationDegrees(-55.0F));
                         poseStack.mulPose(Vector3f.YP.rotationDegrees(k * 35.3F));
                         poseStack.mulPose(Vector3f.ZP.rotationDegrees(k * -9.785F));
-                        float f11 = f8 / (eventItem.getItem() instanceof AbstractThrownWeaponItem item ? item.chargeDuration : 10.0F);
+                        float f11 = f9 / (eventItem.getItem() instanceof AbstractThrownWeaponItem item ? item.chargeDuration : 10.0F);
                         if (f11 > 1.0F) f11 = 1.0F;
 
                         if (f11 > 0.1F) {
@@ -111,21 +121,33 @@ public class ClientEventSubscriber {
                         poseStack.scale(1.0F, 1.0F, 1.0F + f11 * 0.2F);
                         poseStack.mulPose(Vector3f.YN.rotationDegrees(k * 45.0F));
                     }
-                    new ItemInHandRenderer(mc).renderItem(player, itemStack, transformType, !rightHandFlag, poseStack, event.getMultiBufferSource(), event.getPackedLight());
+                    mc.getItemInHandRenderer().renderItem(player, itemStack, transformType, !rightHandFlag, poseStack, event.getMultiBufferSource(), event.getPackedLight());
                     if (doubleMace) poseStack.popPose();
                 }
+            } else if (eventItem.getItem() instanceof WarpCrystalItem) {
+                event.setCanceled(true);
+                PoseStack poseStack = event.getPoseStack();
+                boolean mainHandFlag = event.getHand() == InteractionHand.MAIN_HAND;
+                HumanoidArm humanoidarm = mainHandFlag ? player.getMainArm() : player.getMainArm().getOpposite();
+                boolean rightHandFlag = humanoidarm == HumanoidArm.RIGHT;
+                float f1 = (player.getTicksUsingItem() + event.getPartialTicks()) / (float) WarpCrystalItem.WARP_TICKS;
+                f1 = f1 > 1.0F ? 1.0F + (float)Math.sin(f1 * 7) * 0.0035F : (float)Math.pow(f1, 1.6D);
+                poseStack.translate(0F, 0F, -1F - f1 / 4F);
+
+                Lighting.setupFor3DItems();
+                mc.getItemInHandRenderer().renderItem(player, eventItem.copy(), TransformType.FIXED, rightHandFlag, poseStack, event.getMultiBufferSource(), 15728880);
             }
         }
     }
 
     @SubscribeEvent
-    public static void RenderPlayerEvent(RenderPlayerEvent.Pre event) {
+    public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
         Player player = event.getPlayer();
-        if (player.getMainHandItem().getItem() instanceof AbstractGunItem && AbstractGunItem.getLoad(player.getMainHandItem()) == 2) {
+        if (player.getMainHandItem().getItem() instanceof FlintlockItem && FlintlockItem.getLoad(player.getMainHandItem()) == 2) {
             if (player.getMainArm() == HumanoidArm.RIGHT)
                 event.getRenderer().getModel().rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
             else event.getRenderer().getModel().leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-        } else if (player.getOffhandItem().getItem() instanceof AbstractGunItem && AbstractGunItem.getLoad(player.getOffhandItem()) == 2) {
+        } else if (player.getOffhandItem().getItem() instanceof FlintlockItem && FlintlockItem.getLoad(player.getOffhandItem()) == 2) {
             if (player.getMainArm() == HumanoidArm.LEFT)
                 event.getRenderer().getModel().rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
             else event.getRenderer().getModel().leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
@@ -133,7 +155,7 @@ public class ClientEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void FOVUpdate(FOVModifierEvent event) {
+    public static void onFOVModifier(FOVModifierEvent event) {
         Player player = event.getEntity();
         if (player.isUsingItem()) {
             ItemStack useStack = player.getUseItem();
@@ -145,16 +167,44 @@ public class ClientEventSubscriber {
                 else f9 = 30F;
 
                 float f1 = player.getTicksUsingItem() / f9;
-                f1 = f1 > 1.0F ? 1.0F : f1 * f1;
+                f1 = f1 > 1.0F ? 1.0F : (float)Math.pow(f1, 1.6D);
                 event.setNewfov(event.getFov() * (1.0F - f1 * (useItem instanceof LongBowItem ? 0.15F : 0.075F)));
+            } else if (useItem instanceof WarpCrystalItem) {
+                float f1 = (float) player.getTicksUsingItem() / (float) WarpCrystalItem.WARP_TICKS;
+                f1 = f1 > 1.0F ? 1.0F + (float)Math.sin(f1 * 7) * 0.0035F : f1 * f1;
+                event.setNewfov(event.getFov() * (1.0F - f1 * 0.75F));
             }
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
         RenderType cutoutRenderType = RenderType.cutout();
         ItemBlockRenderTypes.setRenderLayer(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), cutoutRenderType);
+    }
+
+    @SubscribeEvent
+    public static void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.getCameraEntity() instanceof Player player && !minecraft.isPaused()) {
+            player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(iShakeCapability -> {
+                float intensity = (float)iShakeCapability.getShake() * 1.5F;
+                if (intensity > 0) {
+                    float partialTicks = (float) event.getPartialTicks();
+                    event.setYaw(Mth.lerp(partialTicks, event.getYaw(), event.getYaw() + (player.getRandom().nextFloat() * 2.0F - 1.0F) * intensity));
+                    event.setPitch(Mth.lerp(partialTicks, event.getPitch(), event.getPitch() + (player.getRandom().nextFloat() * 2.0F - 1.0F) * intensity));
+                    event.setRoll(Mth.lerp(partialTicks, event.getRoll(), event.getRoll() + (player.getRandom().nextFloat() * 2.0F - 1.0F) * intensity));
+                    iShakeCapability.reduceShake(iShakeCapability.getShake() * 0.1D);
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof CannonEntity cannonEntity && cannonEntity.level.isClientSide) {
+            Minecraft.getInstance().getSoundManager().play(new CannonSoundInstance(cannonEntity));
+        }
     }
 }

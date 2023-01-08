@@ -6,6 +6,7 @@ import com.milamber_brass.brass_armory.entity.projectile.BoomerangEntity;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.network.chat.Component;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Field;
 
+@ParametersAreNonnullByDefault
 public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAnimationItem {
     private final ImmutableSet<Enchantment> properEnchantments = ImmutableSet.of(Enchantments.FLAMING_ARROWS, Enchantments.QUICK_CHARGE);
     public final static String critTag = "BABoomerangCrit";
@@ -34,7 +36,7 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
 
     private static Field toolHighlightTimerField = null;
 
-    public BoomerangItem(Tier tier, int attackDamage, float attackSpeed, Properties properties) {
+    public BoomerangItem(Tier tier, float attackDamage, float attackSpeed, Properties properties) {
         super(tier, attackDamage, attackSpeed, 18F, 1.25F, properties);
     }
 
@@ -46,14 +48,11 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
     @Nonnull
     @Override
     protected AbstractThrownWeaponEntity getEntity(Level level, LivingEntity living, ItemStack boomerangStack) {
-        BoomerangEntity boomerangEntity = new BoomerangEntity(level, living, boomerangStack);
-        boomerangEntity.setCritArrow(level.random.nextFloat(100F) <= getCrit(boomerangStack));
-        return boomerangEntity;
+        return Util.make(new BoomerangEntity(level, living, boomerangStack), boomerangEntity -> boomerangEntity.setCritArrow(level.random.nextFloat(100F) <= getCrit(boomerangStack)));
     }
 
     @Nonnull
     @Override
-    @ParametersAreNonnullByDefault
     public Component getName(ItemStack boomerangStack) {
         int crit = (int)getCrit(boomerangStack);
         if (crit <= 0) return super.getName(boomerangStack);
@@ -61,8 +60,7 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    public void inventoryTick(ItemStack boomerangStack, Level level, Entity entity, int i, boolean b) {
+    public void inventoryTick(ItemStack boomerangStack, Level level, Entity entity, int slot, boolean selected) {
         float crit = getCrit(boomerangStack);
         if (crit > 0F && entity instanceof LivingEntity living) {
             int drain = (int)Math.min(level.getGameTime() - getTime(boomerangStack), 1000L) / 20;
@@ -81,11 +79,9 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
                 }
             }
         }
-        super.inventoryTick(boomerangStack, level, entity, i, b);
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return super.canApplyAtEnchantingTable(stack, enchantment) || properEnchantments.contains(enchantment);
     }
@@ -96,13 +92,11 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
         return quickCharge == 0 ? this.chargeDuration : this.chargeDuration - 3 * quickCharge;
     }
 
-    @ParametersAreNonnullByDefault
     public static void setCrit(ItemStack boomerangStack, float crit, long time) {
         boomerangStack.getOrCreateTag().putFloat(BoomerangItem.critTag, Math.min(crit, 100F));
         boomerangStack.getOrCreateTag().putLong(BoomerangItem.timeTag, time);
     }
 
-    @ParametersAreNonnullByDefault
     public static float getCrit(ItemStack boomerangStack) {
         if (boomerangStack.getTag() != null && boomerangStack.getTag().contains(BoomerangItem.critTag)) {
             return boomerangStack.getOrCreateTag().getFloat(BoomerangItem.critTag);
@@ -110,7 +104,6 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
         return 0F;
     }
 
-    @ParametersAreNonnullByDefault
     public static long getTime(ItemStack boomerangStack) {
         if (boomerangStack.getTag() != null && boomerangStack.getTag().contains(BoomerangItem.timeTag)) {
             return boomerangStack.getOrCreateTag().getLong(BoomerangItem.timeTag);

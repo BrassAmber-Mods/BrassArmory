@@ -1,7 +1,8 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.milamber_brass.brass_armory.data.advancement.BrassArmoryAdvancements;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -78,11 +79,7 @@ public class KatanaItem extends SwordItem {
     @Override
     public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
         super.fillItemCategory(tab, items);
-        if (this.allowdedIn(tab)) {
-            ItemStack stack = new ItemStack(this);
-            setWither(stack, 100);
-            items.add(stack);
-        }
+        if (this.allowdedIn(tab)) items.add(Util.make(this.getDefaultInstance(), stack -> setWither(stack, 100)));
     }
 
     private static final TranslatableComponent wilted = new TranslatableComponent("item.brass_armory.katana_wilted");

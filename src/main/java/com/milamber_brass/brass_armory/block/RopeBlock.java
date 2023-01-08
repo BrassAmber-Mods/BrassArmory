@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -16,12 +17,12 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.IBlockRenderProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class RopeBlock extends Block implements SimpleWaterloggedBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -55,31 +56,24 @@ public class RopeBlock extends Block implements SimpleWaterloggedBlock {
         builder.add(FACING, WATERLOGGED, HAS_ARROW);
     }
 
-    /*********************************************************** Hitbox ********************************************************/
-
-    @Override
-    @ParametersAreNonnullByDefault
     @Nonnull
+    @Override
+    @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        switch (state.getValue(FACING)) {
-            case NORTH:
-                return state.getValue(HAS_ARROW) ? NORTH_WITH_ARROW : ROPE_NORTH;
-            case SOUTH:
-                return state.getValue(HAS_ARROW) ? SOUTH_WITH_ARROW : ROPE_SOUTH;
-            case EAST:
-                return state.getValue(HAS_ARROW) ? EAST_WITH_ARROW : ROPE_EAST;
-            case WEST:
-            default:
-                return state.getValue(HAS_ARROW) ? WEST_WITH_ARROW : ROPE_WEST;
-        }
+        return switch (state.getValue(FACING)) {
+            case NORTH -> state.getValue(HAS_ARROW) ? NORTH_WITH_ARROW : ROPE_NORTH;
+            case SOUTH -> state.getValue(HAS_ARROW) ? SOUTH_WITH_ARROW : ROPE_SOUTH;
+            case EAST -> state.getValue(HAS_ARROW) ? EAST_WITH_ARROW : ROPE_EAST;
+            default -> state.getValue(HAS_ARROW) ? WEST_WITH_ARROW : ROPE_WEST;
+        };
     }
 
-    /*********************************************************** Placement ********************************************************/
-    @ParametersAreNonnullByDefault
-    public boolean canSurvive(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
         Direction direction = state.getValue(FACING);
-        if (state.getValue(HAS_ARROW)) {
-            return canAttachTo(worldIn, pos.relative(direction.getOpposite()), direction);
+        if (canAttachTo(worldIn, pos.relative(direction.getOpposite()), direction)) {
+            return true;
         } else {
             BlockState blockStateAbove = worldIn.getBlockState(pos.above());
             Block blockAbove = blockStateAbove.getBlock();
@@ -87,16 +81,9 @@ public class RopeBlock extends Block implements SimpleWaterloggedBlock {
         }
     }
 
-    /**
-     * Update the provided state given the provided neighbor facing and neighbor state, returning a new state.
-     * For example, fences make their connections to the passed in state if possible, and wet concrete powder immediately
-     * returns its solidified counterpart.
-     * Note that this method should ideally consider only the specific face passed in.
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    @ParametersAreNonnullByDefault
     @Nonnull
+    @Override
+    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (facing.getOpposite() == stateIn.getValue(FACING) && !stateIn.canSurvive(worldIn, currentPos)) {
             return Blocks.AIR.defaultBlockState();
@@ -142,32 +129,24 @@ public class RopeBlock extends Block implements SimpleWaterloggedBlock {
         return null;
     }
 
-    /*********************************************************** Extra Utils ********************************************************/
-
-    @SuppressWarnings("deprecation")
-    @Override
     @Nonnull
+    @Override
+    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
-    /**
-     * Returns the BlockState with the given rotation from the passed BlockState. If inapplicable, returns the passed BlockState.
-     */
-    @Override
     @Nonnull
+    @Override
+    @SuppressWarnings("deprecation")
     public BlockState rotate(BlockState state, Rotation rot) {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
-    /**
-     * Returns the BlockState with the given mirror of the passed BlockState. If inapplicable, returns the passed BlockState.
-     */
-    @SuppressWarnings("deprecation")
-    @Override
     @Nonnull
+    @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
-
 }

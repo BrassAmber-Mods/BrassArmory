@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.data;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmoryRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -27,8 +28,8 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
         //BOOMERANGS
         boomerangRecipe(consumer, Tags.Items.GEMS_DIAMOND, Tags.Items.INGOTS_GOLD, BrassArmoryItems.DIAMOND_BOOMERANG.get());
         boomerangRecipe(consumer, Tags.Items.INGOTS_GOLD, Tags.Items.INGOTS_IRON, BrassArmoryItems.GOLDEN_BOOMERANG.get());
-        boomerangRecipe(consumer, Tags.Items.INGOTS_IRON, Tags.Items.COBBLESTONE, BrassArmoryItems.IRON_BOOMERANG.get());
-        boomerangRecipe(consumer, Tags.Items.COBBLESTONE, ItemTags.PLANKS, BrassArmoryItems.STONE_BOOMERANG.get());
+        boomerangRecipe(consumer, Tags.Items.INGOTS_IRON, ItemTags.STONE_TOOL_MATERIALS, BrassArmoryItems.IRON_BOOMERANG.get());
+        boomerangRecipe(consumer, ItemTags.STONE_TOOL_MATERIALS, ItemTags.PLANKS, BrassArmoryItems.STONE_BOOMERANG.get());
         boomerangRecipe(consumer, ItemTags.PLANKS, Tags.Items.RODS_WOODEN,  BrassArmoryItems.WOODEN_BOOMERANG.get());
         netheriteRecipe(consumer, BrassArmoryItems.DIAMOND_BOOMERANG.get(), BrassArmoryItems.NETHERITE_BOOMERANG.get());
 
@@ -40,13 +41,21 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
         spearRecipe(consumer, BrassArmoryItems.WOODEN_DAGGER.get(), BrassArmoryItems.WOODEN_SPEAR.get());
         netheriteRecipe(consumer, BrassArmoryItems.DIAMOND_SPEAR.get(), BrassArmoryItems.NETHERITE_SPEAR.get());
 
-        spearRecipe(consumer, Items.TORCH, BrassArmoryItems.FIRE_ROD.get());
+        ShapedRecipeBuilder.shaped(BrassArmoryItems.FIRE_ROD.get())
+                .pattern("T  ")
+                .pattern(" S ")
+                .pattern("  S")
+                .define('T', Ingredient.of(Items.COAL, Items.CHARCOAL))
+                .define('S', Tags.Items.RODS_WOODEN)
+                .unlockedBy("has_coal", has(Items.COAL))
+                .unlockedBy("has_charcoal", has(Items.CHARCOAL))
+                .save(consumer, shapedLocate(BrassArmoryItems.FIRE_ROD.get().toString()));
 
         //DAGGERS
         daggerRecipe(consumer, Tags.Items.GEMS_DIAMOND, BrassArmoryItems.DIAMOND_DAGGER.get());
         daggerRecipe(consumer, Tags.Items.INGOTS_GOLD, BrassArmoryItems.GOLDEN_DAGGER.get());
         daggerRecipe(consumer, Tags.Items.INGOTS_IRON, BrassArmoryItems.IRON_DAGGER.get());
-        daggerRecipe(consumer, Tags.Items.COBBLESTONE, BrassArmoryItems.STONE_DAGGER.get());
+        daggerRecipe(consumer, ItemTags.STONE_TOOL_MATERIALS, BrassArmoryItems.STONE_DAGGER.get());
         daggerRecipe(consumer, ItemTags.PLANKS, BrassArmoryItems.WOODEN_DAGGER.get());
         netheriteRecipe(consumer, BrassArmoryItems.DIAMOND_DAGGER.get(), BrassArmoryItems.NETHERITE_DAGGER.get());
 
@@ -54,7 +63,7 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
         battleaxeRecipe(consumer, Tags.Items.GEMS_DIAMOND, BrassArmoryItems.DIAMOND_BATTLEAXE.get());
         battleaxeRecipe(consumer, Tags.Items.INGOTS_GOLD, BrassArmoryItems.GOLDEN_BATTLEAXE.get());
         battleaxeRecipe(consumer, Tags.Items.INGOTS_IRON, BrassArmoryItems.IRON_BATTLEAXE.get());
-        battleaxeRecipe(consumer, Tags.Items.COBBLESTONE, BrassArmoryItems.STONE_BATTLEAXE.get());
+        battleaxeRecipe(consumer, ItemTags.STONE_TOOL_MATERIALS, BrassArmoryItems.STONE_BATTLEAXE.get());
         battleaxeRecipe(consumer, ItemTags.PLANKS, BrassArmoryItems.WOODEN_BATTLEAXE.get());
         netheriteRecipe(consumer, BrassArmoryItems.DIAMOND_BATTLEAXE.get(), BrassArmoryItems.NETHERITE_BATTLEAXE.get());
 
@@ -85,8 +94,8 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
         //SPIKY BALLS
         ballRecipe(consumer, Tags.Items.GEMS_DIAMOND, Tags.Items.INGOTS_GOLD, BrassArmoryItems.DIAMOND_SPIKY_BALL.get());
         ballRecipe(consumer, Tags.Items.INGOTS_GOLD, Tags.Items.INGOTS_IRON, BrassArmoryItems.GOLDEN_SPIKY_BALL.get());
-        ballRecipe(consumer, Tags.Items.INGOTS_IRON, Tags.Items.COBBLESTONE, BrassArmoryItems.IRON_SPIKY_BALL.get());
-        ballRecipe(consumer, Tags.Items.COBBLESTONE, ItemTags.PLANKS, BrassArmoryItems.STONE_SPIKY_BALL.get());
+        ballRecipe(consumer, Tags.Items.INGOTS_IRON, ItemTags.STONE_TOOL_MATERIALS, BrassArmoryItems.IRON_SPIKY_BALL.get());
+        ballRecipe(consumer, ItemTags.STONE_TOOL_MATERIALS, ItemTags.PLANKS, BrassArmoryItems.STONE_SPIKY_BALL.get());
 
         ShapedRecipeBuilder.shaped(BrassArmoryItems.WOODEN_SPIKY_BALL.get())
                 .pattern(" M ")
@@ -100,7 +109,7 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
 
         //ARROWS
         arrowRecipe(consumer, Ingredient.of(Items.ENDER_PEARL), Items.ENDER_PEARL, BrassArmoryItems.WARP_ARROW.get());
-        arrowRecipe(consumer, Tags.Items.STORAGE_BLOCKS_IRON, BrassArmoryItems.CONCUSSION_ARROW.get());
+        arrowRecipe(consumer, Tags.Items.SAND, BrassArmoryItems.CONFUSION_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(Items.DIRT, Items.COARSE_DIRT), Items.DIRT, BrassArmoryItems.DIRT_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(BrassArmoryItems.BOMB.get()), BrassArmoryItems.BOMB.get(), BrassArmoryItems.EX_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(Items.COAL, Items.CHARCOAL), Items.COAL, BrassArmoryItems.FIRE_ARROW.get());
@@ -109,6 +118,15 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
         arrowRecipe(consumer, Tags.Items.STORAGE_BLOCKS_REDSTONE, BrassArmoryItems.LASER_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(BrassArmoryItems.EXPLORERS_ROPE.get()), BrassArmoryItems.EXPLORERS_ROPE.get(), BrassArmoryItems.ROPE_ARROW.get());
         arrowRecipe(consumer, Tags.Items.SLIMEBALLS, BrassArmoryItems.SLIME_ARROW.get());
+
+        ShapelessRecipeBuilder.shapeless(BrassArmoryItems.TORCH_ARROW.get())
+                .requires(Items.ARROW)
+                .requires(Items.TORCH)
+                .unlockedBy("has_arrows", has(ItemTags.ARROWS))
+                .save(consumer, shapelessLocate(BrassArmoryItems.TORCH_ARROW.get().toString()));
+
+        SpecialRecipeBuilder.special(BrassArmoryRecipes.TORCH_ARROW_CUSTOM_RECIPE.get()).save(consumer, BrassArmory.locate("torch_arrow_custom_recipe").toString());
+        SpecialRecipeBuilder.special(BrassArmoryRecipes.CARCASS_ROUND_CUSTOM_RECIPE.get()).save(consumer, BrassArmory.locate("carcass_round_custom_recipe").toString());
 
         //LONGBOW
         ShapedRecipeBuilder.shaped(BrassArmoryItems.LONGBOW.get())
@@ -120,6 +138,16 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('B', Items.BOW)
                 .unlockedBy("has_item", has(Items.BOW))
                 .save(consumer, shapedLocate(BrassArmoryItems.LONGBOW.get().toString()));
+
+        //QUIVER
+        ShapedRecipeBuilder.shaped(BrassArmoryItems.QUIVER.get())
+                .pattern("LS ")
+                .pattern("LLS")
+                .pattern(" LL")
+                .define('L', Tags.Items.LEATHER)
+                .define('S', Tags.Items.STRING)
+                .unlockedBy("has_arrow", has(ItemTags.ARROWS))
+                .save(consumer, shapedLocate(BrassArmoryItems.QUIVER.get().toString()));
 
         //BOMBS
         ShapedRecipeBuilder.shaped(BrassArmoryItems.BOMB.get(), 4)
@@ -231,6 +259,55 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('S', Tags.Items.STRING)
                 .unlockedBy("has_item", has(Tags.Items.STRING))
                 .save(consumer, shapedLocate(BrassArmoryItems.EXPLORERS_ROPE.get().toString()));
+
+        //GLIDER
+        ShapedRecipeBuilder.shaped(BrassArmoryItems.GLIDER.get())
+                .pattern("HRH")
+                .pattern("LSL")
+                .pattern("LSL")
+                .define('H', Items.TRIPWIRE_HOOK)
+                .define('R', BrassArmoryItems.EXPLORERS_ROPE.get())
+                .define('L', Tags.Items.LEATHER)
+                .define('S', Tags.Items.RODS_WOODEN)
+                .unlockedBy("has_rope", has(BrassArmoryItems.EXPLORERS_ROPE.get()))
+                .save(consumer, shapedLocate(BrassArmoryItems.GLIDER.get().toString()));
+
+        //CANNON SHIT
+        ShapedRecipeBuilder.shaped(BrassArmoryItems.CANNON.get())
+                .pattern("IIS")
+                .pattern("  I")
+                .pattern("IIL")
+                .define('I', Tags.Items.INGOTS_IRON)
+                .define('S', Tags.Items.STRING)
+                .define('L', ItemTags.LOGS)
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
+                .save(consumer, shapedLocate(BrassArmoryItems.CANNON.get().toString()));
+
+        ShapedRecipeBuilder.shaped(BrassArmoryItems.CANNON_BALL.get())
+                .pattern(" S ")
+                .pattern("SSS")
+                .pattern(" S ")
+                .define('S', Tags.Items.STONE)
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
+                .save(consumer, shapedLocate(BrassArmoryItems.CANNON_BALL.get().toString()));
+
+        ShapedRecipeBuilder.shaped(BrassArmoryItems.CARCASS_ROUND.get())
+                .pattern(" S ")
+                .pattern("SPS")
+                .pattern(" S ")
+                .define('S', Tags.Items.STONE)
+                .define('P', Items.LINGERING_POTION)
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
+                .save(consumer, shapedLocate(BrassArmoryItems.CARCASS_ROUND.get().toString()));
+
+        ShapedRecipeBuilder.shaped(BrassArmoryItems.SIEGE_ROUND.get())
+                .pattern(" S ")
+                .pattern("STS")
+                .pattern(" S ")
+                .define('S', Tags.Items.STONE)
+                .define('T', Items.TNT)
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
+                .save(consumer, shapedLocate(BrassArmoryItems.SIEGE_ROUND.get().toString()));
     }
 
     protected final void boomerangRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> material, TagKey<Item> lesserMaterial, Item result) {

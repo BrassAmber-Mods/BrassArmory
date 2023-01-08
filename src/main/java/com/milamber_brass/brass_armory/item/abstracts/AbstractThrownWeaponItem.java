@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem {
     public static final UUID BASE_ATTACK_RANGE_UUID = UUID.fromString("88a8a0f7-2afd-48b5-8169-2e1f30fd408d");
     public final float chargeDuration;
@@ -37,21 +38,18 @@ public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem 
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public int getUseDuration(ItemStack stack) {
         return 72000;
     }
 
     @Nonnull
     @Override
-    @ParametersAreNonnullByDefault
     public UseAnim getUseAnimation(ItemStack boomerangStack) {
         return UseAnim.SPEAR;
     }
 
     @Nonnull
     @Override
-    @ParametersAreNonnullByDefault
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if (itemstack.getDamageValue() >= itemstack.getMaxDamage() - 1) {
@@ -63,7 +61,6 @@ public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem 
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof Player playerEntity) {
             float time = this.getUseDuration(stack) - timeLeft;
@@ -94,7 +91,6 @@ public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem 
     protected abstract AbstractThrownWeaponEntity getEntity(Level level, LivingEntity living, ItemStack weaponStack);
 
     @Override
-    @ParametersAreNonnullByDefault
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment == Enchantments.LOYALTY;
     }

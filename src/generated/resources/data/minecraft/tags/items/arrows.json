@@ -10,6 +10,7 @@
     "brass_armory:slime_arrow",
     "brass_armory:warp_arrow",
     "brass_armory:fire_arrow",
-    "brass_armory:concussion_arrow"
+    "brass_armory:confusion_arrow",
+    "brass_armory:torch_arrow"
   ]
 }

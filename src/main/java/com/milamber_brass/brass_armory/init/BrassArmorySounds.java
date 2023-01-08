@@ -56,12 +56,29 @@ public class BrassArmorySounds {
     public static final RegistryObject<SoundEvent> MACE_SMASH = REGISTRY.register("item.mace.smash", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.mace.smash")));
 
     //GUNS
+    public static final RegistryObject<SoundEvent> GUN_OPEN = REGISTRY.register("item.gun.open", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.gun.open")));
+    public static final RegistryObject<SoundEvent> GUN_CLOSE = REGISTRY.register("item.gun.close", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.gun.close")));
     public static final RegistryObject<SoundEvent> GUN_LOAD = REGISTRY.register("item.gun.load", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.gun.load")));
     public static final RegistryObject<SoundEvent> GUN_SHOOT = REGISTRY.register("item.gun.shoot", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.gun.shoot")));
+
+    public static final RegistryObject<SoundEvent> BULLET_HIT = REGISTRY.register("item.bullet.hit", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.bullet.hit")));
+
+    //CANNON
+    public static final RegistryObject<SoundEvent> CANNON_OPEN = REGISTRY.register("item.cannon.open", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.cannon.open")));
+    public static final RegistryObject<SoundEvent> CANNON_CLOSE = REGISTRY.register("item.cannon.close", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.cannon.close")));
+    public static final RegistryObject<SoundEvent> CANNON_SHOOT = REGISTRY.register("item.cannon.shoot", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.cannon.shoot")));
+    public static final RegistryObject<SoundEvent> CANNON_FUSE = REGISTRY.register("item.cannon.fuse", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.cannon.fuse")));
+    public static final RegistryObject<SoundEvent> CANNON_MOVE = REGISTRY.register("item.cannon.move", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.cannon.move")));
 
     //KATANAS
     public static final RegistryObject<SoundEvent> KATANA_SMALL_UPGRADE = REGISTRY.register("item.katana.small_upgrade", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.katana.small_upgrade")));
     public static final RegistryObject<SoundEvent> KATANA_LARGE_UPGRADE = REGISTRY.register("item.katana.large_upgrade", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.katana.large_upgrade")));
+
+    //WARP CRYSTALS
+    public static final RegistryObject<SoundEvent> HEART_BEAT_1 = REGISTRY.register("item.warp_crystal.heart_beat_one", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.warp_crystal.heart_beat_one")));
+    public static final RegistryObject<SoundEvent> HEART_BEAT_2 = REGISTRY.register("item.warp_crystal.heart_beat_two", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.warp_crystal.heart_beat_two")));
+    public static final RegistryObject<SoundEvent> CRYSTAL_WARP = REGISTRY.register("item.warp_crystal.warp", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.warp_crystal.warp")));
+    public static final RegistryObject<SoundEvent> CRYSTAL_WHISPER = REGISTRY.register("item.warp_crystal.whisper", () -> new SoundEvent(new ResourceLocation(BrassArmory.MOD_ID, "item.warp_crystal.whisper")));
 
     public static void register(IEventBus eventBus) {
         REGISTRY.register(eventBus);

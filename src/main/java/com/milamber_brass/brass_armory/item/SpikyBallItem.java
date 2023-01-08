@@ -15,11 +15,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SpikyBallItem extends TieredItem {
-    public final int breakChance;
 
-    public SpikyBallItem(Tier tier, Properties properties, int breakChance) {
+    public SpikyBallItem(Tier tier, Properties properties) {
         super(tier, properties);
-        this.breakChance = breakChance;
     }
 
     @Nonnull
@@ -29,7 +27,7 @@ public class SpikyBallItem extends TieredItem {
         ItemStack stack = player.getItemInHand(interactionHand);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), BrassArmorySounds.SPIKY_BALL_THROW.get(), SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
-            SpikyBallEntity spikyBall = new SpikyBallEntity(player, level, interactionHand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite());
+            SpikyBallEntity spikyBall = new SpikyBallEntity(level, player, interactionHand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite());
             spikyBall.setItem(stack);
             spikyBall.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 0.75F, 0.25F);
             level.addFreshEntity(spikyBall);
@@ -39,10 +37,5 @@ public class SpikyBallItem extends TieredItem {
             player.getCooldowns().addCooldown(stack.getItem(), 10);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
-    }
-
-    @Override
-    public int getItemStackLimit(ItemStack stack) {
-        return 16;
     }
 }

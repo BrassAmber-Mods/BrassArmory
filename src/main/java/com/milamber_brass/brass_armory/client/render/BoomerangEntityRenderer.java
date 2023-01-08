@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @OnlyIn(Dist.CLIENT)
+@ParametersAreNonnullByDefault
 public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
     private final ItemRenderer itemRenderer;
 
@@ -28,7 +29,7 @@ public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
         this.shadowStrength = 0.75F;
     }
 
-    @ParametersAreNonnullByDefault //Pretty much like Thrown Item Renderer, just makes it spin and updates the fuse state
+    @Override //Pretty much like Thrown Item Renderer, just makes it spin and updates the fuse state
     public void render(BoomerangEntity boomerangEntity, float v, float v1, PoseStack stack, MultiBufferSource bufferSource, int light) {
         if (boomerangEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(boomerangEntity) < 12.25D)) {
             stack.pushPose();
@@ -43,7 +44,6 @@ public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
 
     @SuppressWarnings("deprecation")
     @Override
-    @ParametersAreNonnullByDefault
     @Nonnull
     public ResourceLocation getTextureLocation(BoomerangEntity bombEntity) {
         return TextureAtlas.LOCATION_BLOCKS;

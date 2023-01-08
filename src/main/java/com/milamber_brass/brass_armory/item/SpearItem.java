@@ -3,7 +3,7 @@ package com.milamber_brass.brass_armory.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.milamber_brass.brass_armory.ArmoryUtil;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.SpearEntity;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class SpearItem extends AbstractThrownWeaponItem {
     protected final float attackDamage;
     protected final float attackSpeed;
@@ -37,13 +38,11 @@ public class SpearItem extends AbstractThrownWeaponItem {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected ImmutableMultimap.Builder<Attribute, AttributeModifier> setDefaultModifiers(float attackDamage, float attackSpeed) {
         return null;
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         if (this.defaultModifiers == null) {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
@@ -55,8 +54,7 @@ public class SpearItem extends AbstractThrownWeaponItem {
         return super.getAttributeModifiers(slot, stack);
     }
 
-    @Override
-    @ParametersAreNonnullByDefault //Deal bonus damage when attacking
+    @Override //Deal bonus damage when attacking
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         if (!entity.level.isClientSide && entity instanceof LivingEntity living) {
             ArmoryUtil.impaleLivingEntity(living, (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE), player.level.random);

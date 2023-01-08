@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@ParametersAreNonnullByDefault
 public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     public BattleaxeEntity(EntityType<BattleaxeEntity> entityType, Level level) {
         super(entityType, level);
@@ -36,7 +37,6 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected void onHitEntity(EntityHitResult entityHitResult) {
         if (entityHitResult.getEntity() instanceof Player player) {
             player.disableShield(true);
@@ -45,7 +45,6 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected void onHitBlock(BlockHitResult result) {
         ItemStack battleaxeStack = this.getItem();
         if (battleaxeStack.getItem() instanceof TieredItem tieredItem) {

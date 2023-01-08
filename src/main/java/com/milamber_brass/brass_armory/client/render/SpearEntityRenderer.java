@@ -12,10 +12,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@OnlyIn(Dist.CLIENT)
+@ParametersAreNonnullByDefault
 public class SpearEntityRenderer extends EntityRenderer<AbstractThrownWeaponEntity> {
     private final ItemRenderer itemRenderer;
 
@@ -26,7 +30,7 @@ public class SpearEntityRenderer extends EntityRenderer<AbstractThrownWeaponEnti
         this.shadowStrength = 0.75F;
     }
 
-    @ParametersAreNonnullByDefault
+    @Override
     public void render(AbstractThrownWeaponEntity spearEntity, float v, float v1, PoseStack stack, MultiBufferSource bufferSource, int light) {
         if (spearEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(spearEntity) < 12.5D)) {
             stack.pushPose();
@@ -40,10 +44,9 @@ public class SpearEntityRenderer extends EntityRenderer<AbstractThrownWeaponEnti
         }
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    @ParametersAreNonnullByDefault
     @Nonnull
+    @Override
+    @SuppressWarnings("deprecation")
     public ResourceLocation getTextureLocation(AbstractThrownWeaponEntity spearEntity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }

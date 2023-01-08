@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@ParametersAreNonnullByDefault
 public class BoomerangEntity extends AbstractThrownWeaponEntity {
     protected static final EntityDataAccessor<Float> DATA_PLAYER_X = SynchedEntityData.defineId(BoomerangEntity.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Float> DATA_PLAYER_Y = SynchedEntityData.defineId(BoomerangEntity.class, EntityDataSerializers.FLOAT);
@@ -95,7 +96,6 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity hitResultEntity = entityHitResult.getEntity();
         LivingEntity owner = (LivingEntity)this.getOwner();
@@ -124,7 +124,6 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void playerTouch(Player player) {
         if (this.ownedBy(player) || this.getOwner() == null) {
             boolean flag = this.tickCount > 40 && (int)this.entityData.get(DATA_LOYALTY_LEVEL) > 0;
@@ -163,7 +162,6 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putDouble("BAX", this.deltaFirstMovement.x);
@@ -172,7 +170,6 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         double x = compoundTag.getDouble("BAX");

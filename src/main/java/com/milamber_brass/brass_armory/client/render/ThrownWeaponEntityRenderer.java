@@ -13,10 +13,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@OnlyIn(Dist.CLIENT)
+@ParametersAreNonnullByDefault
 public class ThrownWeaponEntityRenderer extends EntityRenderer<AbstractThrownWeaponEntity> {
     private final ItemRenderer itemRenderer;
 
@@ -26,7 +30,7 @@ public class ThrownWeaponEntityRenderer extends EntityRenderer<AbstractThrownWea
         this.shadowRadius = 0F;
     }
 
-    @ParametersAreNonnullByDefault
+    @Override
     public void render(AbstractThrownWeaponEntity thrownWeaponEntity, float v, float v1, PoseStack stack, MultiBufferSource bufferSource, int light) {
         if (thrownWeaponEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(thrownWeaponEntity) < 12.25D)) {
             stack.pushPose();
@@ -45,7 +49,6 @@ public class ThrownWeaponEntityRenderer extends EntityRenderer<AbstractThrownWea
 
     @Nonnull
     @Override
-    @ParametersAreNonnullByDefault
     @SuppressWarnings("deprecation")
     public ResourceLocation getTextureLocation(AbstractThrownWeaponEntity bombEntity) {
         return TextureAtlas.LOCATION_BLOCKS;

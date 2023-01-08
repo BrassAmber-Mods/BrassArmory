@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "brass_armory:musket_ball"
+    "brass_armory:musket_ball",
+    "brass_armory:bundle_shot",
+    "minecraft:gravel"
   ]
 }
