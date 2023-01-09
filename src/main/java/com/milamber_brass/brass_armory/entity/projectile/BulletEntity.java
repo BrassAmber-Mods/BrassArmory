@@ -6,6 +6,7 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +26,6 @@ import net.minecraftforge.common.TierSortingRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 import static net.minecraft.world.phys.HitResult.Type.BLOCK;
 
@@ -89,7 +89,7 @@ public class BulletEntity extends AbstractBulletEntity {
     }
 
     @Nonnull
-    public static Vec3 ricochet(Vec3 deltaMovement, Direction.Axis axis, Random random, double hardness) {
+    public static Vec3 ricochet(Vec3 deltaMovement, Direction.Axis axis, RandomSource random, double hardness) {
         double newX = deltaMovement.x * (axis.equals(Direction.Axis.X) ? -hardness : hardness);
         double newY = deltaMovement.y * (axis.equals(Direction.Axis.Y) ? -hardness : hardness);
         double newZ = deltaMovement.z * (axis.equals(Direction.Axis.Z) ? -hardness : hardness);

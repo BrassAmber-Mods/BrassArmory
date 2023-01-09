@@ -5,7 +5,7 @@ import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -79,11 +79,11 @@ public class KatanaItem extends SwordItem {
     @Override
     public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
         super.fillItemCategory(tab, items);
-        if (this.allowdedIn(tab)) items.add(Util.make(this.getDefaultInstance(), stack -> setWither(stack, 100)));
+        if (this.allowedIn(tab)) items.add(Util.make(this.getDefaultInstance(), stack -> setWither(stack, 100)));
     }
 
-    private static final TranslatableComponent wilted = new TranslatableComponent("item.brass_armory.katana_wilted");
-    private static final TranslatableComponent withered = new TranslatableComponent("item.brass_armory.katana_withered");
+    private static final MutableComponent wilted = Component.translatable("item.brass_armory.katana_wilted");
+    private static final MutableComponent withered = Component.translatable("item.brass_armory.katana_withered");
 
     @Override
     public @NotNull Component getName(ItemStack stack) {

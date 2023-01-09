@@ -19,7 +19,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class BrassArmoryEntityTypes {
 
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, BrassArmory.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, BrassArmory.MOD_ID);
 
     public static final RegistryObject<EntityType<DirtArrowEntity>> DIRT_ARROW = ENTITY_TYPES.register("dirt_arrow", () ->
             EntityType.Builder.<DirtArrowEntity>of(DirtArrowEntity::new, MobCategory.MISC)

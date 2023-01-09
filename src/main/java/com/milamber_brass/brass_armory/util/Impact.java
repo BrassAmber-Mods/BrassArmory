@@ -43,7 +43,7 @@ public class Impact extends Explosion {
 
             if (this.blockInteraction != BlockInteraction.NONE) {
                 ObjectArrayList<Pair<ItemStack, BlockPos>> list = new ObjectArrayList<>();
-                Collections.shuffle(this.toBlow, this.level.random);
+                Collections.shuffle(this.toBlow);
 
                 for (BlockPos blockpos : this.toBlow) {
                     BlockState blockstate = this.level.getBlockState(blockpos);

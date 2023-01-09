@@ -43,7 +43,7 @@ import java.util.Set;
 public class UniversalEventSubscriber {
     @SubscribeEvent //Drop any lit bombs if opening a container, to prevent storing lit bombs
     public static void onPlayerContainerEventOpen(PlayerContainerEvent.Open event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         for (ItemStack stack : player.getInventory().items) {
             if (stack.getItem() instanceof BombItem bombItem && BombItem.getFuseLit(stack)) {
                 BombEntity bomb = bombItem.newBombFunction.apply(player.level, player, player.getMainArm());
@@ -67,13 +67,14 @@ public class UniversalEventSubscriber {
     @SubscribeEvent
     public static void onLivingHurtEvent(LivingHurtEvent event) {
         if (event.getSource().getDirectEntity() instanceof ItemSupplier itemSupplier && itemSupplier.getItem().is(BrassArmoryTags.Items.BLEEDING_EDGE)) {
-            BleedEffect.bleedHarder(event.getEntityLiving(), 50, 0);
+            BleedEffect.bleedHarder(event.getEntity(), 50, 0);
         }
     }
 
     @SubscribeEvent
-    public static void onPotionApplicableEvent(PotionEvent.PotionApplicableEvent event) {
-        if (event.getPotionEffect().getEffect().equals(BrassArmoryEffects.BLEEDING.get()) && event.getEntity() instanceof LivingEntity living && (living.getMobType() == MobType.UNDEAD || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
+    public static void onPotionApplicableEvent(MobEffectEvent.Applicable event) {
+        LivingEntity living = event.getEntity();
+        if (event.getEffectInstance().getEffect().equals(BrassArmoryEffects.BLEEDING.get()) && living != null && (living.getMobType() == MobType.UNDEAD || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
             event.setResult(Event.Result.DENY);
             return;
         }
@@ -81,27 +82,27 @@ public class UniversalEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onPotionAddedEvent(PotionEvent.PotionAddedEvent event) {
-        LivingEntity living = event.getEntityLiving();
+    public static void onPotionAddedEvent(MobEffectEvent.Added event) {
+        LivingEntity living = event.getEntity();
 
         if (!living.level.isClientSide) {
-            MobEffect effect = event.getPotionEffect().getEffect();
+            MobEffect effect = event.getEffectInstance().getEffect();
             if (effect.equals(BrassArmoryEffects.BLEEDING.get()) || effect.equals(BrassArmoryEffects.CONFUSION.get())) {
-                ((ServerLevel)living.level).getChunkSource().chunkMap.broadcast(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getPotionEffect()));
+                ((ServerLevel)living.level).getChunkSource().chunkMap.broadcast(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getEffectInstance()));
             }
         }
     }
 
     @SubscribeEvent
     public static void onLivingDropsEvent(LivingDropsEvent event) {
-        LivingEntity living = event.getEntityLiving();
+        LivingEntity living = event.getEntity();
         Set<String> tags = living.getTags();
         if (!tags.isEmpty() && tags.contains("no_loot")) event.setCanceled(true);
     }
 
     @SubscribeEvent
-    public static void onLivingUpdateEvent(LivingEvent.LivingUpdateEvent event) {
-        if (event.getEntityLiving() instanceof Player player && !player.level.isClientSide() && !player.isDeadOrDying()) {
+    public static void onLivingUpdateEvent(LivingEvent.LivingTickEvent event) {
+        if (event.getEntity() instanceof Player player && !player.level.isClientSide() && !player.isDeadOrDying()) {
             player.getCapability(BrassArmoryCapabilities.QUIVER_CAPABILITY).ifPresent(IQuiverCapability::tick);
             player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(IEffectCapability::tick);
         }
@@ -109,7 +110,7 @@ public class UniversalEventSubscriber {
 
     @SubscribeEvent
     public static void onLivingGetProjectileEvent(LivingGetProjectileEvent event) {
-        if (event.getEntityLiving() instanceof Player player) {
+        if (event.getEntity() instanceof Player player) {
             for (ItemStack quiverStack : player.getInventory().items) {
                 if (quiverStack.getItem() instanceof QuiverItem) {
                     Optional<ItemStack> optionalInQuiverStack = QuiverItem.getContents(quiverStack).findFirst();
@@ -129,8 +130,9 @@ public class UniversalEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onLivingUpdateEvent(PlayerInteractEvent.RightClickItem event) {
-        if (event.getEntityLiving() instanceof Player player && player.isPassenger() && player.getVehicle() instanceof CannonEntity cannon && cannon.getFuse() == 0 && ArmoryUtil.isFuseLighter(event.getItemStack()) && event.getHand().equals(InteractionHand.MAIN_HAND)) {
+    public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        Player player = event.getEntity();
+        if (player.isPassenger() && player.getVehicle() instanceof CannonEntity cannon && cannon.getFuse() == 0 && ArmoryUtil.isFuseLighter(event.getItemStack()) && event.getHand().equals(InteractionHand.MAIN_HAND)) {
             event.setCanceled(true);
             event.setCancellationResult(cannon.interact(player, event.getHand()));
         }

@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,7 +47,7 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
     @Nonnull
     @Override
     protected AbstractThrownWeaponEntity getEntity(Level level, LivingEntity living, ItemStack boomerangStack) {
-        return Util.make(new BoomerangEntity(level, living, boomerangStack), boomerangEntity -> boomerangEntity.setCritArrow(level.random.nextFloat(100F) <= getCrit(boomerangStack)));
+        return Util.make(new BoomerangEntity(level, living, boomerangStack), boomerangEntity -> boomerangEntity.setCritArrow(level.random.nextFloat() * 100F <= getCrit(boomerangStack)));
     }
 
     @Nonnull
@@ -56,7 +55,7 @@ public class BoomerangItem extends AbstractThrownWeaponItem implements ICustomAn
     public Component getName(ItemStack boomerangStack) {
         int crit = (int)getCrit(boomerangStack);
         if (crit <= 0) return super.getName(boomerangStack);
-        return new TextComponent("Critical Strike: " + crit + "%").withStyle(Style.EMPTY.withBold(true).withColor(13107200 + ((5 - (crit / 20)) * 10000)));
+        return Component.translatable("Critical Strike: " + crit + "%").withStyle(Style.EMPTY.withBold(true).withColor(13107200 + ((5 - (crit / 20)) * 10000)));
     }
 
     @Override

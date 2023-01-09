@@ -11,8 +11,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -30,7 +28,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -86,8 +83,8 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
             case 0 -> {
                 if (!level.isClientSide) {
                     ArmoryUtil.addStack(stack.getOrCreateTag(), this.getDefaultInstance(), GunContainer.gunIcon);
-                    MenuProvider container = new SimpleMenuProvider(GunContainer.getServerContainer(this, stack.getOrCreateTag()), TextComponent.EMPTY);
-                    NetworkHooks.openGui((ServerPlayer) player, container);
+                    MenuProvider container = new SimpleMenuProvider(GunContainer.getServerContainer(this, stack.getOrCreateTag()), Component.empty());
+                    player.openMenu(container);
                 }
             }
             case 1 -> {
@@ -233,7 +230,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag tooltipFlag) {
         if (getLoad(stack) == 2) {
             for (ItemStack ammoStack : ArmoryUtil.loadStackList(stack.getOrCreateTag(), GunContainer.gunAmmo)) {
-                components.add((new TranslatableComponent("item.minecraft.crossbow.projectile")).append(" ").append(ammoStack.getDisplayName()));
+                components.add((Component.translatable("item.minecraft.crossbow.projectile")).append(" ").append(ammoStack.getDisplayName()));
             }
         }
     }

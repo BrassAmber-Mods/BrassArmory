@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class BrassArmoryMenus {
-    public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, BrassArmory.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, BrassArmory.MOD_ID);
 
     public static final RegistryObject<MenuType<GunContainer<iGun>>> GUN_MENU = REGISTRY.register("gun_menu", () -> new MenuType<>(GunContainer::new));
 

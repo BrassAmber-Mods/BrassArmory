@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -375,7 +374,7 @@ public class CannonEntity extends Entity implements iGun {
     public void openInventory(ServerPlayer player) {
         CompoundTag tag = this.entityData.get(DATA_TAG);
         ArmoryUtil.addStack(tag, BrassArmoryItems.CANNON.get().getDefaultInstance(), GunContainer.gunIcon);
-        NetworkHooks.openGui(player, new SimpleMenuProvider(GunContainer.getServerContainer(this, tag), TextComponent.EMPTY));
+        player.openMenu(new SimpleMenuProvider(GunContainer.getServerContainer(this, tag), Component.empty()));
     }
 
     @Override
@@ -396,7 +395,7 @@ public class CannonEntity extends Entity implements iGun {
             this.markHurt();
 
             Entity culprit = source.getDirectEntity();
-            this.gameEvent(GameEvent.ENTITY_DAMAGED, culprit);
+            this.gameEvent(GameEvent.ENTITY_DAMAGE, culprit);
 
             damage = damage * 10.0F * (culprit instanceof LivingEntity ? 3.0F : 1.0F);
             damage *= (source.isExplosion() ? 0.25F : 1.0F);

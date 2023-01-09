@@ -7,7 +7,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
@@ -244,7 +243,7 @@ public class QuiverItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
-        list.add((new TranslatableComponent("item.minecraft.bundle.fullness", getContentWeight(stack), MAX_WEIGHT)).withStyle(ChatFormatting.GRAY));
+        list.add((Component.translatable("item.minecraft.bundle.fullness", getContentWeight(stack), MAX_WEIGHT)).withStyle(ChatFormatting.GRAY));
     }
 
     @Override

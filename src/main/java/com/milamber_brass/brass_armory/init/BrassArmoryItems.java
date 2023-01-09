@@ -12,7 +12,6 @@ import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
@@ -93,12 +92,12 @@ public class BrassArmoryItems {
 
                         @Override
                         public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag tooltipFlag) {
-                            components.add((new TranslatableComponent(ArmoryUtil.loadStack(stack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance()).getDescriptionId())).withStyle(ChatFormatting.GRAY));
+                            components.add(Component.translatable(ArmoryUtil.loadStack(stack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance()).getDescriptionId()).withStyle(ChatFormatting.GRAY));
                         }
 
                         @Override
                         public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> items) {
-                            if (this.allowdedIn(creativeModeTab)) {
+                            if (this.allowedIn (creativeModeTab)) {
                                 for (Item item : ForgeRegistries.ITEMS.getValues()) {
                                     if (item instanceof StandingAndWallBlockItem torchItem && torchItem.getBlock() instanceof TorchBlock) {
                                         items.add(Util.make(this.getDefaultInstance(), stack -> ArmoryUtil.addStack(stack.getOrCreateTag(), torchItem.getDefaultInstance(), "BATorch")));

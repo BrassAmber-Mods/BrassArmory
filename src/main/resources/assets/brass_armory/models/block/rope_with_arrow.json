@@ -1,5 +1,6 @@
 {
     "ambientocclusion": false,
+	"render_type": "minecraft:cutout",
     "textures": {
         "rope_texture": "brass_armory:block/explorers_rope",
 		"arrow_texture": "brass_armory:entity/projectile/rope_arrow",

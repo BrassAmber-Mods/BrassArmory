@@ -2,13 +2,11 @@ package com.milamber_brass.brass_armory.init;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.client.particle.BloodParticle;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +14,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 @Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class BrassArmoryParticles {
     public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, BrassArmory.MOD_ID);
@@ -29,10 +30,8 @@ public class BrassArmoryParticles {
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public static void registerFactories(ParticleFactoryRegisterEvent event) {
-        ParticleEngine particles = Minecraft.getInstance().particleEngine;
-
-        particles.register(BrassArmoryParticles.BLOOD_FALL_PARTICLE.get(), BloodParticle.BloodFallProvider::new);
-        particles.register(BrassArmoryParticles.BLOOD_LAND_PARTICLE.get(), BloodParticle.BloodLandProvider::new);
+    public static void registerFactories(RegisterParticleProvidersEvent event) {
+        event.register(BrassArmoryParticles.BLOOD_FALL_PARTICLE.get(), BloodParticle.BloodFallProvider::new);
+        event.register(BrassArmoryParticles.BLOOD_LAND_PARTICLE.get(), BloodParticle.BloodLandProvider::new);
     }
 }

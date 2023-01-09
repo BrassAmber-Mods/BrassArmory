@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -44,12 +45,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 public class ArmoryUtil {
-    public static void impaleLivingEntity(LivingEntity living, float damage, Random random) {
+    public static void impaleLivingEntity(LivingEntity living, float damage, RandomSource random) {
         float damageAfterAbsorb = CombatRules.getDamageAfterAbsorb(damage, living.getArmorValue(), (float)living.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
         float finalDamage = damage - damageAfterAbsorb;
         finalDamage = Math.min(finalDamage, (float)Math.sqrt(finalDamage * 10F) / 10F);

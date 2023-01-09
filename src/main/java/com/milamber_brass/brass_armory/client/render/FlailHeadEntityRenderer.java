@@ -85,7 +85,7 @@ public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRe
         double flailZ;
         float bonusY;
         if (this.entityRenderDispatcher.options.getCameraType().isFirstPerson() && owner == Minecraft.getInstance().player) {
-            double d7 = 960.0D / this.entityRenderDispatcher.options.fov;
+            double d7 = 960.0D / this.entityRenderDispatcher.options.fov().get();
             Vec3 pointOnPlane = this.entityRenderDispatcher.camera.getNearPlane().getPointOnPlane((float)right * 0.525F, -0.1F);
             pointOnPlane = pointOnPlane.scale(d7);
             pointOnPlane = pointOnPlane.yRot(sin1 * 0.5F);

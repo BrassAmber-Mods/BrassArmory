@@ -3,7 +3,6 @@ package com.milamber_brass.brass_armory.event;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.client.sound.CannonSoundInstance;
 import com.milamber_brass.brass_armory.entity.CannonEntity;
-import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
 import com.milamber_brass.brass_armory.item.FlintlockItem;
 import com.milamber_brass.brass_armory.item.LongBowItem;
@@ -16,8 +15,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -26,15 +23,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.FOVModifierEvent;
+import net.minecraftforge.client.event.ComputeFovModifierEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -69,7 +64,7 @@ public class ClientEventSubscriber {
                     if (doubleMace) poseStack.pushPose();
 
                     float f8 = (float)itemStack.getUseDuration() - (float)player.getUseItemRemainingTicks();
-                    float f9 = f8 + event.getPartialTicks();;
+                    float f9 = f8 + event.getPartialTick();
                     poseStack.translate(k * 0.56F, -0.52F, -0.72F);
                     if (itemStack.getItem() instanceof ICustomAnimationItem animationItem) {
                         float maxCharge = animationItem.getChargeDuration(itemStack);
@@ -121,7 +116,9 @@ public class ClientEventSubscriber {
                         poseStack.scale(1.0F, 1.0F, 1.0F + f11 * 0.2F);
                         poseStack.mulPose(Vector3f.YN.rotationDegrees(k * 45.0F));
                     }
-                    mc.getItemInHandRenderer().renderItem(player, itemStack, transformType, !rightHandFlag, poseStack, event.getMultiBufferSource(), event.getPackedLight());
+
+
+                    mc.getEntityRenderDispatcher().getItemInHandRenderer().renderItem(player, itemStack, transformType, !rightHandFlag, poseStack, event.getMultiBufferSource(), event.getPackedLight());
                     if (doubleMace) poseStack.popPose();
                 }
             } else if (eventItem.getItem() instanceof WarpCrystalItem) {
@@ -130,19 +127,19 @@ public class ClientEventSubscriber {
                 boolean mainHandFlag = event.getHand() == InteractionHand.MAIN_HAND;
                 HumanoidArm humanoidarm = mainHandFlag ? player.getMainArm() : player.getMainArm().getOpposite();
                 boolean rightHandFlag = humanoidarm == HumanoidArm.RIGHT;
-                float f1 = (player.getTicksUsingItem() + event.getPartialTicks()) / (float) WarpCrystalItem.WARP_TICKS;
+                float f1 = (player.getTicksUsingItem() + event.getPartialTick()) / (float) WarpCrystalItem.WARP_TICKS;
                 f1 = f1 > 1.0F ? 1.0F + (float)Math.sin(f1 * 7) * 0.0035F : (float)Math.pow(f1, 1.6D);
                 poseStack.translate(0F, 0F, -1F - f1 / 4F);
 
                 Lighting.setupFor3DItems();
-                mc.getItemInHandRenderer().renderItem(player, eventItem.copy(), TransformType.FIXED, rightHandFlag, poseStack, event.getMultiBufferSource(), 15728880);
+                mc.getEntityRenderDispatcher().getItemInHandRenderer().renderItem(player, eventItem.copy(), TransformType.FIXED, rightHandFlag, poseStack, event.getMultiBufferSource(), 15728880);
             }
         }
     }
 
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (player.getMainHandItem().getItem() instanceof FlintlockItem && FlintlockItem.getLoad(player.getMainHandItem()) == 2) {
             if (player.getMainArm() == HumanoidArm.RIGHT)
                 event.getRenderer().getModel().rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
@@ -155,8 +152,8 @@ public class ClientEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onFOVModifier(FOVModifierEvent event) {
-        Player player = event.getEntity();
+    public static void onFOVModifier(ComputeFovModifierEvent event) {
+        Player player = event.getPlayer();
         if (player.isUsingItem()) {
             ItemStack useStack = player.getUseItem();
             Item useItem = useStack.getItem();
@@ -168,29 +165,23 @@ public class ClientEventSubscriber {
 
                 float f1 = player.getTicksUsingItem() / f9;
                 f1 = f1 > 1.0F ? 1.0F : (float)Math.pow(f1, 1.6D);
-                event.setNewfov(event.getFov() * (1.0F - f1 * (useItem instanceof LongBowItem ? 0.15F : 0.075F)));
+                event.setNewFovModifier(event.getFovModifier() * (1.0F - f1 * (useItem instanceof LongBowItem ? 0.15F : 0.075F)));
             } else if (useItem instanceof WarpCrystalItem) {
                 float f1 = (float) player.getTicksUsingItem() / (float) WarpCrystalItem.WARP_TICKS;
                 f1 = f1 > 1.0F ? 1.0F + (float)Math.sin(f1 * 7) * 0.0035F : f1 * f1;
-                event.setNewfov(event.getFov() * (1.0F - f1 * 0.75F));
+                event.setNewFovModifier(event.getFovModifier() * (1.0F - f1 * 0.75F));
             }
         }
     }
 
     @SubscribeEvent
-    public static void onRegisterBlocks(RegistryEvent.Register<Block> event) {
-        RenderType cutoutRenderType = RenderType.cutout();
-        ItemBlockRenderTypes.setRenderLayer(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), cutoutRenderType);
-    }
-
-    @SubscribeEvent
-    public static void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
+    public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.getCameraEntity() instanceof Player player && !minecraft.isPaused()) {
             player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(iShakeCapability -> {
                 float intensity = (float)iShakeCapability.getShake() * 1.5F;
                 if (intensity > 0) {
-                    float partialTicks = (float) event.getPartialTicks();
+                    float partialTicks = (float) event.getPartialTick();
                     event.setYaw(Mth.lerp(partialTicks, event.getYaw(), event.getYaw() + (player.getRandom().nextFloat() * 2.0F - 1.0F) * intensity));
                     event.setPitch(Mth.lerp(partialTicks, event.getPitch(), event.getPitch() + (player.getRandom().nextFloat() * 2.0F - 1.0F) * intensity));
                     event.setRoll(Mth.lerp(partialTicks, event.getRoll(), event.getRoll() + (player.getRandom().nextFloat() * 2.0F - 1.0F) * intensity));
@@ -201,7 +192,7 @@ public class ClientEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onEntityJoinWorldEvent(EntityJoinWorldEvent event) {
+    public static void onEntityJoinWorldEvent(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
         if (entity instanceof CannonEntity cannonEntity && cannonEntity.level.isClientSide) {
             Minecraft.getInstance().getSoundManager().play(new CannonSoundInstance(cannonEntity));

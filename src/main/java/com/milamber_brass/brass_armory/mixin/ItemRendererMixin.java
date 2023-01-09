@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Iterator;
 
 @Mixin(ItemRenderer.class)
 @ParametersAreNonnullByDefault
@@ -33,7 +34,7 @@ public abstract class ItemRendererMixin {
     @Shadow public abstract void renderModelLists(BakedModel bakedModel, ItemStack stack, int x, int y, PoseStack poseStack, VertexConsumer vertexConsumer);
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;renderModelLists(Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/item/ItemStack;IILcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;)V", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT, remap = true)
-    private void renderGuiItem(ItemStack stack, ItemTransforms.TransformType transformType, boolean leftHandHackery, PoseStack poseStack, MultiBufferSource bufferSource, int x, int y, BakedModel model, CallbackInfo ci, boolean flag, boolean flag1, RenderType rendertype, VertexConsumer vertexconsumer) {
+    private void renderGuiItem(ItemStack stack, ItemTransforms.TransformType transformType, boolean leftHandHackery, PoseStack poseStack, MultiBufferSource bufferSource, int x, int y, BakedModel p_115151_, CallbackInfo ci, boolean flag, boolean flag1, Iterator var11, BakedModel model, Iterator var13, RenderType rendertype, VertexConsumer vertexconsumer) {
         if (stack.is(BrassArmoryItems.TORCH_ARROW.get())) {
             this.renderTorch(poseStack, ArmoryUtil.loadStack(stack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance()), x, y, vertexconsumer);
         } else if (stack.getItem() instanceof QuiverItem) {

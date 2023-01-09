@@ -7,7 +7,10 @@ import com.milamber_brass.brass_armory.client.gui.GunScreen;
 import com.milamber_brass.brass_armory.client.render.*;
 import com.milamber_brass.brass_armory.entity.projectile.FireRodEntity;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
-import com.milamber_brass.brass_armory.init.*;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmoryMenus;
+import com.milamber_brass.brass_armory.init.BrassArmoryModels;
 import com.milamber_brass.brass_armory.inventory.GunContainer;
 import com.milamber_brass.brass_armory.inventory.QuiverTooltip;
 import com.milamber_brass.brass_armory.item.*;
@@ -21,7 +24,6 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.*;
@@ -42,9 +44,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -61,7 +63,7 @@ public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         BrassArmory.LOGGER.debug("Running client setup.");
-        MinecraftForgeClient.registerTooltipComponentFactory(QuiverTooltip.class, ClientQuiverTooltip::new);
+
         EntityRenderers.register(BrassArmoryEntityTypes.DIRT_ARROW.get(), SpecialArrowRenderer::new);
         EntityRenderers.register(BrassArmoryEntityTypes.EXPLOSION_ARROW.get(), SpecialArrowRenderer::new);
         EntityRenderers.register(BrassArmoryEntityTypes.FROST_ARROW.get(), SpecialArrowRenderer::new);
@@ -93,8 +95,6 @@ public class ClientEventBusSubscriber {
         EntityRenderers.register(BrassArmoryEntityTypes.CANNON_BALL.get(), ThrownItemRenderer::new);
         EntityRenderers.register(BrassArmoryEntityTypes.CARCASS_ROUND.get(), ThrownItemRenderer::new);
         EntityRenderers.register(BrassArmoryEntityTypes.SIEGE_ROUND.get(), ThrownItemRenderer::new);
-
-        ItemBlockRenderTypes.setRenderLayer(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get(), RenderType.cutout());
 
         event.enqueueWork(() -> {
             MenuScreens.register(BrassArmoryMenus.GUN_MENU.get(), GunScreen::new);
@@ -192,6 +192,11 @@ public class ClientEventBusSubscriber {
     }
 
     @SubscribeEvent
+    public static void registerClientTooltipComponentFactoriesEvent(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(QuiverTooltip.class, ClientQuiverTooltip::new);
+    }
+
+    @SubscribeEvent
     public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         BrassArmoryModels.register(event);
     }
@@ -205,9 +210,9 @@ public class ClientEventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void colorHandlerEvent(ColorHandlerEvent.Item event) {
-        event.getItemColors().register((stack, i) -> i > 0 ? -1 : ((DyeableLeatherItem)stack.getItem()).getColor(stack), BrassArmoryItems.GLIDER.get());
-        event.getItemColors().register((stack, i) -> i > 0 ? -1 : PotionUtils.getColor(stack), BrassArmoryItems.CARCASS_ROUND.get());
+    public static void colorHandlerEvent(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, i) -> i > 0 ? -1 : ((DyeableLeatherItem)stack.getItem()).getColor(stack), BrassArmoryItems.GLIDER.get());
+        event.register((stack, i) -> i > 0 ? -1 : PotionUtils.getColor(stack), BrassArmoryItems.CARCASS_ROUND.get());
     }
 
 

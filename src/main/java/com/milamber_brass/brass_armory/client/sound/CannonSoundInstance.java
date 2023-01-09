@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.client.sound;
 import com.milamber_brass.brass_armory.entity.CannonEntity;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,7 +22,7 @@ public class CannonSoundInstance extends AbstractTickableSoundInstance {
     private final CannonEntity cannon;
 
     public CannonSoundInstance(CannonEntity cannon) {
-        super(BrassArmorySounds.CANNON_MOVE.get(), SoundSource.NEUTRAL);
+        super(BrassArmorySounds.CANNON_MOVE.get(), SoundSource.NEUTRAL, SoundInstance.createUnseededRandom());
         this.cannon = cannon;
         this.looping = true;
         this.delay = 0;
