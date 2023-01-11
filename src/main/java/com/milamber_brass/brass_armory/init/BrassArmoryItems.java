@@ -398,7 +398,7 @@ public class BrassArmoryItems {
             REGISTRY.register("katana", () -> new KatanaItem(Tiers.IRON, 3, -2F, true, defaultBuilder().defaultDurability(512)));
 
     public static final RegistryObject<GliderItem> GLIDER =
-            REGISTRY.register("glider", () -> new GliderItem(defaultBuilder().defaultDurability(32)));
+            REGISTRY.register("glider", () -> new GliderItem(defaultBuilder().defaultDurability(24)));
 
     //---------------------------------------------------------------------------------------------------------
 
