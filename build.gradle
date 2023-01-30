@@ -19,7 +19,7 @@ mixin {
     config 'brass_armory.mixin.json'
 }
 
-version = "1.18.2-1.0.1"
+version = "1.18.2-1.0.2"
 group = "com.milamber_brass.brass_armory"
 archivesBaseName = "brass_armory"
 
