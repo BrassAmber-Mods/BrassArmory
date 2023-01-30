@@ -15,8 +15,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @Mixin(ClientRecipeBook.class)
-public class ClientRecipeBookMixin {
-    @Inject(method = "getCategory", at = @At(value = "HEAD"), remap = false, cancellable = true)
+public abstract class ClientRecipeBookMixin {
+    @Inject(method = "getCategory", at = @At(value = "HEAD"), remap = true, cancellable = true)
     private static void getCategory(Recipe<?> recipe, CallbackInfoReturnable<RecipeBookCategories> cir) {
         if (recipe.getType() == RecipeType.CRAFTING) {
             ItemStack item = recipe.getResultItem();
