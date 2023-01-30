@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "brass_armory:explorers_rope",
+    "brass_armory:petty_warp_crystal",
+    "brass_armory:lesser_warp_crystal",
+    "brass_armory:common_warp_crystal",
+    "brass_armory:greater_warp_crystal",
+    "brass_armory:grand_warp_crystal",
+    "brass_armory:gun_stock",
+    "brass_armory:musket_parts",
+    "brass_armory:blunderbuss_parts"
+  ]
+}
