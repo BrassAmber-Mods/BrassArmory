@@ -1,25 +1,25 @@
 {
   "parent": "brass_armory:achievements/light_bomb",
+  "criteria": {
+    "bomb_catch": {
+      "conditions": {},
+      "trigger": "brass_armory:bomb_catch"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "brass_armory:sticky_bomb",
-      "nbt": "{GuiDisplay:1b}"
-    },
-    "title": {
-      "translate": "advancement.brass_armory.bomb_catch"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.brass_armory.bomb_catch.desc"
     },
     "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "brass_armory:sticky_bomb",
+      "nbt": "{GuiDisplay:1b}"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "bomb_catch": {
-      "trigger": "brass_armory:bomb_catch",
-      "conditions": {}
+    "title": {
+      "translate": "advancement.brass_armory.bomb_catch"
     }
   },
   "requirements": [

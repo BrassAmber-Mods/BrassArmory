@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "L": {
+      "tag": "minecraft:logs"
+    },
+    "S": {
+      "tag": "forge:string"
+    }
+  },
   "pattern": [
     "IIS",
     "  I",
     "IIL"
   ],
-  "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
-    "S": {
-      "tag": "forge:string"
-    },
-    "L": {
-      "tag": "minecraft:logs"
-    }
-  },
   "result": {
     "item": "brass_armory:cannon"
   }

@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": {
+      "tag": "minecraft:stone_tool_materials"
+    },
+    "M": {
+      "tag": "forge:ingots/iron"
+    }
+  },
   "pattern": [
     "MLM",
     "L  ",
     "M  "
   ],
-  "key": {
-    "M": {
-      "tag": "forge:ingots/iron"
-    },
-    "L": {
-      "tag": "minecraft:stone_tool_materials"
-    }
-  },
   "result": {
     "item": "brass_armory:iron_boomerang"
   }

@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": {
+      "tag": "forge:ingots/iron"
+    },
+    "M": {
+      "tag": "forge:ingots/gold"
+    }
+  },
   "pattern": [
     "MLM",
     "L  ",
     "M  "
   ],
-  "key": {
-    "M": {
-      "tag": "forge:ingots/gold"
-    },
-    "L": {
-      "tag": "forge:ingots/iron"
-    }
-  },
   "result": {
     "item": "brass_armory:golden_boomerang"
   }

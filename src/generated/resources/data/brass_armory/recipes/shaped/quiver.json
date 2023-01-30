@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "LS ",
-    "LLS",
-    " LL"
-  ],
   "key": {
     "L": {
       "tag": "forge:leather"
@@ -13,6 +8,11 @@
       "tag": "forge:string"
     }
   },
+  "pattern": [
+    "LS ",
+    "LLS",
+    " LL"
+  ],
   "result": {
     "item": "brass_armory:quiver"
   }

@@ -1,10 +1,10 @@
 {
   "type": "minecraft:smithing",
-  "base": {
-    "item": "brass_armory:diamond_halberd"
-  },
   "addition": {
     "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "item": "brass_armory:diamond_halberd"
   },
   "result": {
     "item": "brass_armory:netherite_halberd"

@@ -19,6 +19,7 @@
   "client": [
     "AbstractSoundInstanceMixin",
     "CapeLayerMixin",
+    "ClientRecipeBookMixin",
     "GuiMixin",
     "HumanoidModelMixin",
     "ItemRendererMixin",

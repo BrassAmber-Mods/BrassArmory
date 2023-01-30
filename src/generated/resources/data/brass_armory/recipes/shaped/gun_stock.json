@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "tag": "forge:rods/wooden"
+    }
+  },
   "pattern": [
     "SSP"
   ],
-  "key": {
-    "S": {
-      "tag": "forge:rods/wooden"
-    },
-    "P": {
-      "tag": "minecraft:planks"
-    }
-  },
   "result": {
     "item": "brass_armory:gun_stock"
   }

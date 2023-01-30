@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "M",
-    "S",
-    "F"
-  ],
   "key": {
+    "F": {
+      "tag": "forge:feathers"
+    },
     "M": {
       "tag": "forge:seeds"
     },
     "S": {
       "tag": "forge:rods/wooden"
-    },
-    "F": {
-      "tag": "forge:feathers"
     }
   },
+  "pattern": [
+    "M",
+    "S",
+    "F"
+  ],
   "result": {
-    "item": "brass_armory:grass_arrow",
-    "count": 4
+    "count": 4,
+    "item": "brass_armory:grass_arrow"
   }
 }

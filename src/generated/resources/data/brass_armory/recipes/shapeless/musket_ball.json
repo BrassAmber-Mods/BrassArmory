@@ -9,7 +9,7 @@
     }
   ],
   "result": {
-    "item": "brass_armory:musket_ball",
-    "count": 8
+    "count": 8,
+    "item": "brass_armory:musket_ball"
   }
 }

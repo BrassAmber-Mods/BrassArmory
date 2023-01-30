@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "item": "minecraft:lingering_potion"
+    },
+    "S": {
+      "tag": "forge:stone"
+    }
+  },
   "pattern": [
     " S ",
     "SPS",
     " S "
   ],
-  "key": {
-    "S": {
-      "tag": "forge:stone"
-    },
-    "P": {
-      "item": "minecraft:lingering_potion"
-    }
-  },
   "result": {
     "item": "brass_armory:carcass_round"
   }

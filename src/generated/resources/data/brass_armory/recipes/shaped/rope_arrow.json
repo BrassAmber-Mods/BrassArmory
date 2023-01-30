@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "M",
-    "S",
-    "F"
-  ],
   "key": {
+    "F": {
+      "tag": "forge:feathers"
+    },
     "M": {
       "item": "brass_armory:explorers_rope"
     },
     "S": {
       "tag": "forge:rods/wooden"
-    },
-    "F": {
-      "tag": "forge:feathers"
     }
   },
+  "pattern": [
+    "M",
+    "S",
+    "F"
+  ],
   "result": {
-    "item": "brass_armory:rope_arrow",
-    "count": 4
+    "count": 4,
+    "item": "brass_armory:rope_arrow"
   }
 }

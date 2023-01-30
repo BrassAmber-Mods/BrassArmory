@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "  S",
-    " SC",
-    "S M"
-  ],
   "key": {
+    "C": {
+      "item": "minecraft:chain"
+    },
     "M": {
       "item": "brass_armory:golden_spiky_ball"
     },
     "S": {
       "tag": "forge:rods/wooden"
-    },
-    "C": {
-      "item": "minecraft:chain"
     }
   },
+  "pattern": [
+    "  S",
+    " SC",
+    "S M"
+  ],
   "result": {
     "item": "brass_armory:golden_flail"
   }

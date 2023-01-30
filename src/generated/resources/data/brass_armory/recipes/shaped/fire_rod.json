@@ -1,11 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "T  ",
-    " S ",
-    "  S"
-  ],
   "key": {
+    "S": {
+      "tag": "forge:rods/wooden"
+    },
     "T": [
       {
         "item": "minecraft:coal"
@@ -13,11 +11,13 @@
       {
         "item": "minecraft:charcoal"
       }
-    ],
-    "S": {
-      "tag": "forge:rods/wooden"
-    }
+    ]
   },
+  "pattern": [
+    "T  ",
+    " S ",
+    "  S"
+  ],
   "result": {
     "item": "brass_armory:fire_rod"
   }

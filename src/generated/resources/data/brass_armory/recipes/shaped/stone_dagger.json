@@ -1,8 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "SM"
-  ],
   "key": {
     "M": {
       "tag": "minecraft:stone_tool_materials"
@@ -11,6 +8,9 @@
       "tag": "forge:rods/wooden"
     }
   },
+  "pattern": [
+    "SM"
+  ],
   "result": {
     "item": "brass_armory:stone_dagger"
   }

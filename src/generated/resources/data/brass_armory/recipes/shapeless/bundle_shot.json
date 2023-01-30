@@ -24,7 +24,7 @@
     }
   ],
   "result": {
-    "item": "brass_armory:bundle_shot",
-    "count": 4
+    "count": 4,
+    "item": "brass_armory:bundle_shot"
   }
 }

@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "T  ",
-    " B ",
-    "  S"
-  ],
   "key": {
-    "T": {
-      "item": "brass_armory:stone_dagger"
-    },
     "B": {
       "item": "minecraft:stone_axe"
     },
     "S": {
       "tag": "forge:rods/wooden"
+    },
+    "T": {
+      "item": "brass_armory:stone_dagger"
     }
   },
+  "pattern": [
+    "T  ",
+    " B ",
+    "  S"
+  ],
   "result": {
     "item": "brass_armory:stone_halberd"
   }

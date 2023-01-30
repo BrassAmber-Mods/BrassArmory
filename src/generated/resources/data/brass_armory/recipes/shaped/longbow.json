@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "minecraft:bow"
+    },
+    "I": {
+      "tag": "forge:string"
+    },
+    "S": {
+      "tag": "forge:rods/wooden"
+    }
+  },
   "pattern": [
     " SI",
     "SBI",
     " SI"
   ],
-  "key": {
-    "S": {
-      "tag": "forge:rods/wooden"
-    },
-    "I": {
-      "tag": "forge:string"
-    },
-    "B": {
-      "item": "minecraft:bow"
-    }
-  },
   "result": {
     "item": "brass_armory:longbow"
   }

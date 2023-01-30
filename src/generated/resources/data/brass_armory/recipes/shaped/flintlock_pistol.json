@@ -1,15 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "IIF",
-    " NP"
-  ],
   "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
     "F": {
       "item": "minecraft:flint_and_steel"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
     },
     "N": {
       "tag": "forge:nuggets/iron"
@@ -18,6 +14,10 @@
       "tag": "minecraft:planks"
     }
   },
+  "pattern": [
+    "IIF",
+    " NP"
+  ],
   "result": {
     "item": "brass_armory:flintlock_pistol"
   }

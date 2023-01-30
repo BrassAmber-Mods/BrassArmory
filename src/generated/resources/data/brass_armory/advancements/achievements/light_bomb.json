@@ -1,24 +1,24 @@
 {
   "parent": "brass_armory:achievements/root",
+  "criteria": {
+    "light_bomb": {
+      "conditions": {},
+      "trigger": "brass_armory:light_bomb"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "brass_armory:bomb"
-    },
-    "title": {
-      "translate": "advancement.brass_armory.light_bomb"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.brass_armory.light_bomb.desc"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "brass_armory:bomb"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "light_bomb": {
-      "trigger": "brass_armory:light_bomb",
-      "conditions": {}
+    "title": {
+      "translate": "advancement.brass_armory.light_bomb"
     }
   },
   "requirements": [

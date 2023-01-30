@@ -1,24 +1,24 @@
 {
   "parent": "brass_armory:achievements/longbow",
+  "criteria": {
+    "long_distance_warp_arrow": {
+      "conditions": {},
+      "trigger": "brass_armory:long_distance_warp_arrow"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "brass_armory:warp_arrow"
-    },
-    "title": {
-      "translate": "advancement.brass_armory.long_distance_warp_arrow"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.brass_armory.long_distance_warp_arrow.desc"
     },
     "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "brass_armory:warp_arrow"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "long_distance_warp_arrow": {
-      "trigger": "brass_armory:long_distance_warp_arrow",
-      "conditions": {}
+    "title": {
+      "translate": "advancement.brass_armory.long_distance_warp_arrow"
     }
   },
   "requirements": [

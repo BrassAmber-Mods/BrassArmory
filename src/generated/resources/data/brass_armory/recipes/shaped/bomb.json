@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " IS",
-    "IGI",
-    " I "
-  ],
   "key": {
+    "G": {
+      "tag": "forge:gunpowder"
+    },
     "I": {
       "tag": "forge:ingots/iron"
     },
     "S": {
       "tag": "forge:string"
-    },
-    "G": {
-      "tag": "forge:gunpowder"
     }
   },
+  "pattern": [
+    " IS",
+    "IGI",
+    " I "
+  ],
   "result": {
-    "item": "brass_armory:bomb",
-    "count": 4
+    "count": 4,
+    "item": "brass_armory:bomb"
   }
 }

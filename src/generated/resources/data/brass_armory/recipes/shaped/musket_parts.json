@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "IIF",
-    "  N"
-  ],
   "key": {
-    "I": {
-      "tag": "forge:ingots/iron"
-    },
     "F": {
       "item": "minecraft:flint_and_steel"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
     },
     "N": {
       "tag": "forge:nuggets/iron"
     }
   },
+  "pattern": [
+    "IIF",
+    "  N"
+  ],
   "result": {
     "item": "brass_armory:musket_parts"
   }

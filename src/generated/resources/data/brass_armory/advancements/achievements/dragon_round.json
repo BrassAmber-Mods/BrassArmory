@@ -1,25 +1,25 @@
 {
   "parent": "brass_armory:achievements/cannon",
+  "criteria": {
+    "dragon_round": {
+      "conditions": {},
+      "trigger": "brass_armory:dragon_round"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "brass_armory:carcass_round",
-      "nbt": "{BADragonRound:1b}"
-    },
-    "title": {
-      "translate": "advancement.brass_armory.dragon_round"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.brass_armory.dragon_round.desc"
     },
     "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "brass_armory:carcass_round",
+      "nbt": "{BADragonRound:1b}"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "dragon_round": {
-      "trigger": "brass_armory:dragon_round",
-      "conditions": {}
+    "title": {
+      "translate": "advancement.brass_armory.dragon_round"
     }
   },
   "requirements": [
