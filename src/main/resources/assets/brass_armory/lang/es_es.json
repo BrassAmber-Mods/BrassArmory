@@ -1,0 +1,224 @@
+{
+  "itemGroup.brass_armory": "Brass's Armory",
+
+
+  "entity.brass_armory.bullet": "Bala",
+  "entity.brass_armory.flail_head": "Cabeza de mayal",
+
+
+  "block.brass_armory.explorers_rope" : "Cuerda del explorador",
+
+
+  "item.brass_armory.dirt_arrow" : "Flecha de barro",
+  "item.brass_armory.ex_arrow" : "Flecha explosiva",
+  "item.brass_armory.frost_arrow" : "Flecha helada",
+  "item.brass_armory.grass_arrow" : "Flecha floral",
+  "item.brass_armory.laser_arrow" : "Flecha láser",
+  "item.brass_armory.rope_arrow" : "Flecha cuerda",
+  "item.brass_armory.slime_arrow" : "Flecha slime",
+  "item.brass_armory.warp_arrow" : "Flecha distorsión",
+  "item.brass_armory.fire_arrow" : "Flecha de fuego",
+  "item.brass_armory.confusion_arrow" : "Flecha de confusión",
+  "item.brass_armory.torch_arrow" : "Flecha antorcha",
+
+  "item.brass_armory.wooden_boomerang" : "Boomerang de madera",
+  "item.brass_armory.golden_boomerang" : "Boomerang de oro",
+  "item.brass_armory.stone_boomerang" : "Boomerang de piedra",
+  "item.brass_armory.iron_boomerang" : "Boomerang de hierro",
+  "item.brass_armory.diamond_boomerang" : "Boomerang de diamante",
+  "item.brass_armory.netherite_boomerang" : "Boomerang de netherita",
+
+  "item.brass_armory.bomb" : "Bomba",
+  "item.brass_armory.bouncy_bomb" : "Bomba muelle",
+  "item.brass_armory.sticky_bomb" : "Bomba pegajosa",
+
+  "item.brass_armory.golden_spear" : "Lanza de oro",
+  "item.brass_armory.wooden_spear" : "Lanza de madera",
+  "item.brass_armory.stone_spear" : "Lanza de piedra",
+  "item.brass_armory.iron_spear" : "Lanza de hierro",
+  "item.brass_armory.diamond_spear" : "Lanza de diamante",
+  "item.brass_armory.netherite_spear" : "Lanza de netherita",
+
+  "item.brass_armory.golden_dagger" : "Daga de oro",
+  "item.brass_armory.wooden_dagger" : "Daga de madera",
+  "item.brass_armory.stone_dagger" : "Daga de piedra",
+  "item.brass_armory.iron_dagger" : "Daga de hierro",
+  "item.brass_armory.diamond_dagger" : "Daga de diamante",
+  "item.brass_armory.netherite_dagger" : "Daga de netherita",
+
+  "item.brass_armory.golden_battleaxe" : "Labrys de oro",
+  "item.brass_armory.wooden_battleaxe" : "Labrys de madera",
+  "item.brass_armory.stone_battleaxe" : "Labrys de piedra",
+  "item.brass_armory.iron_battleaxe" : "Labrys de hierro",
+  "item.brass_armory.diamond_battleaxe" : "Labrys de diamante",
+  "item.brass_armory.netherite_battleaxe" : "Labrys de netherita",
+
+  "item.brass_armory.golden_halberd" : "Alabarda de oro",
+  "item.brass_armory.wooden_halberd" : "Alabarda de madera",
+  "item.brass_armory.stone_halberd" : "Alabarda de piedra",
+  "item.brass_armory.iron_halberd" : "Alabarda de hierro",
+  "item.brass_armory.diamond_halberd" : "Alabarda de diamante",
+  "item.brass_armory.netherite_halberd" : "Alabarda de netherita",
+
+  "item.brass_armory.golden_mace" : "Maza de oro",
+  "item.brass_armory.wooden_mace" : "Maza de madera",
+  "item.brass_armory.stone_mace" : "Maza de piedra",
+  "item.brass_armory.iron_mace" : "Maza de hierro",
+  "item.brass_armory.diamond_mace" : "Maza de diamante",
+  "item.brass_armory.netherite_mace" : "Maza de netherita",
+
+  "item.brass_armory.golden_flail" : "Mayal de oro",
+  "item.brass_armory.wooden_flail" : "Mayal de madera",
+  "item.brass_armory.stone_flail" : "Mayal de piedra",
+  "item.brass_armory.iron_flail" : "Mayal de hierro",
+  "item.brass_armory.diamond_flail" : "Mayal de diamante",
+  "item.brass_armory.netherite_flail" : "Mayal de netherita",
+
+  "item.brass_armory.golden_spiky_ball" : "Bola puntiaguda de oro",
+  "item.brass_armory.wooden_spiky_ball" : "Bola puntiaguda de madera",
+  "item.brass_armory.stone_spiky_ball" : "Bola puntiaguda de piedra",
+  "item.brass_armory.iron_spiky_ball" : "Bola puntiaguda de hierro",
+  "item.brass_armory.diamond_spiky_ball" : "Bola puntiaguda de diamante",
+  "item.brass_armory.netherite_spiky_ball" : "Bola puntiaguda de netherita",
+
+  "item.brass_armory.flintlock_pistol" : "Pistola de chispa",
+  "item.brass_armory.musket" : "Mosquete",
+  "item.brass_armory.blunderbuss" : "Trabuco",
+  "item.brass_armory.gun_stock" : "Culata",
+  "item.brass_armory.musket_parts" : "Piezas de mosquete",
+  "item.brass_armory.blunderbuss_parts" : "Piezas de trabuco",
+  "item.brass_armory.musket_ball" : "Bola de mosquete",
+  "item.brass_armory.bundle_shot" : "Paquete de balas",
+  "item.brass_armory.cannon" : "Cañón",
+  "item.brass_armory.cannon_ball" : "Bola de cañón",
+  "item.brass_armory.carcass_round" : "Carcasa redonda",
+  "item.brass_armory.dragon_round" : "Carcasa de dragón",
+  "item.brass_armory.siege_round" : "Carcasa de asedio",
+
+  "item.brass_armory.longbow" : "Arco largo",
+  "item.brass_armory.fire_rod" : "Lanza de fuego",
+
+  "item.brass_armory.katana" : "Katana",
+  "item.brass_armory.katana_wilted": "Katana marchita",
+  "item.brass_armory.katana_withered" : "Katana del Wither",
+
+  "item.brass_armory.glider" : "Planeador",
+  "item.brass_armory.quiver" : "Carcaj",
+
+  "item.brass_armory.petty_warp_crystal" : "Cristal de distorsión mezquino",
+  "item.brass_armory.lesser_warp_crystal" : "Cristal de distorsión menor",
+  "item.brass_armory.common_warp_crystal" : "Cristal de distorsión común",
+  "item.brass_armory.greater_warp_crystal" : "Cristal de distorsión superior",
+  "item.brass_armory.grand_warp_crystal" : "Gran cristal de distorsión",
+
+
+  "death.attack.brass_armory.battleaxe": "%1$s fue derribado por labrys de %2$s",
+  "death.attack.brass_armory.boomerang": "%1$s fue golpeado por boomerang de %2$s",
+  "death.attack.brass_armory.dagger": "%1$s fue apuñalado por daga de %2$s",
+  "death.attack.brass_armory.fire_rod": "%1$s fue quemado por flecha de fuego de %2$s",
+  "death.attack.brass_armory.flail": "%1$s fue golpeado por mayal de %2$s",
+  "death.attack.brass_armory.spear": "%1$s fue empalado por lanza de %2$s",
+
+  "death.attack.brass_armory.impale": "%1$s fue empalado hasta el hueso por %2$s",
+  "death.attack.brass_armory.bleed": "%1$s desangrado",
+  "death.attack.brass_armory.spiky_ball": "%1$s pisó una pelota puntiaguda",
+  "death.attack.brass_armory.spiky_ball.player": "%1$s pisó una pelota puntiaguda de %2$s",
+  "death.attack.brass_armory.mace_smash": "%1$s fue diezmado por un ataque aplastante",
+
+
+  "effect.brass_armory.bleed": "Sangrar",
+  "effect.brass_armory.confusion": "Confusión",
+
+
+  "subtitles.brass_armory.item.bomb.lit": "Fusible de bomba encendido",
+  "subtitles.brass_armory.item.bomb.throw": "La bomba silba",
+  "subtitles.brass_armory.item.bomb.fuse": "El fusible de la bomba silba",
+  "subtitles.brass_armory.item.bomb.hit": "La bomba golpea",
+  "subtitles.brass_armory.item.bomb.bouncy_hit": "La bomba muelle golpea",
+  "subtitles.brass_armory.item.bomb.sticky_hit": "La bomba pegajosa golpea",
+
+  "subtitles.brass_armory.item.spiky_ball.throw": "La bola puntiaguda vuela",
+  "subtitles.brass_armory.item.spiky_ball.hit": "La bola puntiaguda golpea",
+
+  "subtitles.brass_armory.item.flail.throw": "El mayal silba",
+  "subtitles.brass_armory.item.flail.hit": "El mayal golpea",
+
+  "subtitles.brass_armory.item.spear.throw": "La lanza vuela",
+  "subtitles.brass_armory.item.spear.hit": "La lanza empala",
+  "subtitles.brass_armory.item.spear.hit_ground": "La lanza golpea",
+
+  "subtitles.brass_armory.item.dagger.throw": "La daga vuela",
+  "subtitles.brass_armory.item.dagger.hit": "Puñaladas de daga",
+  "subtitles.brass_armory.item.dagger.hit_ground": "La daga golpea",
+
+  "subtitles.brass_armory.item.battleaxe.throw": "El labrys vuela",
+  "subtitles.brass_armory.item.battleaxe.hit": "El labrys golpea",
+  "subtitles.brass_armory.item.battleaxe.hit_ground": "El labrys golpea",
+
+  "subtitles.brass_armory.item.boomerang.throw": "El boomerang vuela",
+  "subtitles.brass_armory.item.boomerang.hit": "El boomerang golpea",
+  "subtitles.brass_armory.item.boomerang.hit_ground": "El boomerang golpea",
+
+  "subtitles.brass_armory.item.fire_rod.throw": "La lanza de fuego vuela",
+  "subtitles.brass_armory.item.fire_rod.hit": "La lanza de fuego empala",
+  "subtitles.brass_armory.item.fire_rod.hit_ground": "La lanza de fuego golpea",
+
+  "subtitles.brass_armory.item.mace.smash": "La maza golpea",
+
+  "subtitles.brass_armory.item.gun.open": "Suena el arma",
+  "subtitles.brass_armory.item.gun.close": "Suena el arma",
+  "subtitles.brass_armory.item.gun.clicks": "Suena el arma",
+  "subtitles.brass_armory.item.gun.load": "El arma recarga",
+  "subtitles.brass_armory.item.gun.shoot": "El arma dispara",
+
+  "subtitles.brass_armory.item.bullet.hit": "La bala golpea",
+
+  "subtitles.brass_armory.item.cannon.open": "El cañón retumba",
+  "subtitles.brass_armory.item.cannon.close": "El cañón retumba",
+  "subtitles.brass_armory.item.cannon.shoot": "El cañón dispara",
+  "subtitles.brass_armory.item.cannon.fuse": "La mecha silba",
+  "subtitles.brass_armory.item.cannon.move": "El cañón gira",
+
+  "subtitles.brass_armory.item.katana.small_upgrade": "La katana mejora ligeramente",
+  "subtitles.brass_armory.item.katana.large_upgrade": "La katana mejora considerablemente",
+
+  "subtitles.brass_armory.item.warp_crystal.heart_beat": "Latidos de corazón",
+  "subtitles.brass_armory.item.warp_crystal.warp": "El cristal distorsiona",
+  "subtitles.brass_armory.item.warp_crystal.whisper": "El cristal susurra",
+
+
+  "advancement.brass_armory.root.desc": "¡Ármate!",
+
+  "advancement.brass_armory.katana": "Forja extranjera fina",
+  "advancement.brass_armory.katana.desc": "Comercia una katana con un comerciante",
+
+  "advancement.brass_armory.withered_katana": "Secretos del oficio",
+  "advancement.brass_armory.withered_katana.desc": "Se testigo de cómo el Wither es alcanzado por su espada",
+
+  "advancement.brass_armory.mace_smash": "¡Innovador!",
+  "advancement.brass_armory.mace_smash.desc": "Golpea a un enemigo con dos mazas a la vez",
+
+  "advancement.brass_armory.light_bomb": "Patata caliente",
+  "advancement.brass_armory.light_bomb.desc": "Enciende una bomba",
+
+  "advancement.brass_armory.bomb_catch": "¡Atrápalo!",
+  "advancement.brass_armory.bomb_catch.desc": "Atrapa una bomba encendida en el aire",
+
+  "advancement.brass_armory.longbow": "Ojos en el horizonte...",
+  "advancement.brass_armory.longbow.desc": "Dispara un arco largo",
+
+  "advancement.brass_armory.long_distance_warp_arrow": "Viaje rápido",
+  "advancement.brass_armory.long_distance_warp_arrow.desc": "Transpórtate a más de 100 bloques de distancia con una flecha de distorsión",
+
+  "advancement.brass_armory.gun": "Bloqueado y cargado",
+  "advancement.brass_armory.gun.desc": "Carga una pistola de chispa",
+
+  "advancement.brass_armory.cannon": "Potencia de fuego superior",
+  "advancement.brass_armory.cannon.desc": "Dispara un cañón",
+
+  "advancement.brass_armory.siege": "Venganza",
+  "advancement.brass_armory.siege.desc": "¡Dios mío!",
+
+  "advancement.brass_armory.dragon_round": "¡Sobre el cielo!",
+  "advancement.brass_armory.dragon_round.desc": "Convierte el aliento del Dragón del End en un arma"
+}
