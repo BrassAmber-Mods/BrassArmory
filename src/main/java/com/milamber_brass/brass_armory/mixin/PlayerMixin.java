@@ -1,9 +1,9 @@
 package com.milamber_brass.brass_armory.mixin;
 
-import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import com.milamber_brass.brass_armory.effect.BleedEffect;
 import com.milamber_brass.brass_armory.item.KatanaItem;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;

@@ -41,7 +41,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.network.PacketDistributor;
 
@@ -49,7 +48,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Objects;
 
 @ParametersAreNonnullByDefault
 public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimationItem {
@@ -72,7 +70,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
     public void releaseUsing(ItemStack maceStack, Level level, LivingEntity livingEntity, int useDurationLeft) {
         if (livingEntity instanceof Player player) {
             if (this.getUseDuration(maceStack) - livingEntity.getUseItemRemainingTicks() >= this.getChargeDuration(maceStack)) {
-                double pRange = Objects.requireNonNull(player.getAttribute(ForgeMod.REACH_DISTANCE.get())).getValue() * 1.1D;
+                double pRange = player.getReachDistance() * 1.1D;
                 Vec3 vec3 = player.getEyePosition(ArmoryUtil.frameTime(level));
                 Vec3 vec31 = player.getViewVector(ArmoryUtil.frameTime(level));
                 Vec3 vec32 = vec3.add(vec31.x * pRange, vec31.y * pRange, vec31.z * pRange);
