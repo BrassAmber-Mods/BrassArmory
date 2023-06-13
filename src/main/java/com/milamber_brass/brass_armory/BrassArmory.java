@@ -36,6 +36,7 @@ public class BrassArmory {
         BrassArmoryEffects.register(eventBus);
         BrassArmoryParticles.register(eventBus);
         BrassArmoryRecipes.register(eventBus);
+        BrassArmoryLootModifiers.register(eventBus);
 
         eventBus.addListener(BrassArmoryCapabilities::capabilitySetup);
     }

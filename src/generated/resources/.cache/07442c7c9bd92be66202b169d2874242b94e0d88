@@ -1,4 +1,4 @@
-// 1.19.2	2023-01-30T19:50:54.6466459	Brass's Armory Item Tags
+// 1.19.2	2023-06-13T18:05:38.0306531	Brass's Armory Item Tags
 8de55dc33d541539a6109b8e0f8e637bb5d49657 data/brass_armory/tags/items/bleeding_edge.json
 1b086f19d4357e5dfeec5ca76313cce35bfba217 data/brass_armory/tags/items/bomb.json
 09396ab7d68a98e930e4f9a3b26c097330ce3f0f data/brass_armory/tags/items/cannon_ammo.json
@@ -8,6 +8,5 @@ c70cdc0d2a9fb0732b69d0030484ad26be42d610 data/brass_armory/tags/items/flintlock_
 caf2674c3584fbaede30bc47757a65c499ecddfb data/brass_armory/tags/items/flintlock_powder.json
 e45ba5fc0366660ba31560adaad788c3ec09bfe5 data/brass_armory/tags/items/fuse_lighter.json
 c1a3b83223a887c954a78e6ac44eff88364a7ce5 data/brass_armory/tags/items/misc.json
-d8beb8e81d1cd96be80a2515b4698cffb38bfa43 data/brass_armory/tags/items/warp_crystal_generators.json
 d002c366094ce497d4a38d24ec7810e629cc8d32 data/minecraft/tags/items/arrows.json
 a1e2ac52395e7323c836cee6eca61e10bf851240 data/minecraft/tags/items/piglin_loved.json

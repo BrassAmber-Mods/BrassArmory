@@ -13,7 +13,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +42,6 @@ public abstract class BrassArmoryTags {
         public static final TagKey<Item> FUSE_LIGHTER = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("fuse_lighter"));
         public static final TagKey<Item> CANNON_AMMO = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("cannon_ammo"));
         public static final TagKey<Item> BLEEDING_EDGE = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("bleeding_edge"));
-        public static final TagKey<Item> WARP_CRYSTAL_GENERATORS = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("warp_crystal_generators"));
 
         public static final TagKey<Item> BUILDING_BLOCKS = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("building_blocks"));
         public static final TagKey<Item> REDSTONE = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("redstone"));
@@ -76,13 +74,6 @@ public abstract class BrassArmoryTags {
                     BrassArmoryItems.IRON_DAGGER.get(),
                     BrassArmoryItems.DIAMOND_DAGGER.get(),
                     BrassArmoryItems.NETHERITE_DAGGER.get()
-            );
-
-            tag(WARP_CRYSTAL_GENERATORS).addTags(
-                    Tags.Items.GEMS_DIAMOND,
-                    Tags.Items.GEMS_EMERALD
-            ).add(
-                    net.minecraft.world.item.Items.ENDER_PEARL
             );
 
             tag(ItemTags.ARROWS).add(

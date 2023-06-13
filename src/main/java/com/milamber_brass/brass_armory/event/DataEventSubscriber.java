@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.event;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.data.BrassAdvancementProvider;
+import com.milamber_brass.brass_armory.data.BrassArmoryLootModifierProvider;
 import com.milamber_brass.brass_armory.data.BrassArmoryRecipeProvider;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import net.minecraft.data.DataGenerator;
@@ -27,5 +28,6 @@ public class DataEventSubscriber {
         generator.addProvider(true, new BrassArmoryTags.Items(generator, blockTagsProvider, BrassArmory.MOD_ID, helper));
         generator.addProvider(true, new BrassArmoryTags.Entities(generator, BrassArmory.MOD_ID, helper));
         generator.addProvider(true, new BrassAdvancementProvider(generator, helper));
+        generator.addProvider(true, new BrassArmoryLootModifierProvider(generator));
     }
 }
