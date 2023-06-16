@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "M": {
       "tag": "minecraft:planks"
@@ -12,5 +13,6 @@
   ],
   "result": {
     "item": "brass_armory:wooden_spiky_ball"
-  }
+  },
+  "show_notification": true
 }

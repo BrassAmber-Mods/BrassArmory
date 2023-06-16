@@ -18,8 +18,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -63,8 +63,11 @@ public abstract class AbstractTieredWeaponItem extends TieredItem implements Van
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        Material material = state.getMaterial();
-        return material != Material.PLANT && material != Material.REPLACEABLE_PLANT && material != Material.WATER_PLANT && !state.is(BlockTags.LEAVES) && material != Material.VEGETABLE ? 1.0F : 1.5F;
+        if (state.is(Blocks.COBWEB)) {
+            return 15.0F;
+        } else {
+            return state.is(BlockTags.SWORD_EFFICIENT) ? 1.5F : 1.0F;
+        }
     }
 
     @Override

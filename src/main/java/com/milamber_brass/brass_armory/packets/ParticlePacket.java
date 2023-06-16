@@ -2,9 +2,9 @@ package com.milamber_brass.brass_armory.packets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
@@ -31,7 +31,7 @@ public class ParticlePacket {
 	public ParticlePacket(FriendlyByteBuf buf) {
 		int size = buf.readInt();
 		for (int i = 0; i < size; i++) {
-			ParticleType<?> type = Registry.PARTICLE_TYPE.byId(buf.readInt());
+			ParticleType<?> type = BuiltInRegistries.PARTICLE_TYPE.byId(buf.readInt());
 			if (type == null) break;
 			this.queuedParticles.add(new QueuedParticle(readParticle(type, buf), buf.readBoolean(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble()));
 		}
@@ -45,7 +45,7 @@ public class ParticlePacket {
 	public void encode(FriendlyByteBuf buf) {
 		buf.writeInt(this.queuedParticles.size());
 		for (QueuedParticle queuedParticle : this.queuedParticles) {
-			int d = Registry.PARTICLE_TYPE.getId(queuedParticle.particleOptions.getType());
+			int d = BuiltInRegistries.PARTICLE_TYPE.getId(queuedParticle.particleOptions.getType());
 			buf.writeInt(d);
 			queuedParticle.particleOptions.writeToNetwork(buf);
 			buf.writeBoolean(queuedParticle.b);

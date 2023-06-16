@@ -1,17 +1,22 @@
 package com.milamber_brass.brass_armory.util;
 
 import com.google.common.collect.Lists;
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import com.milamber_brass.brass_armory.effect.BleedEffect;
 import com.milamber_brass.brass_armory.item.KatanaItem;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,7 +36,6 @@ import net.minecraft.world.level.block.CandleCakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +45,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ArmoryUtil {
     public static void impaleLivingEntity(LivingEntity living, float damage, RandomSource random) {
@@ -48,7 +53,7 @@ public class ArmoryUtil {
         float finalDamage = damage - damageAfterAbsorb;
         finalDamage = Math.min(finalDamage, (float)Math.sqrt(finalDamage * 10F) / 10F);
 
-        living.hurt((new DamageSource("brass_armory.impale")).bypassArmor(), finalDamage);
+        living.hurt(ArmoryUtil.getDamageSource(living.level(), BrassArmoryDamageTypes.IMPALE), finalDamage);
 
         for (EquipmentSlot slot : new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET }) {
             if (random.nextBoolean()) break;
@@ -71,7 +76,7 @@ public class ArmoryUtil {
 
     public static void getWitherFromLivingEntity(LivingEntity livingTarget, LivingEntity thisLiving) {
         ItemStack stack = thisLiving.getMainHandItem();
-        if (thisLiving.level instanceof ServerLevel serverLevel && stack.getItem() instanceof KatanaItem katanaItem && katanaItem.canWither() && KatanaItem.getWither(stack) < 100) {
+        if (thisLiving.level() instanceof ServerLevel serverLevel && stack.getItem() instanceof KatanaItem katanaItem && katanaItem.canWither() && KatanaItem.getWither(stack) < 100) {
             if (livingTarget.isDeadOrDying() && livingTarget.getType().is(BrassArmoryTags.Entities.WITHER)) {
                 KatanaItem.addWither(stack, thisLiving, serverLevel, livingTarget instanceof WitherBoss ? 50 : 2);
             }
@@ -86,8 +91,7 @@ public class ArmoryUtil {
             level.gameEvent(owner, GameEvent.BLOCK_PLACE, pos);
         } else {
             BlockPos relativePos = pos.relative(blockHitResult.getDirection());
-            Material material = level.getBlockState(relativePos).getMaterial();
-            if (BaseFireBlock.canBePlacedAt(level, relativePos, blockHitResult.getDirection()) || material.equals(Material.PLANT) || material.equals(Material.REPLACEABLE_PLANT)) {
+            if (BaseFireBlock.canBePlacedAt(level, relativePos, blockHitResult.getDirection()) || level.getBlockState(relativePos).canBeReplaced()) {
                 BlockState relativeState = BaseFireBlock.getState(level, relativePos);
                 level.setBlock(relativePos, relativeState, 11);
                 level.gameEvent(owner, GameEvent.BLOCK_PLACE, pos);
@@ -131,12 +135,12 @@ public class ArmoryUtil {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static @NotNull Explosion explode(Level level, Entity entity, float power, boolean burn, Explosion.BlockInteraction blockInteraction) {
-        return explode(level, entity, entity.position().add(0.0D, entity.getBbHeight() * 0.5F, 0.0D), power, burn, blockInteraction);
+    public static @NotNull Explosion explode(Level level, Entity entity, float power, boolean burn, Level.ExplosionInteraction interaction) {
+        return explode(level, entity, entity.position().add(0.0D, entity.getBbHeight() * 0.5F, 0.0D), power, burn, interaction);
     }
 
-    public static @NotNull Explosion explode(Level level, @Nullable Entity entity, Vec3 position, float power, boolean burn, Explosion.BlockInteraction blockInteraction) {
-        return level.explode(entity, position.x, position.y, position.z, power, burn, blockInteraction);
+    public static @NotNull Explosion explode(Level level, @Nullable Entity entity, Vec3 position, float power, boolean burn, Level.ExplosionInteraction interaction) {
+        return level.explode(entity, position.x, position.y, position.z, power, burn, interaction);
     }
 
     public static boolean isFuseLighter(ItemStack stack) {
@@ -151,5 +155,17 @@ public class ArmoryUtil {
 
     public static float frameTime(Level level) {
         return !level.isClientSide ? 1.0F : Minecraft.getInstance().getFrameTime();
+    }
+
+    public static DamageSource getDamageSource(Level level, ResourceKey<DamageType> type) {
+        return getEntityDamageSource(level, type, null);
+    }
+
+    public static DamageSource getEntityDamageSource(Level level, ResourceKey<DamageType> type, @org.jetbrains.annotations.Nullable Entity attacker) {
+        return getIndirectEntityDamageSource(level, type, attacker, attacker);
+    }
+
+    public static DamageSource getIndirectEntityDamageSource(Level level, ResourceKey<DamageType> type, @org.jetbrains.annotations.Nullable Entity attacker, @org.jetbrains.annotations.Nullable Entity indirectAttacker) {
+        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(type), attacker, indirectAttacker);
     }
 }

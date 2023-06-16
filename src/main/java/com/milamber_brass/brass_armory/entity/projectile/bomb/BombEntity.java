@@ -1,12 +1,12 @@
 package com.milamber_brass.brass_armory.entity.projectile.bomb;
 
-import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectileEntity;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
+import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.BombItem;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -81,14 +80,14 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
         this.setFuse(newFuse);
         if (newFuse <= 0) {
             this.discard();
-            if (!this.defused && !this.level.isClientSide) explode(this.level);
+            if (!this.defused && !this.level().isClientSide) this.explode(this.level());
         }
         if (!this.defused) {
-            if (this.level.isClientSide && level.getRandom().nextInt(2) == 1) {
+            if (this.level().isClientSide && level().getRandom().nextInt(2) == 1) {
                 Vec3 smokeVec = this.position().add(this.getDeltaMovement().multiply(-1.5D, -1.5D, -1.5D)).add(0, 0.125D, 0);
-                this.level.addParticle(ParticleTypes.SMOKE, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
+                this.level().addParticle(ParticleTypes.SMOKE, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
             }
-            this.playSound(BrassArmorySounds.BOMB_FUSE.get(), 0.03F, level.getRandom().nextFloat() * 0.6F + 1F);
+            this.playSound(BrassArmorySounds.BOMB_FUSE.get(), 0.03F, this.level().getRandom().nextFloat() * 0.6F + 1F);
             if (this.isInWaterOrBubble()) {
                 this.setFuse(40);
                 this.defused = true;
@@ -98,18 +97,18 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
 
     @Override
     public void lavaHurt() {
-        this.explode(this.level);
+        this.explode(this.level());
     }
 
     @Override
     public void thunderHit(ServerLevel serverLevel, LightningBolt lightningBolt) {
-        this.explode(this.level);
+        this.explode(this.level());
     }
 
     @Nonnull
     @Override //Pick up bomb if hand is empty
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if (!this.defused && !this.onGround && player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.CATCH_BOMB.trigger(serverPlayer);
+        if (!this.defused && !this.onGround() && player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.CATCH_BOMB.trigger(serverPlayer);
         return this.defused ? InteractionResult.PASS : super.interact(player, hand);
     }
 
@@ -126,7 +125,7 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         if (this.hitPerTick == 7) {
-            this.explode(this.level);
+            this.explode(this.level());
             return;
         }
         super.onHitBlock(blockHitResult);
@@ -161,7 +160,7 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
         BombEntity bomb = victim instanceof BombEntity bombEntity ? bombEntity : null;
         if (bomb != null && bomb.getVehicle() != null) victim = bomb.getVehicle();
 
-        ArmoryUtil.explode(level, bomb, victim.position().add(0.0D, victim.getBbHeight() * 0.5F, 0.0D), 2.0F, bomb != null && bomb.isOnFire(), Explosion.BlockInteraction.DESTROY);
+        ArmoryUtil.explode(level, bomb, victim.position().add(0.0D, victim.getBbHeight() * 0.5F, 0.0D), 2.0F, bomb != null && bomb.isOnFire(), Level.ExplosionInteraction.TNT);
     }
 
     public void addAdditionalSaveData(CompoundTag compoundTag) {

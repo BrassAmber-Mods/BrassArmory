@@ -3,24 +3,33 @@ package com.milamber_brass.brass_armory.data;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import net.minecraft.core.Registry;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.concurrent.CompletableFuture;
+
+@ParametersAreNonnullByDefault
 public abstract class BrassArmoryTags {
     public static class Blocks extends BlockTagsProvider {
-        public Blocks(DataGenerator generator, String modId, @Nullable ExistingFileHelper existingFileHelper) {
-            super(generator, modId, existingFileHelper);
+        public Blocks(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+            super(output, lookupProvider, BrassArmory.MOD_ID, existingFileHelper);
         }
 
         @Override
@@ -29,27 +38,27 @@ public abstract class BrassArmoryTags {
         }
 
         @Override
-        protected void addTags() {
+        protected void addTags(HolderLookup.Provider provider) {
             tag(BlockTags.CLIMBABLE).add(BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get());
         }
     }
 
     public static class Items extends ItemTagsProvider {
-        public static final TagKey<Item> BOMB = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("bomb"));
-        public static final TagKey<Item> FLINTLOCK = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("flintlock"));
-        public static final TagKey<Item> FLINTLOCK_AMMO = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("flintlock_ammo"));
-        public static final TagKey<Item> FLINTLOCK_POWDER = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("flintlock_powder"));
-        public static final TagKey<Item> FUSE_LIGHTER = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("fuse_lighter"));
-        public static final TagKey<Item> CANNON_AMMO = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("cannon_ammo"));
-        public static final TagKey<Item> BLEEDING_EDGE = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("bleeding_edge"));
+        public static final TagKey<Item> BOMB = ItemTags.create(BrassArmory.locate("bomb"));
+        public static final TagKey<Item> FLINTLOCK = ItemTags.create(BrassArmory.locate("flintlock"));
+        public static final TagKey<Item> FLINTLOCK_AMMO = ItemTags.create(BrassArmory.locate("flintlock_ammo"));
+        public static final TagKey<Item> FLINTLOCK_POWDER = ItemTags.create(BrassArmory.locate("flintlock_powder"));
+        public static final TagKey<Item> FUSE_LIGHTER = ItemTags.create(BrassArmory.locate("fuse_lighter"));
+        public static final TagKey<Item> CANNON_AMMO = ItemTags.create(BrassArmory.locate("cannon_ammo"));
+        public static final TagKey<Item> BLEEDING_EDGE = ItemTags.create(BrassArmory.locate("bleeding_edge"));
 
-        public static final TagKey<Item> BUILDING_BLOCKS = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("building_blocks"));
-        public static final TagKey<Item> REDSTONE = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("redstone"));
-        public static final TagKey<Item> MISC = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("misc"));
-        public static final TagKey<Item> EQUIPMENT = TagKey.create(Registry.ITEM_REGISTRY, BrassArmory.locate("equipment"));
+        public static final TagKey<Item> BUILDING_BLOCKS = ItemTags.create(BrassArmory.locate("building_blocks"));
+        public static final TagKey<Item> REDSTONE = ItemTags.create(BrassArmory.locate("redstone"));
+        public static final TagKey<Item> MISC = ItemTags.create(BrassArmory.locate("misc"));
+        public static final TagKey<Item> EQUIPMENT = ItemTags.create(BrassArmory.locate("equipment"));
 
-        public Items(DataGenerator generator, BlockTagsProvider blockTagsProvider, String modId, @Nullable ExistingFileHelper existingFileHelper) {
-            super(generator, blockTagsProvider, modId, existingFileHelper);
+        public Items(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagLookup<Block>> future, @Nullable ExistingFileHelper existingFileHelper) {
+            super(output, lookupProvider, future, BrassArmory.MOD_ID, existingFileHelper);
         }
 
         @Override
@@ -58,15 +67,14 @@ public abstract class BrassArmoryTags {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        protected void addTags() {
-            tag(BOMB).add(
+        protected void addTags(HolderLookup.Provider provider) {
+            this.tag(BOMB).add(
                     BrassArmoryItems.BOMB.get(),
                     BrassArmoryItems.BOUNCY_BOMB.get(),
                     BrassArmoryItems.STICKY_BOMB.get()
             );
 
-            tag(BLEEDING_EDGE).add(
+            this.tag(BLEEDING_EDGE).add(
                     BrassArmoryItems.KATANA.get(),
                     BrassArmoryItems.GOLDEN_DAGGER.get(),
                     BrassArmoryItems.WOODEN_DAGGER.get(),
@@ -76,7 +84,7 @@ public abstract class BrassArmoryTags {
                     BrassArmoryItems.NETHERITE_DAGGER.get()
             );
 
-            tag(ItemTags.ARROWS).add(
+            this.tag(ItemTags.ARROWS).add(
                     BrassArmoryItems.DIRT_ARROW.get(),
                     BrassArmoryItems.EX_ARROW.get(),
                     BrassArmoryItems.FROST_ARROW.get(),
@@ -90,24 +98,24 @@ public abstract class BrassArmoryTags {
                     BrassArmoryItems.TORCH_ARROW.get()
             );
 
-            tag(FLINTLOCK).add(
+            this.tag(FLINTLOCK).add(
                     BrassArmoryItems.FLINTLOCK_PISTOL.get(),
                     BrassArmoryItems.MUSKET.get(),
                     BrassArmoryItems.BLUNDERBUSS.get()
             );
 
-            tag(FLINTLOCK_AMMO).add(
+            this.tag(FLINTLOCK_AMMO).add(
                     BrassArmoryItems.MUSKET_BALL.get(),
                     BrassArmoryItems.BUNDLE_SHOT.get(),
                     net.minecraft.world.item.Items.GRAVEL
             );
 
-            tag(FLINTLOCK_POWDER).add(
+            this.tag(FLINTLOCK_POWDER).add(
                     net.minecraft.world.item.Items.GUNPOWDER,
                     net.minecraft.world.item.Items.BLAZE_POWDER
             );
 
-            tag(FUSE_LIGHTER).add(
+            this.tag(FUSE_LIGHTER).add(
                     net.minecraft.world.item.Items.FLINT_AND_STEEL,
                     net.minecraft.world.item.Items.FIRE_CHARGE,
                     net.minecraft.world.item.Items.TORCH,
@@ -115,15 +123,15 @@ public abstract class BrassArmoryTags {
                     BrassArmoryItems.FIRE_ROD.get()
             );
 
-            tag(CANNON_AMMO).add(
+            this.tag(CANNON_AMMO).add(
                     BrassArmoryItems.CANNON_BALL.get(),
                     BrassArmoryItems.CARCASS_ROUND.get(),
                     BrassArmoryItems.SIEGE_ROUND.get()
-            ).addTags(
+            ).addTag(
                     BOMB
             );
 
-            tag(ItemTags.PIGLIN_LOVED).add(
+            this.tag(ItemTags.PIGLIN_LOVED).add(
                     BrassArmoryItems.GOLDEN_DAGGER.get(),
                     BrassArmoryItems.GOLDEN_SPIKY_BALL.get(),
                     BrassArmoryItems.GOLDEN_BATTLEAXE.get(),
@@ -134,7 +142,7 @@ public abstract class BrassArmoryTags {
                     BrassArmoryItems.GOLDEN_SPEAR.get()
             );
 
-            tag(MISC).add(
+            this.tag(MISC).add(
                     BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get().asItem(),
                     BrassArmoryItems.PETTY_WARP_CRYSTAL.get(),
                     BrassArmoryItems.LESSER_WARP_CRYSTAL.get(),
@@ -146,7 +154,7 @@ public abstract class BrassArmoryTags {
                     BrassArmoryItems.BLUNDERBUSS_PARTS.get()
             );
 
-            tag(EQUIPMENT).add(
+            this.tag(EQUIPMENT).add(
                     BrassArmoryItems.DIRT_ARROW.get(),
                     BrassArmoryItems.EX_ARROW.get(),
                     BrassArmoryItems.FROST_ARROW.get(),
@@ -240,12 +248,12 @@ public abstract class BrassArmoryTags {
     }
 
     public static class Entities extends EntityTypeTagsProvider {
-        public Entities(DataGenerator generator, String modId, @Nullable ExistingFileHelper existingFileHelper) {
-            super(generator, modId, existingFileHelper);
-        }
+        public static final TagKey<EntityType<?>> WITHER = TagKey.create(Registries.ENTITY_TYPE, BrassArmory.locate("wither"));
+        public static final TagKey<EntityType<?>> FOCUSED = TagKey.create(Registries.ENTITY_TYPE, BrassArmory.locate("focused"));
 
-        public static final TagKey<EntityType<?>> WITHER = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, BrassArmory.locate("wither"));
-        public static final TagKey<EntityType<?>> FOCUSED = TagKey.create(Registry.ENTITY_TYPE_REGISTRY, BrassArmory.locate("focused"));
+        public Entities(PackOutput output, CompletableFuture<HolderLookup.Provider> future, @Nullable ExistingFileHelper existingFileHelper) {
+            super(output, future, BrassArmory.MOD_ID, existingFileHelper);
+        }
 
         @Override
         public @NotNull String getName() {
@@ -253,15 +261,43 @@ public abstract class BrassArmoryTags {
         }
 
         @Override
-        protected void addTags() {
-            tag(WITHER).add(
+        protected void addTags(HolderLookup.Provider provider) {
+            this.tag(WITHER).add(
                     EntityType.WITHER,
                     EntityType.WITHER_SKELETON
             );
 
-            tag(FOCUSED).add(
+            this.tag(FOCUSED).add(
                     EntityType.WITHER,
                     EntityType.ENDER_DRAGON
+            );
+        }
+    }
+
+    public static class DamageTypes extends TagsProvider<DamageType> {
+        protected DamageTypes(PackOutput output, CompletableFuture<HolderLookup.Provider> future, @Nullable ExistingFileHelper existingFileHelper) {
+            super(output, Registries.DAMAGE_TYPE, future, BrassArmory.MOD_ID, existingFileHelper);
+        }
+
+        @Override
+        public @NotNull String getName() {
+            return "Brass's Armory Damage Type Tags";
+        }
+
+        @Override
+        protected void addTags(HolderLookup.Provider provider) {
+            this.tag(DamageTypeTags.IS_PROJECTILE).add(
+                    BrassArmoryDamageTypes.BATTLE_AXE,
+                    BrassArmoryDamageTypes.BOOMERANG,
+                    BrassArmoryDamageTypes.DAGGER,
+                    BrassArmoryDamageTypes.FIRE_ROD,
+                    BrassArmoryDamageTypes.FLAIL,
+                    BrassArmoryDamageTypes.SPEAR
+            );
+
+            this.tag(DamageTypeTags.BYPASSES_ARMOR).add(
+                    BrassArmoryDamageTypes.IMPALE,
+                    BrassArmoryDamageTypes.BLEED
             );
         }
     }

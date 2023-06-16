@@ -34,5 +34,6 @@
     [
       "katana"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

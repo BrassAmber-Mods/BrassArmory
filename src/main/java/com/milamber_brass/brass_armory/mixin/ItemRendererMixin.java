@@ -1,17 +1,17 @@
 package com.milamber_brass.brass_armory.mixin;
 
-import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.QuiverItem;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -33,14 +33,15 @@ public abstract class ItemRendererMixin {
     @Shadow public abstract BakedModel getModel(ItemStack stack, @Nullable Level level, @Nullable LivingEntity living, int i);
     @Shadow public abstract void renderModelLists(BakedModel bakedModel, ItemStack stack, int x, int y, PoseStack poseStack, VertexConsumer vertexConsumer);
 
+    @SuppressWarnings("rawtypes")
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;renderModelLists(Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/item/ItemStack;IILcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;)V", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT, remap = true)
-    private void renderGuiItem(ItemStack stack, ItemTransforms.TransformType transformType, boolean leftHandHackery, PoseStack poseStack, MultiBufferSource bufferSource, int x, int y, BakedModel p_115151_, CallbackInfo ci, boolean flag, boolean flag1, Iterator var11, BakedModel model, Iterator var13, RenderType rendertype, VertexConsumer vertexconsumer) {
+    private void renderGuiItem(ItemStack stack, ItemDisplayContext context, boolean b, PoseStack poseStack, MultiBufferSource source, int x, int y, BakedModel bakedModel, CallbackInfo ci, boolean flag, boolean flag1, Iterator var11, BakedModel model, Iterator var13, RenderType rendertype, VertexConsumer vertexconsumer) {
         if (stack.is(BrassArmoryItems.TORCH_ARROW.get())) {
             this.renderTorch(poseStack, ArmoryUtil.loadStack(stack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance()), x, y, vertexconsumer);
         } else if (stack.getItem() instanceof QuiverItem) {
             QuiverItem.getContents(stack).findFirst().ifPresent(itemStack -> {
                 poseStack.pushPose();
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
                 poseStack.translate(-0.9375D, 0.0625D, -0.875D);
                 poseStack.scale(1.0F, 1.0F, 0.75F);
                 this.renderModelLists(this.getModel(itemStack, null, null, 0), itemStack, x, y, poseStack, vertexconsumer);

@@ -55,14 +55,14 @@ public class SlimeArrowEntity extends AbstractSpecialArrowEntity {
 
     private void spawnSmallSlime() {
         if (this.isAlive()) {
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-                Slime slimeEntity = EntityType.SLIME.create(this.level);
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                Slime slimeEntity = EntityType.SLIME.create(this.level());
                 if (slimeEntity == null) return;
                 slimeEntity.addTag("no_loot");
                 slimeEntity.refreshDimensions();
                 slimeEntity.setHealth(1);
                 slimeEntity.moveTo(this.blockPosition().getX() + .5f, this.blockPosition().getY() + 0.05f, this.blockPosition().getZ() + .5f, this.getYRot(), this.getXRot());
-                this.level.addFreshEntity(slimeEntity);
+                this.level().addFreshEntity(slimeEntity);
                 this.discard();
             }
         }
@@ -77,7 +77,7 @@ public class SlimeArrowEntity extends AbstractSpecialArrowEntity {
     protected void spawnArrowParticles(int particleCount) {
         if (this.random.nextInt(2) >= particleCount) return;
         for (int j = 0; j < particleCount; ++j) {
-            this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SLIME_BLOCK.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
+            this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SLIME_BLOCK.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
         }
     }
 

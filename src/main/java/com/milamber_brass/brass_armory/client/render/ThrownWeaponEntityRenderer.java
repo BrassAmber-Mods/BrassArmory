@@ -1,18 +1,18 @@
 package com.milamber_brass.brass_armory.client.render;
 
-import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.entity.projectile.DaggerEntity;
+import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,22 +35,21 @@ public class ThrownWeaponEntityRenderer extends EntityRenderer<AbstractThrownWea
         if (thrownWeaponEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(thrownWeaponEntity) < 12.25D)) {
             stack.pushPose();
             stack.translate(0D, 0.25D, 0D);
-            stack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(v1, thrownWeaponEntity.yRotO, thrownWeaponEntity.getYRot()) - 90.0F));
+            stack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(v1, thrownWeaponEntity.yRotO, thrownWeaponEntity.getYRot()) - 90.0F));
             boolean dagger = thrownWeaponEntity instanceof DaggerEntity;
-            stack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(v1, thrownWeaponEntity.xRotO, thrownWeaponEntity.getXRot()) - (dagger ? 45F : 35F)));
+            stack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(v1, thrownWeaponEntity.xRotO, thrownWeaponEntity.getXRot()) - (dagger ? 45F : 35F)));
             if (!thrownWeaponEntity.isInGround())
-                stack.mulPose(Vector3f.ZN.rotationDegrees(((float) thrownWeaponEntity.tickCount + v1) * (dagger ? 32F : 16F)));
+                stack.mulPose(Axis.ZN.rotationDegrees(((float) thrownWeaponEntity.tickCount + v1) * (dagger ? 32F : 16F)));
             stack.translate(dagger ? 0.4D : -0.2D, dagger ? 0D : -0.2D, 0D);
 
-            this.itemRenderer.renderStatic(thrownWeaponEntity.getItem(), ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, thrownWeaponEntity.getId());
+            this.itemRenderer.renderStatic(thrownWeaponEntity.getItem(), ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, thrownWeaponEntity.level(), thrownWeaponEntity.getId());
             stack.popPose();
         }
     }
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
     public ResourceLocation getTextureLocation(AbstractThrownWeaponEntity bombEntity) {
-        return TextureAtlas.LOCATION_BLOCKS;
+        return InventoryMenu.BLOCK_ATLAS;
     }
 }

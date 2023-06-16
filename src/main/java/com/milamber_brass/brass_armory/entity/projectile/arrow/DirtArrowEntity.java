@@ -43,7 +43,7 @@ public class DirtArrowEntity extends AbstractSpecialArrowEntity {
     protected void doPostHurtEffects(LivingEntity living) {
         super.doPostHurtEffects(living);
         if (!this.dealtDamage) {
-            this.level.setBlockAndUpdate(this.blockPosition(), Blocks.DIRT.defaultBlockState());
+            this.level().setBlockAndUpdate(this.blockPosition(), Blocks.DIRT.defaultBlockState());
             this.discard();
         }
     }
@@ -53,9 +53,9 @@ public class DirtArrowEntity extends AbstractSpecialArrowEntity {
         super.onHitBlock(result);
         if (!this.dealtDamage) {
             BlockPos relative = result.getBlockPos().relative(result.getDirection());
-            if (this.level.getBlockState(relative).getMaterial().isReplaceable()) {
-                this.level.setBlock(relative, Blocks.DIRT.defaultBlockState(), 2);
-                this.level.gameEvent(this.getOwner(), GameEvent.BLOCK_PLACE, relative);
+            if (this.level().getBlockState(relative).canBeReplaced()) {
+                this.level().setBlock(relative, Blocks.DIRT.defaultBlockState(), 2);
+                this.level().gameEvent(this.getOwner(), GameEvent.BLOCK_PLACE, relative);
                 this.discard();
             }
         }
@@ -69,7 +69,7 @@ public class DirtArrowEntity extends AbstractSpecialArrowEntity {
     @Override
     protected void spawnArrowParticles(int particleCount) {
         for (int j = 0; j < particleCount; ++j) {
-            this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DIRT.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
+            this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.DIRT.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
         }
     }
 

@@ -38,7 +38,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -47,7 +46,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -107,8 +105,7 @@ public class ClientEventBusSubscriber {
                     if (bombStack.getOrCreateTag().getBoolean("GuiDisplay")) return 0.8F;
                     if (!BombItem.getFuseLit(bombStack) || entity == null) return 1.0F;
                     else {
-                        if (clientLevel == null && entity.level instanceof ClientLevel)
-                            clientLevel = (ClientLevel) entity.level;
+                        if (clientLevel == null && entity.level() instanceof ClientLevel clientLevel1) clientLevel = clientLevel1;
                         if (clientLevel == null || !(bombStack.getItem() instanceof BombItem)) return 1.0F;
                         return ((float) BombItem.getFuseLength(bombStack) / 60F);
                     }
@@ -199,14 +196,6 @@ public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         BrassArmoryModels.register(event);
-    }
-
-    @SubscribeEvent
-    public static void textureStitchEvent(TextureStitchEvent.Pre event) {
-        if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
-            event.addSprite(GunContainer.EMPTY_POWDER_SLOT);
-            event.addSprite(GunContainer.EMPTY_AMMO_SLOT);
-        }
     }
 
     @SubscribeEvent

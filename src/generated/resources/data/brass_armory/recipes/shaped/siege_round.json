@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "S": {
       "tag": "forge:stone"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "brass_armory:siege_round"
-  }
+  },
+  "show_notification": true
 }

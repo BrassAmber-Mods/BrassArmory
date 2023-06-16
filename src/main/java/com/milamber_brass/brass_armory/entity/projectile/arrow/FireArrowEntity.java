@@ -44,7 +44,7 @@ public class FireArrowEntity extends AbstractSpecialArrowEntity {
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
         if (!this.dealtDamage) {
-            ArmoryUtil.blockHitSetOnFire(result, this.level, this.getOwner());
+            ArmoryUtil.blockHitSetOnFire(result, this.level(), this.getOwner());
         }
     }
 
@@ -56,7 +56,7 @@ public class FireArrowEntity extends AbstractSpecialArrowEntity {
     @Override
     protected void spawnArrowParticles(int particleCount) {
         for (int j = 0; j < particleCount; ++j) {
-            this.level.addParticle(ParticleTypes.FLAME, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 0D, 0D, 0D);
+            this.level().addParticle(ParticleTypes.FLAME, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 0D, 0D, 0D);
         }
     }
 

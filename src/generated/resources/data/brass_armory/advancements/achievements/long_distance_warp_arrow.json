@@ -25,5 +25,6 @@
     [
       "long_distance_warp_arrow"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

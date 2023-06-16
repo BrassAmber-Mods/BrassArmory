@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "M": {
       "tag": "forge:gems/diamond"
@@ -13,5 +14,6 @@
   ],
   "result": {
     "item": "brass_armory:diamond_dagger"
-  }
+  },
+  "show_notification": true
 }

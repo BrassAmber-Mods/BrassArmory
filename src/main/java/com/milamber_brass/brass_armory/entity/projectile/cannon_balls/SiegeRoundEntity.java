@@ -11,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -40,16 +39,16 @@ public class SiegeRoundEntity extends AbstractBulletEntity {
 
     @Override
     protected void onHitBlock(BlockHitResult hitResult) {
-        if (!this.level.isClientSide) {
-            ArmoryUtil.explode(this.level, this, 4.0F, this.isOnFire(), Explosion.BlockInteraction.BREAK);
+        if (!this.level().isClientSide) {
+            ArmoryUtil.explode(this.level(), this, 4.0F, this.isOnFire(), Level.ExplosionInteraction.TNT);
             this.discard();
         }
     }
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (!this.level.isClientSide) {
-            ArmoryUtil.explode(this.level, this, 4.0F, this.isOnFire(), Explosion.BlockInteraction.BREAK);
+        if (!this.level().isClientSide) {
+            ArmoryUtil.explode(this.level(), this, 4.0F, this.isOnFire(), Level.ExplosionInteraction.TNT);
             if (entityHitResult.getEntity() instanceof Creeper && this.getOwner() instanceof ServerPlayer serverPlayer) {
                 BrassArmoryAdvancements.SIEGE.trigger(serverPlayer);
             }

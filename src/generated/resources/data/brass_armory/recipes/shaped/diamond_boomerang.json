@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "L": {
       "tag": "forge:ingots/gold"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "brass_armory:diamond_boomerang"
-  }
+  },
+  "show_notification": true
 }

@@ -14,6 +14,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,11 +57,13 @@ public class JeiModPlugin implements IModPlugin {
 
     public static @NotNull List<CraftingRecipe> regCarcassRounds(RecipeManager recipeManager) {
         List<CraftingRecipe> recipes = new ArrayList<>();
+        RegistryAccess access = Minecraft.getInstance().level.registryAccess();
 
         for (Recipe<?> recipe : recipeManager.getRecipes()) {
-            if (recipe instanceof CraftingRecipe craftingRecipe && craftingRecipe.getResultItem().is(BrassArmoryItems.CARCASS_ROUND.get()) && !craftingRecipe.getIngredients().isEmpty()) {
+            if (recipe instanceof CraftingRecipe craftingRecipe && craftingRecipe.getResultItem(access).is(BrassArmoryItems.CARCASS_ROUND.get()) && !craftingRecipe.getIngredients().isEmpty()) {
                 NonNullList<Ingredient> ingredients = craftingRecipe.getIngredients();
-                ItemStack result = craftingRecipe.getResultItem();
+
+                ItemStack result = craftingRecipe.getResultItem(access);
 
                 for (Potion potion : ForgeRegistries.POTIONS.getValues()) {
                     NonNullList<Ingredient> newIngredients = NonNullList.create();
@@ -78,6 +81,7 @@ public class JeiModPlugin implements IModPlugin {
                             recipes.add(new ShapedRecipe(
                                     BrassArmory.locate(potion.getName("carcass_round.")),
                                     "brass_armory.jei.carcass_round",
+                                    CraftingBookCategory.EQUIPMENT,
                                     shapedRecipe.getWidth(),
                                     shapedRecipe.getHeight(),
                                     newIngredients,
@@ -86,6 +90,7 @@ public class JeiModPlugin implements IModPlugin {
                             recipes.add(new ShapelessRecipe(
                                     BrassArmory.locate(potion.getName("carcass_round.")),
                                     "brass_armory.jei.carcass_round",
+                                    CraftingBookCategory.EQUIPMENT,
                                     PotionUtils.setPotion(result.copy(), potion),
                                     newIngredients));
                         }
@@ -107,6 +112,7 @@ public class JeiModPlugin implements IModPlugin {
                         recipes.add(new ShapedRecipe(
                                 BrassArmory.locate("dragon_round"),
                                 "brass_armory.jei.dragon_round",
+                                CraftingBookCategory.EQUIPMENT,
                                 shapedRecipe.getWidth(),
                                 shapedRecipe.getHeight(),
                                 newIngredients,
@@ -115,6 +121,7 @@ public class JeiModPlugin implements IModPlugin {
                         recipes.add(new ShapelessRecipe(
                                 BrassArmory.locate("dragon_round"),
                                 "brass_armory.jei.dragon_round",
+                                CraftingBookCategory.EQUIPMENT,
                                 Util.make(result.copy(), stack -> stack.getOrCreateTag().putBoolean("BADragonRound", true)),
                                 newIngredients));
                     }
@@ -128,11 +135,12 @@ public class JeiModPlugin implements IModPlugin {
 
     public static @NotNull List<CraftingRecipe> regTorchArrows(RecipeManager recipeManager) {
         List<CraftingRecipe> recipes = new ArrayList<>();
+        RegistryAccess access = Minecraft.getInstance().level.registryAccess();
 
         for (Recipe<?> recipe : recipeManager.getRecipes()) {
-            if (recipe instanceof CraftingRecipe craftingRecipe && craftingRecipe.getResultItem().is(BrassArmoryItems.TORCH_ARROW.get()) && !craftingRecipe.getIngredients().isEmpty()) {
+            if (recipe instanceof CraftingRecipe craftingRecipe && craftingRecipe.getResultItem(access).is(BrassArmoryItems.TORCH_ARROW.get()) && !craftingRecipe.getIngredients().isEmpty()) {
                 NonNullList<Ingredient> ingredients = craftingRecipe.getIngredients();
-                ItemStack result = craftingRecipe.getResultItem();
+                ItemStack result = craftingRecipe.getResultItem(access);
 
 
                 for (Item item : ForgeRegistries.ITEMS.getValues()) {
@@ -152,6 +160,7 @@ public class JeiModPlugin implements IModPlugin {
                                 recipes.add(new ShapedRecipe(
                                         BrassArmory.locate("carcass_round." + torchItem),
                                         "brass_armory.jei.carcass_round",
+                                        CraftingBookCategory.EQUIPMENT,
                                         shapedRecipe.getWidth(),
                                         shapedRecipe.getHeight(),
                                         newIngredients,
@@ -160,6 +169,7 @@ public class JeiModPlugin implements IModPlugin {
                                 recipes.add(new ShapelessRecipe(
                                         BrassArmory.locate("carcass_round." + torchItem),
                                         "brass_armory.jei.carcass_round",
+                                        CraftingBookCategory.EQUIPMENT,
                                         Util.make(result.copy(), stack -> ArmoryUtil.addStack(stack.getOrCreateTag(), torchItem.getDefaultInstance(), "BATorch")),
                                         newIngredients));
                             }

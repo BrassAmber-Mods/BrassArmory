@@ -1,16 +1,17 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectileEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.SpikyBallItem;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
@@ -28,7 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
-    public static final DamageSource DAMAGE_SOURCE = (new DamageSource("brass_armory.spiky_ball")).bypassArmor();
     public static final long INTERVAL = 600L;
 
     public SpikyBallEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
@@ -51,21 +51,21 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
     public void tick() {
         super.tick();
         if (this.tickCount > 10 && this.getItem().getItem() instanceof SpikyBallItem spikyBallItem) {
-            for (Entity entity : this.level.getEntities(this, this.getBoundingBox(), Entity::isAlive)) {
-                if (entity instanceof LivingEntity living && living.hurt(DAMAGE_SOURCE, spikyBallItem.getTier().getAttackDamageBonus() + 1F) && this.hurt()) return;
+            for (Entity entity : this.level().getEntities(this, this.getBoundingBox(), Entity::isAlive)) {
+                if (entity instanceof LivingEntity living && living.hurt(ArmoryUtil.getDamageSource(this.level(), BrassArmoryDamageTypes.SPIKY_BALL), spikyBallItem.getTier().getAttackDamageBonus() + 1F) && this.hurt()) return;
             }
         }
     }
 
     @Override
     protected void onGroundTick() {
-        if (!this.level.isClientSide && this.level.getGameTime() % INTERVAL == 0L && this.hurt()) return;
+        if (!this.level().isClientSide && this.level().getGameTime() % INTERVAL == 0L && this.hurt()) return;
         super.onGroundTick();
     }
 
     protected boolean hurt() {
         ItemStack stack = this.getItem().copy();
-        if (stack.hurt(1, this.level.random, this.getOwner() instanceof ServerPlayer serverPlayer ? serverPlayer : null)) {
+        if (stack.hurt(1, this.level().random, this.getOwner() instanceof ServerPlayer serverPlayer ? serverPlayer : null)) {
             if (this.getOwner() instanceof Player player) player.awardStat(Stats.ITEM_BROKEN.get(stack.getItem()));
             this.discard();
             return true;

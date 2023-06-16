@@ -52,12 +52,12 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
         if (!this.dealtDamage) {
             Vec3 thisPos = this.position();
             Vec3 nextPos = thisPos.add(this.getDeltaMovement().scale(1.1D));
-            BlockHitResult blockHitResult = this.level.clip(new ClipContext(thisPos, nextPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this));
+            BlockHitResult blockHitResult = this.level().clip(new ClipContext(thisPos, nextPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this));
 
             if (blockHitResult.getType().equals(HitResult.Type.BLOCK)) {
-                BlockState state = this.level.getBlockState(blockHitResult.getBlockPos());
-                if (state.is(Blocks.WATER) && ((!this.isUnderWater() && this.tickCount > 2) || !this.level.getBlockState(this.blockPosition()).is(Blocks.WATER))) {
-                    freezeAOE(this.level, blockHitResult.getBlockPos(), this);
+                BlockState state = this.level().getBlockState(blockHitResult.getBlockPos());
+                if (state.is(Blocks.WATER) && ((!this.isUnderWater() && this.tickCount > 2) || !this.level().getBlockState(this.blockPosition()).is(Blocks.WATER))) {
+                    freezeAOE(this.level(), blockHitResult.getBlockPos(), this);
                     this.dealtDamage = true;
                 }
             }
@@ -75,18 +75,18 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
         if (!this.dealtDamage) {
-            freezeAOE(this.level, result.getBlockPos(), this);
+            freezeAOE(this.level(), result.getBlockPos(), this);
         }
     }
 
     public static void freezeAOE(Level level, BlockPos pos, @Nullable Entity entity) {
         BlockState blockstate = Blocks.ICE.defaultBlockState();
 
-        for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-3F, 0.0D, -3F), pos.offset(3F, 0.0D, 3F))) {
+        for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-3, 0, -3), pos.offset(3, 0, 3))) {
             if (blockpos.closerThan(pos, 2.5F)) {
                 FluidState flu = level.getFluidState(blockpos);
 
-                if (flu.is(FluidTags.WATER) && flu.isSource() && level.getBlockState(blockpos).getMaterial().isReplaceable() && blockstate.canSurvive(level, blockpos) && !ForgeEventFactory.onBlockPlace(entity, BlockSnapshot.create(level.dimension(), level, blockpos), Direction.UP)) {
+                if (flu.is(FluidTags.WATER) && flu.isSource() && level.getBlockState(blockpos).canBeReplaced() && blockstate.canSurvive(level, blockpos) && !ForgeEventFactory.onBlockPlace(entity, BlockSnapshot.create(level.dimension(), level, blockpos), Direction.UP)) {
                     level.setBlockAndUpdate(blockpos, blockstate);
                     level.scheduleTick(blockpos, Blocks.FROSTED_ICE, Mth.nextInt(level.random, 60, 120));
                 }
@@ -102,7 +102,7 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
     @Override
     protected void spawnArrowParticles(int particleCount) {
         for (int j = 0; j < particleCount; ++j) {
-            this.level.addParticle(ParticleTypes.FALLING_WATER, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
+            this.level().addParticle(ParticleTypes.FALLING_WATER, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
         }
     }
 

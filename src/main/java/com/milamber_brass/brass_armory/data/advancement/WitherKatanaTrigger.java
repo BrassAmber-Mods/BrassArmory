@@ -2,10 +2,7 @@ package com.milamber_brass.brass_armory.data.advancement;
 
 import com.google.gson.JsonObject;
 import com.milamber_brass.brass_armory.BrassArmory;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +20,7 @@ public class WitherKatanaTrigger extends SimpleCriterionTrigger<WitherKatanaTrig
     }
 
     @Override
-    protected @NotNull Instance createInstance(JsonObject json, EntityPredicate.Composite player, DeserializationContext ctx) {
+    protected @NotNull Instance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext ctx) {
         return new WitherKatanaTrigger.Instance(player);
     }
 
@@ -32,12 +29,12 @@ public class WitherKatanaTrigger extends SimpleCriterionTrigger<WitherKatanaTrig
     }
 
     public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(EntityPredicate.Composite player) {
+        public Instance(ContextAwarePredicate player) {
             super(WitherKatanaTrigger.ID, player);
         }
 
         public static @NotNull Instance witherKatana() {
-            return new Instance(EntityPredicate.Composite.ANY);
+            return new Instance(ContextAwarePredicate.ANY);
         }
     }
 }

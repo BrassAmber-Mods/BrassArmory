@@ -15,6 +15,6 @@ A revamp of Balkon's Weapons Mod from YogBox/Tekkit days which slims down the it
 [[dependencies.brass_armory]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.2,1.19.3)"
+    versionRange="[1.20.1,)"
     ordering="NONE"
     side="BOTH"

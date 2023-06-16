@@ -31,7 +31,7 @@ public class PowderCapabilityHandler implements IPowderCapability {
 
     @Override
     public void tick() {
-        if (this.projectile.level instanceof ServerLevel serverLevel && this.powderBehaviour != null) {
+        if (this.projectile.level() instanceof ServerLevel serverLevel && this.powderBehaviour != null) {
             if (this.projectile instanceof AbstractArrow abstractArrow && abstractArrow.inGround && abstractArrow.shakeTime <= 0) return;
             this.powderBehaviour.sendParticles(serverLevel, this.projectile.getEyePosition());
         }

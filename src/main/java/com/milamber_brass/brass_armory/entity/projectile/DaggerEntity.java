@@ -1,10 +1,13 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -25,8 +28,8 @@ public class DaggerEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    protected String onHitDamageSource() {
-        return "dagger";
+    protected ResourceKey<DamageType> onHitDamageType() {
+        return BrassArmoryDamageTypes.DAGGER;
     }
 
     @Override

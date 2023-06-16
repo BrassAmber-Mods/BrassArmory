@@ -63,19 +63,19 @@ public class TorchArrowEntity extends AbstractSpecialArrowEntity implements Item
 
         Direction direction = blockHitResult.getDirection();
         BlockPos relative = blockHitResult.getBlockPos().relative(direction);
-        boolean flag = this.level.getBlockState(relative).getMaterial().isReplaceable();
+        boolean flag = this.level().getBlockState(relative).canBeReplaced();
         if (direction.equals(Direction.UP) && flag) {
             BlockState torchState = this.getTorch().getBlock().defaultBlockState();
-            if (torchState.canSurvive(this.level, relative)) {
-                this.level.setBlock(relative, torchState, 11);
-                this.level.gameEvent(this.getOwner(), GameEvent.BLOCK_PLACE, relative);
+            if (torchState.canSurvive(this.level(), relative)) {
+                this.level().setBlock(relative, torchState, 11);
+                this.level().gameEvent(this.getOwner(), GameEvent.BLOCK_PLACE, relative);
                 this.discard();
             }
         } else if (!direction.equals(Direction.DOWN) && flag) {
             BlockState torchState = this.getTorch().wallBlock.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, direction);
-            if (torchState.canSurvive(this.level, relative)) {
-                this.level.setBlock(relative, torchState, 11);
-                this.level.gameEvent(this.getOwner(), GameEvent.BLOCK_PLACE, relative);
+            if (torchState.canSurvive(this.level(), relative)) {
+                this.level().setBlock(relative, torchState, 11);
+                this.level().gameEvent(this.getOwner(), GameEvent.BLOCK_PLACE, relative);
                 this.discard();
             }
         }
@@ -84,7 +84,7 @@ public class TorchArrowEntity extends AbstractSpecialArrowEntity implements Item
     @Override
     protected void spawnArrowParticles(int particleCount) {
         if (this.getTorch().getBlock() instanceof TorchBlock torchBlock) {
-            torchBlock.animateTick(torchBlock.defaultBlockState(), this.level, this.blockPosition(), this.random);
+            torchBlock.animateTick(torchBlock.defaultBlockState(), this.level(), this.blockPosition(), this.random);
         }
 
     }

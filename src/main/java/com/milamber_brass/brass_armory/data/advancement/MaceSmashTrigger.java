@@ -2,10 +2,7 @@ package com.milamber_brass.brass_armory.data.advancement;
 
 import com.google.gson.JsonObject;
 import com.milamber_brass.brass_armory.BrassArmory;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +20,7 @@ public class MaceSmashTrigger extends SimpleCriterionTrigger<MaceSmashTrigger.In
     }
 
     @Override
-    protected @NotNull Instance createInstance(JsonObject json, EntityPredicate.Composite player, DeserializationContext ctx) {
+    protected @NotNull Instance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext ctx) {
         return new MaceSmashTrigger.Instance(player);
     }
 
@@ -32,12 +29,12 @@ public class MaceSmashTrigger extends SimpleCriterionTrigger<MaceSmashTrigger.In
     }
 
     public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(EntityPredicate.Composite player) {
+        public Instance(ContextAwarePredicate player) {
             super(MaceSmashTrigger.ID, player);
         }
 
         public static @NotNull Instance maceSmash() {
-            return new Instance(EntityPredicate.Composite.ANY);
+            return new Instance(ContextAwarePredicate.ANY);
         }
     }
 }

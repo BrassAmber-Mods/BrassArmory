@@ -1,12 +1,15 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.SpearItem;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -30,14 +33,14 @@ public class SpearEntity extends AbstractThrownWeaponEntity {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         if (entityHitResult.getEntity() instanceof LivingEntity living && living.getType() != EntityType.ENDERMAN && this.getItem().getItem() instanceof SpearItem) {
-            ArmoryUtil.impaleLivingEntity(living, this.entityData.get(DATA_DAMAGE_VALUE), this.level.random);
+            ArmoryUtil.impaleLivingEntity(living, this.entityData.get(DATA_DAMAGE_VALUE), this.level().random);
         }
         super.onHitEntity(entityHitResult);
     }
 
     @Override
-    protected String onHitDamageSource() {
-        return "spear";
+    protected ResourceKey<DamageType> onHitDamageType() {
+        return BrassArmoryDamageTypes.SPEAR;
     }
 
     @Override

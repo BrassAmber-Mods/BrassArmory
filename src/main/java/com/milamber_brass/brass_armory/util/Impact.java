@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +37,11 @@ public class Impact extends Explosion {
 
     @Override
     public void finalizeExplosion(boolean emitter) {
-        if (!this.level.isClientSide) {
+        if (this.level instanceof ServerLevel serverLevel) {
             Vec3 vec3 = this.getPosition();
             this.level.playSound(null, vec3.x, vec3.y, vec3.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 3.7F);
 
-            if (this.blockInteraction != BlockInteraction.NONE) {
+            if (this.blockInteraction != BlockInteraction.KEEP) {
                 ObjectArrayList<Pair<ItemStack, BlockPos>> list = new ObjectArrayList<>();
                 Collections.shuffle(this.toBlow);
 
@@ -50,9 +50,9 @@ public class Impact extends Explosion {
                     if (!blockstate.isAir()) {
                         BlockPos blockpos1 = blockpos.immutable();
                         this.level.getProfiler().push("explosion_blocks");
-                        if (blockstate.canDropFromExplosion(this.level, blockpos, this) && this.level instanceof ServerLevel) {
+                        if (blockstate.canDropFromExplosion(this.level, blockpos, this)) {
                             BlockEntity blockentity = blockstate.hasBlockEntity() ? this.level.getBlockEntity(blockpos) : null;
-                            LootContext.Builder builder = (new LootContext.Builder((ServerLevel) this.level)).withRandom(this.level.random).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
+                            LootParams.Builder builder = (new LootParams.Builder(serverLevel)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
                             if (this.blockInteraction == BlockInteraction.DESTROY) {
                                 builder.withParameter(LootContextParams.EXPLOSION_RADIUS, this.radius);
                             }
@@ -103,5 +103,9 @@ public class Impact extends Explosion {
             return super.getBlockExplosionResistance(explosion, blockGetter, blockPos, blockState, fluidState).map((f) ->
                     this.source.getBlockExplosionResistance(explosion, blockGetter, blockPos, blockState, fluidState, f) * 0.2F);
         }
+    }
+
+    public static float projectileImpact(Entity entity, BlockPos pos) {
+        return  entity.level().getBlockState(pos).getBlock().defaultDestroyTime() / (float) Math.min(entity.getDeltaMovement().length(), 2.0D);
     }
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "P": {
       "item": "minecraft:lingering_potion"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "brass_armory:carcass_round"
-  }
+  },
+  "show_notification": true
 }

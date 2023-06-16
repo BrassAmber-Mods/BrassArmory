@@ -12,7 +12,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -75,14 +74,14 @@ public class CannonBallEntity extends AbstractBulletEntity {
         if (currentSpeed > peak) {
             float radius = (float)((currentSpeed / this.peakSpeed) * currentSpeed) * 0.95F;
 
-            Impact impact = new Impact(this.level, this, blockHitResult.getLocation(), radius, this.isOnFire(), Explosion.BlockInteraction.DESTROY);
+            Impact impact = new Impact(this.level(), this, blockHitResult.getLocation(), radius, this.isOnFire(), Explosion.BlockInteraction.DESTROY);
 
             BlockPos pos = blockHitResult.getBlockPos();
-            Optional<Float> resistance = impact.makeDamageCalculator(this).getBlockExplosionResistance(impact, this.level, pos, this.level.getBlockState(pos), this.level.getFluidState(pos));
+            Optional<Float> resistance = impact.makeDamageCalculator(this).getBlockExplosionResistance(impact, this.level(), pos, this.level().getBlockState(pos), this.level().getFluidState(pos));
 
             this.setDeltaMovement(this.getDeltaMovement().scale(Math.max(0.8F - (resistance.orElse(1.0F) * 0.2F), 0.1F)));
 
-            if (this.level instanceof ServerLevel serverLevel) {
+            if (this.level() instanceof ServerLevel serverLevel) {
                 impact.explode();
                 impact.finalizeExplosion(true);
                 this.getEntityData().set(DATA_HITS, this.getEntityData().get(DATA_HITS) + 1);
@@ -94,7 +93,7 @@ public class CannonBallEntity extends AbstractBulletEntity {
                 });
             }
 
-            if (!this.level.getBlockState(pos).isAir()) super.onHitBlock(blockHitResult);
+            if (!this.level().getBlockState(pos).isAir()) super.onHitBlock(blockHitResult);
         } else super.onHitBlock(blockHitResult);
     }
 
@@ -107,7 +106,7 @@ public class CannonBallEntity extends AbstractBulletEntity {
         float damage = (float)Mth.clamp(this.getDeltaMovement().length() * this.getBaseDamage(), 0.0D, 2.147483647E9D);
         if (this.isCritArrow()) damage *= 1.5F;
 
-        if (victimEntity.hurt((new IndirectEntityDamageSource("arrow", this, ownerEntity == null ? this : ownerEntity)).setProjectile(), damage)) {
+        if (victimEntity.hurt(this.damageSources().thrown(this, ownerEntity), damage)) {
             if (victimEntity.getType() == EntityType.ENDERMAN) return;
             if (this.isOnFire()) victimEntity.setSecondsOnFire(40);
 

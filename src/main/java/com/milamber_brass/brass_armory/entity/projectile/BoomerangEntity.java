@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
@@ -10,17 +11,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -46,7 +48,7 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
 
     public BoomerangEntity(Level level, LivingEntity livingEntity, ItemStack boomerangStack) {
         super(BrassArmoryEntityTypes.BOOMERANG.get(), livingEntity, level, boomerangStack);
-        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, boomerangStack) > 0) this.setSecondsOnFire(100);
+        if (boomerangStack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) this.setSecondsOnFire(100);
     }
 
     @Override
@@ -66,8 +68,8 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     @Override
     protected void loyaltyTick() {
         BlockPos pos = this.blockPosition();
-        if (this.level.getBlockState(pos).getBlock() == Blocks.COBWEB) {
-            this.level.destroyBlock(pos, true, this.getOwner());
+        if (this.level().getBlockState(pos).getBlock() == Blocks.COBWEB) {
+            this.level().destroyBlock(pos, true, this.getOwner());
         }
 
         if (!this.isNoGravity()) return;
@@ -77,7 +79,7 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
             Vec3 newMovement = this.deltaFirstMovement.scale(Math.max(1D - ((double)this.tickCount / 30D), -1D));
 
             if (this.inGroundTime > 4) this.setNoPhysics(true);
-            if (loyaltyLevel > 0D && this.tickCount >= (this.level.isClientSide ? 31 : 30)) {
+            if (loyaltyLevel > 0D && this.tickCount >= (this.level().isClientSide ? 31 : 30)) {
                 Entity entity = this.getOwner();
                 if (entity != null && entity.isAlive() && (!(entity instanceof ServerPlayer) || !entity.isSpectator())) {
                     Vec3 deltaDifference = entity.getEyePosition().subtract(this.position());
@@ -100,13 +102,13 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
         Entity hitResultEntity = entityHitResult.getEntity();
         LivingEntity owner = (LivingEntity)this.getOwner();
 
-        if (!this.level.isClientSide() && hitResultEntity == owner ) {
+        if (!this.level().isClientSide() && hitResultEntity == owner ) {
             ItemStack boomerangStack = this.getItem();
             float crit;
             if (!this.isNoGravity() || !this.dealtDamage || this.isNoPhysics()) crit = 0;
             else crit = BoomerangItem.getCrit(boomerangStack) + 20F;
 
-            BoomerangItem.setCrit(boomerangStack, crit, this.level.getGameTime());
+            BoomerangItem.setCrit(boomerangStack, crit, this.level().getGameTime());
             this.setItem(boomerangStack);
 
             boolean flag = true;
@@ -124,12 +126,17 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
+    protected ResourceKey<DamageType> onHitDamageType() {
+        return BrassArmoryDamageTypes.BOOMERANG;
+    }
+
+    @Override
     public void playerTouch(Player player) {
         if (this.ownedBy(player) || this.getOwner() == null) {
-            boolean flag = this.tickCount > 40 && (int)this.entityData.get(DATA_LOYALTY_LEVEL) > 0;
-            if (!this.level.isClientSide && ((this.inGround && this.shakeTime <= 0) || flag)) {
+            boolean flag = this.tickCount > 40 && this.entityData.get(DATA_LOYALTY_LEVEL) > 0;
+            if (!this.level().isClientSide && ((this.inGround && this.shakeTime <= 0) || flag)) {
                 if (flag) {
-                    List<BoomerangEntity> entitiesInRange = level.getEntitiesOfClass(BoomerangEntity.class, player.getBoundingBox().inflate(0.2D), Entity -> true);
+                    List<BoomerangEntity> entitiesInRange = level().getEntitiesOfClass(BoomerangEntity.class, player.getBoundingBox().inflate(0.2D), Entity -> true);
                     if (!entitiesInRange.contains(this)) return;
                     this.onHitEntity(new EntityHitResult(player));
                 } else if (this.tryPickup(player)) {
@@ -138,11 +145,6 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
                 }
             }
         }
-    }
-
-    @Override
-    protected String onHitDamageSource() {
-        return "boomerang";
     }
 
     @Override

@@ -37,7 +37,7 @@ public class BouncyBombEntity extends BombEntity {
     }
 
     @Override
-    public boolean isOnGround() {
+    public boolean onGround() {
         return false;
     }
 

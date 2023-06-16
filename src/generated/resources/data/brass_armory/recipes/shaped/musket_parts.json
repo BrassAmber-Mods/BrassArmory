@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "F": {
       "item": "minecraft:flint_and_steel"
@@ -17,5 +18,6 @@
   ],
   "result": {
     "item": "brass_armory:musket_parts"
-  }
+  },
+  "show_notification": true
 }

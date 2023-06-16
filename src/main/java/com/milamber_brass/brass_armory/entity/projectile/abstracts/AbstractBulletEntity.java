@@ -5,6 +5,7 @@ import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -56,9 +57,9 @@ public abstract class AbstractBulletEntity extends AbstractArrow implements Item
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
-        this.lastState = this.level.getBlockState(blockHitResult.getBlockPos());
-        BlockState blockstate = this.level.getBlockState(blockHitResult.getBlockPos());
-        blockstate.onProjectileHit(this.level, blockstate, blockHitResult, this);
+        this.lastState = this.level().getBlockState(blockHitResult.getBlockPos());
+        BlockState blockstate = this.level().getBlockState(blockHitResult.getBlockPos());
+        blockstate.onProjectileHit(this.level(), blockstate, blockHitResult, this);
         Vec3 vec3 = blockHitResult.getLocation().subtract(this.getX(), this.getY(), this.getZ());
         this.setDeltaMovement(vec3);
         Vec3 vec31 = vec3.normalize().scale(0.05D);
@@ -137,7 +138,7 @@ public abstract class AbstractBulletEntity extends AbstractArrow implements Item
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

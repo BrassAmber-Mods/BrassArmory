@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "M": {
       "item": "brass_armory:golden_spiky_ball"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "brass_armory:golden_mace"
-  }
+  },
+  "show_notification": true
 }

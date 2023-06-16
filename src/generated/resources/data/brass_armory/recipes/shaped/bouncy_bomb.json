@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "B": {
       "item": "brass_armory:bomb"
@@ -16,5 +17,6 @@
   "result": {
     "count": 4,
     "item": "brass_armory:bouncy_bomb"
-  }
+  },
+  "show_notification": true
 }

@@ -10,7 +10,6 @@ import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -60,7 +59,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
 
     @Override
     public @NotNull ItemStack getItem() {
-        if (!this.level.isClientSide()) return super.getItem();
+        if (!this.level().isClientSide()) return super.getItem();
         else return Util.make(super.getItem(), stack -> PotionUtils.setPotion(stack, Potions.SLOW_FALLING));
     }
 
@@ -68,16 +67,16 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
     public void tick() {
         super.tick();
         if (CarcassRoundItem.isADragonRound(this.getItem())) {
-            this.level.addParticle(ParticleTypes.DRAGON_BREATH, this.getX(), this.getEyeY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(ParticleTypes.DRAGON_BREATH, this.getX(), this.getEyeY(), this.getZ(), 0.0D, 0.0D, 0.0D);
         }
     }
 
     @Override
     protected void onHit(HitResult onHit) {
         Vec3 pos = onHit.getLocation();
-        Impact impact = new Impact(this.level, this, pos, 1.0F, this.isOnFire(), Explosion.BlockInteraction.DESTROY);
+        Impact impact = new Impact(this.level(), this, pos, 1.0F, this.isOnFire(), Explosion.BlockInteraction.DESTROY);
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             impact.explode();
             impact.finalizeExplosion(true);
             ItemStack stack = this.getItem();
@@ -91,8 +90,8 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
                 this.makeAreaOfEffectCloud(stack, potion, pos);
             }
 
-            if (CarcassRoundItem.isADragonRound(stack)) this.level.levelEvent(2006, this.blockPosition(), -1);
-            else this.level.levelEvent(LEVEL_EVENT_CONSTANT, this.blockPosition(), PotionUtils.getColor(stack));
+            if (CarcassRoundItem.isADragonRound(stack)) this.level().levelEvent(2006, this.blockPosition(), -1);
+            else this.level().levelEvent(LEVEL_EVENT_CONSTANT, this.blockPosition(), PotionUtils.getColor(stack));
 
             if (this.getOwner() instanceof ServerPlayer player) BrassArmoryAdvancements.DRAGON_ROUND.trigger(player);
         }
@@ -103,22 +102,22 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
 
     protected void applyWater(Vec3 diff) {
         AABB boundingBox = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(diff);
-        List<LivingEntity> livingEntities = this.level.getEntitiesOfClass(LivingEntity.class, boundingBox, LivingEntity::isSensitiveToWater);
+        List<LivingEntity> livingEntities = this.level().getEntitiesOfClass(LivingEntity.class, boundingBox, LivingEntity::isSensitiveToWater);
         if (!livingEntities.isEmpty()) {
             for(LivingEntity livingentity : livingEntities) {
                 if (this.distanceToSqr(livingentity) < 16.0D && livingentity.isSensitiveToWater()) {
-                    livingentity.hurt(DamageSource.indirectMagic(this, this.getOwner()), 1.0F);
+                    livingentity.hurt(this.damageSources().indirectMagic(this, this.getOwner()), 1.0F);
                 }
             }
         }
 
-        for(Axolotl axolotl : this.level.getEntitiesOfClass(Axolotl.class, boundingBox)) {
+        for(Axolotl axolotl : this.level().getEntitiesOfClass(Axolotl.class, boundingBox)) {
             axolotl.rehydrate();
         }
     }
 
     protected void applySplash(List<MobEffectInstance> mobEffectInstances, @Nullable Entity victim, Vec3 diff) {
-        List<LivingEntity> livingEntities = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(diff));
+        List<LivingEntity> livingEntities = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(diff));
         if (!livingEntities.isEmpty()) {
             Entity effectSource = this.getEffectSource();
             for(LivingEntity livingentity : livingEntities) {
@@ -147,7 +146,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
     }
 
     protected void makeAreaOfEffectCloud(ItemStack itemStack, Potion potion, Vec3 pos) {
-        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level, pos.x, pos.y, pos.z);
+        AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level(), pos.x, pos.y, pos.z);
         if (this.getOwner() instanceof LivingEntity living) areaeffectcloud.setOwner(living);
 
         areaeffectcloud.setRadius(3.0F);
@@ -173,7 +172,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
             }
         }
 
-        this.level.addFreshEntity(areaeffectcloud);
+        this.level().addFreshEntity(areaeffectcloud);
     }
 
     @Override

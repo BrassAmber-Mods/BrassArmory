@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.recipe;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmoryRecipes;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -22,13 +23,13 @@ import java.util.List;
 public class CarcassRoundRecipe extends CustomRecipe {
     private List<Recipe<?>> CARCASS_ROUND_RECIPES = new ArrayList<>();
 
-    public CarcassRoundRecipe(ResourceLocation id) {
-        super(id);
+    public CarcassRoundRecipe(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     @Override
     public boolean matches(CraftingContainer inv, Level level) {
-        this.CARCASS_ROUND_RECIPES = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getResultItem().is(BrassArmoryItems.CARCASS_ROUND.get())).toList();
+        this.CARCASS_ROUND_RECIPES = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getResultItem(level.registryAccess()).is(BrassArmoryItems.CARCASS_ROUND.get())).toList();
 
         for (Recipe<?> recipe : this.CARCASS_ROUND_RECIPES) {
             if (recipe instanceof ShapedRecipe shapedRecipe) {
@@ -111,7 +112,7 @@ public class CarcassRoundRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
         for (Recipe<?> recipe : this.CARCASS_ROUND_RECIPES) {
             if (recipe instanceof ShapedRecipe shapedRecipe) {
                 for (int i = 0; i <= inv.getWidth() - shapedRecipe.getWidth(); ++i) {
@@ -119,7 +120,7 @@ public class CarcassRoundRecipe extends CustomRecipe {
                         for (int b = 0; b < 2; b++) {
                             ItemStack stack = matches(inv, shapedRecipe, i, j, b == 0);
                             if (!stack.isEmpty()) {
-                                ItemStack result = shapedRecipe.getResultItem().copy();
+                                ItemStack result = shapedRecipe.getResultItem(access).copy();
 
                                 if (stack.is(Items.DRAGON_BREATH)) result.getOrCreateTag().putBoolean("BADragonRound", true);
                                 else PotionUtils.setPotion(result, PotionUtils.getPotion(stack));
@@ -132,7 +133,7 @@ public class CarcassRoundRecipe extends CustomRecipe {
             } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
                 ItemStack stack = matches(inv, shapelessRecipe);
                 if (!stack.isEmpty()) {
-                    ItemStack result = shapelessRecipe.getResultItem().copy();
+                    ItemStack result = shapelessRecipe.getResultItem(access).copy();
 
                     if (stack.is(Items.DRAGON_BREATH)) result.getOrCreateTag().putBoolean("BADragonRound", true);
                     else PotionUtils.setPotion(result, PotionUtils.getPotion(stack));

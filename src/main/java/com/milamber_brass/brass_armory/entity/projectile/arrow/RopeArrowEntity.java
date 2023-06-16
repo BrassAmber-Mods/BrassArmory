@@ -50,8 +50,8 @@ public class RopeArrowEntity extends AbstractSpecialArrowEntity {
             if (this.ticksSinceRope > 6) {
                 BlockPos newPos = currentRopePos.relative(Direction.DOWN, 1);
                 int maxRopeLength = 24;
-                if (this.level.getBlockState(newPos).isAir() && this.totalRope < maxRopeLength) {
-                    this.level.setBlock(newPos, BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockFaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), 2);
+                if (this.level().getBlockState(newPos).isAir() && this.totalRope < maxRopeLength) {
+                    this.level().setBlock(newPos, BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockFaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), 2);
                     this.currentRopePos = newPos;
                     this.totalRope++;
                     this.ticksSinceRope = 0;
@@ -71,7 +71,7 @@ public class RopeArrowEntity extends AbstractSpecialArrowEntity {
             this.setDeltaMovement(BombEntity.bounce(this.getDeltaMovement(), direction.getAxis(), 0.5D).scale(0.5D));
         } else {
             super.onHitBlock(result);
-            if (!direction.equals(Direction.UP) && RopeBlock.canAttachTo(this.level, result.getBlockPos(), direction)) {
+            if (!direction.equals(Direction.UP) && RopeBlock.canAttachTo(this.level(), result.getBlockPos(), direction)) {
                 this.placeRopes(result);
                 this.setInvisible(true);
             }
@@ -83,12 +83,12 @@ public class RopeArrowEntity extends AbstractSpecialArrowEntity {
         if (!this.hitBlockFaceDirection.equals(Direction.DOWN) && !this.hitBlockFaceDirection.equals(Direction.UP)) {
             BlockPos hitPos = result.getBlockPos();
             this.currentRopePos = hitPos.relative(this.hitBlockFaceDirection);
-            BlockState hitBlockState = this.level.getBlockState(hitPos);
+            BlockState hitBlockState = this.level().getBlockState(hitPos);
             // Check if the block that the arrow hit can hold the Rope.
-            if (hitBlockState.isFaceSturdy(this.level, this.currentRopePos, this.hitBlockFaceDirection)) {
+            if (hitBlockState.isFaceSturdy(this.level(), this.currentRopePos, this.hitBlockFaceDirection)) {
                 // Check if there's space to place a Rope.
-                if (this.level.getBlockState(this.currentRopePos).isAir()) {
-                    this.level.setBlock(this.currentRopePos, BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockFaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), 2);
+                if (this.level().getBlockState(this.currentRopePos).isAir()) {
+                    this.level().setBlock(this.currentRopePos, BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK.get().defaultBlockState().setValue(RopeBlock.FACING, this.hitBlockFaceDirection).setValue(RopeBlock.HAS_ARROW, this.totalRope == 0), 2);
                     this.totalRope++;
                     this.isPlacingRope = true;
                     // Prevent the arrow from being picked up while the ropes are being placed.

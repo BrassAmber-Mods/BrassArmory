@@ -51,9 +51,9 @@ public class WarpCrystalItem extends Item {
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity living, int useDurationLeft) {
-        if (living.level.isClientSide) {
-            living.level.addParticle(ParticleTypes.PORTAL, living.getRandomX(0.5D), living.getRandomY() - 0.25D, living.getRandomZ(0.5D), (living.level.random.nextDouble() - 0.5D) * 2.0D, -living.level.random.nextDouble(), (living.level.random.nextDouble() - 0.5D) * 2.0D);
+    public void onUseTick(Level level, LivingEntity living, ItemStack stack, int useDurationLeft) {
+        if (level.isClientSide) {
+            level.addParticle(ParticleTypes.PORTAL, living.getRandomX(0.5D), living.getRandomY() - 0.25D, living.getRandomZ(0.5D), (level.random.nextDouble() - 0.5D) * 2.0D, -level.random.nextDouble(), (level.random.nextDouble() - 0.5D) * 2.0D);
         }
 
         if (living instanceof Player player) {
@@ -61,7 +61,7 @@ public class WarpCrystalItem extends Item {
                 int usedTicks = this.getUseDuration(stack) - useDurationLeft;
                 float slow = iEffectCapability.getSlow();
 
-                if (living.level.isClientSide) {
+                if (level.isClientSide) {
                     Minecraft mc = Minecraft.getInstance();
 
                     if (mc.getCameraEntity() == living) {
@@ -69,13 +69,13 @@ public class WarpCrystalItem extends Item {
                         double x = living.getX(), y = living.getY(), z = living.getZ();
 
                         if (beatTick == 10) {
-                            living.level.playLocalSound(x, y, z, BrassArmorySounds.HEART_BEAT_1.get(), SoundSource.PLAYERS, 0.05F + slow, 0.7F / 3.0F * slow - slow, false);
+                            level.playLocalSound(x, y, z, BrassArmorySounds.HEART_BEAT_1.get(), SoundSource.PLAYERS, 0.05F + slow, 0.7F / 3.0F * slow - slow, false);
                         } else if (beatTick == 15) {
-                            living.level.playLocalSound(x, y, z, BrassArmorySounds.HEART_BEAT_2.get(), SoundSource.PLAYERS, 0.05F + slow, 0.8F / 3.0F * slow - slow, false);
+                            level.playLocalSound(x, y, z, BrassArmorySounds.HEART_BEAT_2.get(), SoundSource.PLAYERS, 0.05F + slow, 0.8F / 3.0F * slow - slow, false);
                         }
 
-                        if (usedTicks >= WARP_TICKS && useDurationLeft % 20 == 0 && living.level.random.nextInt(2) == 0) {
-                            living.level.playLocalSound(x, y, z, BrassArmorySounds.CRYSTAL_WHISPER.get(), SoundSource.PLAYERS, 0.2F, living.getVoicePitch() * 0.02F, false);
+                        if (usedTicks >= WARP_TICKS && useDurationLeft % 20 == 0 && level.random.nextInt(2) == 0) {
+                            level.playLocalSound(x, y, z, BrassArmorySounds.CRYSTAL_WHISPER.get(), SoundSource.PLAYERS, 0.2F, living.getVoicePitch() * 0.02F, false);
                         }
                     }
                 } else {
@@ -96,8 +96,8 @@ public class WarpCrystalItem extends Item {
             for (int i = this.maxDistance; i > 0; i -= Mth.clamp(i / 25, 1, 3)) {
                 farPoint = living.getLookAngle().scale(i).add(living.position());
                 if ((farPoint.y < (double)level.getMaxBuildHeight() || farPoint.y < Math.sqrt(farY - (double)level.getMaxBuildHeight()) + (double)level.getMaxBuildHeight()) && farPoint.y > (double)level.getMinBuildHeight()) {
-                    for (BlockPos blockpos : BlockPos.betweenClosed((new BlockPos(farPoint)).offset(-1F, 0, -1F), (new BlockPos(farPoint)).offset(1F, 0, 1F))) {
-                        if (!level.getBlockState(blockpos).getMaterial().blocksMotion() && !level.getBlockState(blockpos.above()).getMaterial().blocksMotion()) {
+                    for (BlockPos blockpos : BlockPos.betweenClosed(BlockPos.containing(farPoint).offset(-1, 0, -1), BlockPos.containing(farPoint).offset(1, 0, 1))) {
+                        if (!level.getBlockState(blockpos).blocksMotion() && !level.getBlockState(blockpos.above()).blocksMotion()) {
                             Vec3 vec = living.getEyePosition().add(living.getLookAngle());
                             for (int l2 = 0; l2 < 8; ++l2) {
                                 level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, stack), vec.x, vec.y, vec.z, level.random.nextGaussian() * 0.15D, level.random.nextDouble() * 0.2D, level.random.nextGaussian() * 0.15D);

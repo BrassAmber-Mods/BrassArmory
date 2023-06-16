@@ -19,7 +19,6 @@ public class GunBehaviours {
 
     public static void registerAmmoBehavior(ResourceLocation resourceLocation, AbstractAmmoBehaviour ammoBehaviour) {
         AMMO_BEHAVIOURS.put(resourceLocation, ammoBehaviour);
-
     }
 
     @Nonnull

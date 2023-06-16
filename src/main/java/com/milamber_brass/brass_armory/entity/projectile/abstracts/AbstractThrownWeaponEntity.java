@@ -1,16 +1,19 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -97,7 +100,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
                 Vec3 deltaDifference = entity.getEyePosition().subtract(this.position());
                 this.setDeltaMovement(this.getDeltaMovement().scale(Math.max(0D, 1D - loyaltyLevel / 10D)).add(deltaDifference.normalize().scale(loyaltyLevel / 10D)));
             } else {
-                if (!this.level.isClientSide && this.pickup == Pickup.ALLOWED) this.spawnAtLocation(this.getPickupItem(), 0.1F);
+                if (!this.level().isClientSide && this.pickup == Pickup.ALLOWED) this.spawnAtLocation(this.getPickupItem(), 0.1F);
                 this.discard();
             }
         }
@@ -138,7 +141,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         if (this.isCritArrow()) damage *= 1.5F;
         if (this.getItem().getItem() instanceof AbstractThrownWeaponItem item) damage *= this.getDeltaMovement().length() / item.getThrowMultiplier();
 
-        if (victimEntity.hurt((new IndirectEntityDamageSource("brass_armory." + this.onHitDamageSource(), this, ownerEntity == null ? this : ownerEntity)).setProjectile(), damage)) {
+        if (victimEntity.hurt(ArmoryUtil.getIndirectEntityDamageSource(this.level(), this.onHitDamageType(), this, this.getOwner()), damage)) {
             if (victimEntity.getType() == EntityType.ENDERMAN) return;
             if (this.isOnFire()) victimEntity.setSecondsOnFire(40);
 
@@ -157,7 +160,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         this.playSound(this.onHitSoundEvent(), 1.0F, 1.0F);
     }
 
-    protected abstract String onHitDamageSource();
+    protected abstract ResourceKey<DamageType> onHitDamageType();
 
     protected Vec3 onHitDeltaMovement() {
         return this.getDeltaMovement().multiply(0.95D, 0.95D, 0.95D);
@@ -245,9 +248,8 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         this.setPower(compoundTag.getFloat("ThrownWeaponPower"));
     }
 
-    @NotNull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

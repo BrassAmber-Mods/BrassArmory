@@ -19,7 +19,7 @@ mixin {
     config 'brass_armory.mixin.json'
 }
 
-version = "1.19.2-1.0.3"
+version = "1.20.1-1.0.3"
 group = "com.milamber_brass.brass_armory"
 archivesBaseName = "brass_armory"
 
@@ -27,7 +27,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.19.2'
+    mappings channel: "official", version: "1.20"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -74,8 +74,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven {
-        name 'progwm\'s Maven'
-        url 'https://dvs1.progwml6.com/files/maven'
+        name 'Jared\'s Maven' // JEI
+        url 'https://maven.blamejared.com/'
     }
     maven {
         name 'Curseforge Maven'
@@ -87,12 +87,12 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
+    minecraft 'net.minecraftforge:forge:1.20.1-47.0.1'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    runtimeOnly fg.deobf('curse.maven:jade-324717:4318618')
+    runtimeOnly fg.deobf('curse.maven:jade-324717:4573193')
 
     //compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.195:api")
-    implementation fg.deobf("mezz.jei:jei-1.19.2-forge:11.5.0.297")
+    compileOnly fg.deobf("mezz.jei:jei-1.20-forge:14.0.0.11")
 }
 
 jar {

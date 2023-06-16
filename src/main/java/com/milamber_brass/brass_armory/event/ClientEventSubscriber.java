@@ -12,7 +12,7 @@ import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.util.Mth;
@@ -21,6 +21,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,8 +35,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
@@ -58,7 +57,7 @@ public class ClientEventSubscriber {
                     HumanoidArm humanoidarm = mainHandFlag ? player.getMainArm() : player.getMainArm().getOpposite();
                     boolean rightHandFlag = humanoidarm == HumanoidArm.RIGHT;
                     float k = rightHandFlag ? 1F : -1F;
-                    TransformType transformType = rightHandFlag ? TransformType.FIRST_PERSON_RIGHT_HAND : TransformType.FIRST_PERSON_LEFT_HAND;
+                    ItemDisplayContext transformType = rightHandFlag ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
                     PoseStack poseStack = event.getPoseStack();
                     ItemStack itemStack = event.getItemStack();
                     if (doubleMace) poseStack.pushPose();
@@ -74,15 +73,15 @@ public class ClientEventSubscriber {
                         double sineWave = Math.sin(f8 * 75D) * 0.004D;
 
                         poseStack.translate(0, sineWave + m, m);
-                        poseStack.mulPose(Vector3f.XP.rotationDegrees(-13.935F + m * 200F));
-                        poseStack.mulPose(Vector3f.YN.rotationDegrees(k * 9.7F));
-                        poseStack.mulPose(Vector3f.ZP.rotationDegrees(k * -9.785F));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(-13.935F + m * 200F));
+                        poseStack.mulPose(Axis.YN.rotationDegrees(k * 9.7F));
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(k * -9.785F));
                         poseStack.scale(1 + (float) sineWave, 1 + (float) sineWave, 1 + (float) sineWave);
                     } else if (itemStack.getItem() instanceof LongBowItem) {
                         poseStack.translate(k * -0.2785682F, 0.18344387F, 0.15731531F);
-                        poseStack.mulPose(Vector3f.XP.rotationDegrees(-13.935F));
-                        poseStack.mulPose(Vector3f.YP.rotationDegrees(k * 35.3F));
-                        poseStack.mulPose(Vector3f.ZP.rotationDegrees(k * -9.785F));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(-13.935F));
+                        poseStack.mulPose(Axis.YP.rotationDegrees(k * 35.3F));
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(k * -9.785F));
                         float f12 = f9 / 30.0F;
                         f12 = (f12 * f12 + f12 * 2.0F) / 3.0F;
                         if (f12 > 1.0F) f12 = 1.0F;
@@ -96,12 +95,12 @@ public class ClientEventSubscriber {
 
                         poseStack.translate(f12 * 0.0F, f12 * 0.0F, f12 * 0.04F);
                         poseStack.scale(1.0F, 1.0F, 1.0F + f12 * 0.2F);
-                        poseStack.mulPose(Vector3f.YN.rotationDegrees(k * 45.0F));
+                        poseStack.mulPose(Axis.YN.rotationDegrees(k * 45.0F));
                     } else {
                         poseStack.translate(k * -0.5F, 0.7F, 0.1F);
-                        poseStack.mulPose(Vector3f.XP.rotationDegrees(-55.0F));
-                        poseStack.mulPose(Vector3f.YP.rotationDegrees(k * 35.3F));
-                        poseStack.mulPose(Vector3f.ZP.rotationDegrees(k * -9.785F));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(-55.0F));
+                        poseStack.mulPose(Axis.YP.rotationDegrees(k * 35.3F));
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(k * -9.785F));
                         float f11 = f9 / (eventItem.getItem() instanceof AbstractThrownWeaponItem item ? item.chargeDuration : 10.0F);
                         if (f11 > 1.0F) f11 = 1.0F;
 
@@ -114,7 +113,7 @@ public class ClientEventSubscriber {
 
                         poseStack.translate(0.0D, 0.0D, f11 * 0.2F);
                         poseStack.scale(1.0F, 1.0F, 1.0F + f11 * 0.2F);
-                        poseStack.mulPose(Vector3f.YN.rotationDegrees(k * 45.0F));
+                        poseStack.mulPose(Axis.YN.rotationDegrees(k * 45.0F));
                     }
 
 
@@ -132,7 +131,7 @@ public class ClientEventSubscriber {
                 poseStack.translate(0F, 0F, -1F - f1 / 4F);
 
                 Lighting.setupFor3DItems();
-                mc.getEntityRenderDispatcher().getItemInHandRenderer().renderItem(player, eventItem.copy(), TransformType.FIXED, rightHandFlag, poseStack, event.getMultiBufferSource(), 15728880);
+                mc.getEntityRenderDispatcher().getItemInHandRenderer().renderItem(player, eventItem.copy(), ItemDisplayContext.FIXED, rightHandFlag, poseStack, event.getMultiBufferSource(), 15728880);
             }
         }
     }
@@ -194,7 +193,7 @@ public class ClientEventSubscriber {
     @SubscribeEvent
     public static void onEntityJoinWorldEvent(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof CannonEntity cannonEntity && cannonEntity.level.isClientSide) {
+        if (entity instanceof CannonEntity cannonEntity && cannonEntity.level().isClientSide) {
             Minecraft.getInstance().getSoundManager().play(new CannonSoundInstance(cannonEntity));
         }
     }

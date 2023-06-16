@@ -16,11 +16,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -87,12 +89,12 @@ public class CannonEntity extends Entity implements iGun {
 
     @Override
     public void onOpen(Player owner, CompoundTag tag) {
-        owner.level.playSound(null, owner, BrassArmorySounds.CANNON_OPEN.get(), SoundSource.PLAYERS, 1.35F, this.level.getRandom().nextFloat() * 0.35F + 0.235F);
+        owner.level().playSound(null, owner, BrassArmorySounds.CANNON_OPEN.get(), SoundSource.PLAYERS, 1.35F, this.level().getRandom().nextFloat() * 0.35F + 0.235F);
     }
 
     @Override
     public void onLoad(Player owner, CompoundTag tag) {
-        owner.level.playSound(null, owner, BrassArmorySounds.CANNON_CLOSE.get(), SoundSource.PLAYERS, 1.5F, this.level.getRandom().nextFloat() * 0.5F + 0.25F);
+        owner.level().playSound(null, owner, BrassArmorySounds.CANNON_CLOSE.get(), SoundSource.PLAYERS, 1.5F, this.level().getRandom().nextFloat() * 0.5F + 0.25F);
         this.reLoad(tag);
     }
 
@@ -218,8 +220,8 @@ public class CannonEntity extends Entity implements iGun {
 
     @Override
     public void tick() {
-        if (!this.level.getBlockState(this.blockPosition().below()).isFaceSturdy(this.level, this.blockPosition().below(), Direction.UP)) {
-            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+        if (!this.level().getBlockState(this.blockPosition().below()).isFaceSturdy(this.level(), this.blockPosition().below(), Direction.UP)) {
+            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
                 this.dropItems();
             }
             this.discard();
@@ -229,7 +231,8 @@ public class CannonEntity extends Entity implements iGun {
         if (this.getDamage() > 0.0F) this.setDamage(this.getDamage() - 2.0F);
         if (this.getHurtTime() > 0) this.setHurtTime(this.getHurtTime() - 1);
 
-        if (this.getControllingPassenger() instanceof LivingEntity living) {
+        LivingEntity living = this.getControllingPassenger();
+        if (living != null) {
             float yRot = living.getYRot();
 
             this.setYRot(yRot);
@@ -255,14 +258,14 @@ public class CannonEntity extends Entity implements iGun {
         int moveTicks = this.getMoveTicks();
         if (moveTicks > 0) {
             this.setMoveTicks(moveTicks - 1);
-            if (moveTicks >= 35) this.level.playSound(null, this, BrassArmorySounds.CANNON_MOVE.get(), SoundSource.NEUTRAL, Float.MIN_VALUE, Float.MIN_VALUE);
+            if (moveTicks >= 35) this.level().playSound(null, this, BrassArmorySounds.CANNON_MOVE.get(), SoundSource.NEUTRAL, Float.MIN_VALUE, Float.MIN_VALUE);
         }
 
         int fuse = this.getEntityData().get(DATA_FUSE);
         if (fuse > 0) {
             CompoundTag compoundTag = this.entityData.get(DATA_TAG);
             if (compoundTag.contains(uuid)) {
-                Player player = this.level.getPlayerByUUID(compoundTag.getUUID(uuid));
+                Player player = this.level().getPlayerByUUID(compoundTag.getUUID(uuid));
                 if (player == null) {
                     this.entityData.set(DATA_FUSE, 0);
                     return;
@@ -273,14 +276,14 @@ public class CannonEntity extends Entity implements iGun {
                         GunBehaviours.getPowderBehaviour(this.getPowder()).ifPresent(powderBehaviour -> {
                             ItemStack ammo = this.getAmmo();
                             GunBehaviours.getAmmoBehavior(ammo).ifPresent(ammoBehaviour -> {
-                                if (ammoBehaviour.onShoot(level, player, this, ammo, powderBehaviour, this) && !this.level.isClientSide) {
+                                if (ammoBehaviour.onShoot(this.level(), player, this, ammo, powderBehaviour, this) && !this.level().isClientSide) {
                                     this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> {
                                         ArmoryUtil.clearStack(tag, GunContainer.gunAmmo);
                                         ArmoryUtil.clearStack(tag, GunContainer.gunPowder);
                                     }));
                                     if (player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.FIRE_CANNON.trigger(serverPlayer);
                                 }
-                                this.playSound(BrassArmorySounds.CANNON_SHOOT.get(), 1.5F, this.level.getRandom().nextFloat() * 0.5F + 1.25F);
+                                this.playSound(BrassArmorySounds.CANNON_SHOOT.get(), 1.5F, this.level().getRandom().nextFloat() * 0.5F + 1.25F);
                             });
                             if (this.getControllingPassenger() instanceof Player plyr)
                                 EffectCapabilityHandler.setShakePower(plyr, 1.75D);
@@ -290,7 +293,7 @@ public class CannonEntity extends Entity implements iGun {
                         return;
                     }
                 } else
-                    this.playSound(BrassArmorySounds.CANNON_FUSE.get(), 0.03F, this.level.getRandom().nextFloat() * 0.6F + 1F);
+                    this.playSound(BrassArmorySounds.CANNON_FUSE.get(), 0.03F, this.level().getRandom().nextFloat() * 0.6F + 1F);
                 this.getEntityData().set(DATA_FUSE, fuse + 1);
             }
         }
@@ -305,18 +308,9 @@ public class CannonEntity extends Entity implements iGun {
         return false;
     }
 
-    @Override
-    public void positionRider(Entity entity) {
-        /*if (entity instanceof LivingEntity living && this.hasPassenger(living)) {
-            living.yBodyRot = living.getYRot();
-            living.yBodyRotO = living.yRotO;
-        }*/
-
-        super.positionRider(entity);
-    }
 
     @Override
-    public void animateHurt() {
+    public void animateHurt(float v) {
         this.setHurtDir(-this.getHurtDir());
         this.setHurtTime(10);
         this.setDamage(this.getDamage() * 11.0F);
@@ -339,8 +333,8 @@ public class CannonEntity extends Entity implements iGun {
 
     @Nullable
     @Override
-    public Entity getControllingPassenger() {
-        return this.getFirstPassenger();
+    public LivingEntity getControllingPassenger() {
+        return this.getFirstPassenger() instanceof LivingEntity living ? living : null;
     }
 
     @Override
@@ -351,11 +345,11 @@ public class CannonEntity extends Entity implements iGun {
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand hand) {
         if (player.isSecondaryUseActive()) {
-            if (this.entityData.get(DATA_FUSE) == 0 && !this.level.isClientSide) this.openInventory((ServerPlayer) player);
+            if (this.entityData.get(DATA_FUSE) == 0 && !this.level().isClientSide) this.openInventory((ServerPlayer) player);
             return InteractionResult.SUCCESS;
         } else if (ArmoryUtil.isFuseLighter(player.getItemInHand(hand))) {
             if (this.entityData.get(DATA_FUSE) == 0) {
-                if (!this.level.isClientSide) {
+                if (!this.level().isClientSide) {
                     this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.putUUID(uuid, player.getUUID())));
                     this.getEntityData().set(DATA_FUSE, 1);
 
@@ -381,7 +375,7 @@ public class CannonEntity extends Entity implements iGun {
     public boolean hurt(DamageSource source, float damage) {
         if (this.isInvulnerableTo(source)) {
             return false;
-        } else if (!this.level.isClientSide && !this.isRemoved()) {
+        } else if (!this.level().isClientSide && !this.isRemoved()) {
 
             if (source.getDirectEntity() instanceof Player p && ArmoryUtil.isFuseLighter(p.getMainHandItem()) && this.getFuse() == 0) {
                 this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.putUUID(uuid, p.getUUID())));
@@ -398,19 +392,19 @@ public class CannonEntity extends Entity implements iGun {
             this.gameEvent(GameEvent.ENTITY_DAMAGE, culprit);
 
             damage = damage * 10.0F * (culprit instanceof LivingEntity ? 3.0F : 1.0F);
-            damage *= (source.isExplosion() ? 0.25F : 1.0F);
+            damage *= (source.is(DamageTypeTags.IS_EXPLOSION) ? 0.25F : 1.0F);
 
-            boolean flag = culprit instanceof Player player && player.getAbilities().instabuild && !source.isExplosion() && !player.isSecondaryUseActive();
+            boolean flag = culprit instanceof Player player && player.getAbilities().instabuild && !source.is(DamageTypeTags.IS_EXPLOSION) && !player.isSecondaryUseActive();
             if (flag || this.getDamage() + damage > this.getMaxHealth()) {
-                if (!flag && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+                if (!flag && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
                     this.dropItems();
                 }
                 this.discard();
             } else if (culprit instanceof Player player && player.isSecondaryUseActive()) {
                 BlockPos relativePos = this.blockPosition().relative(player.getDirection());
-                if (canSurvive(this.level, relativePos.below())) {
+                if (canSurvive(this.level(), relativePos.below())) {
                     this.setPos(Vec3.atBottomCenterOf(relativePos));
-                    this.level.removeBlock(relativePos, false);
+                    this.level().removeBlock(relativePos, false);
                     if (this.getDamage() < this.getMaxHealth() * 0.5F) this.setDamage(this.getMaxHealth() * 0.5F);
                 } else this.setDamage(this.getDamage() + damage);
             } else this.setDamage(this.getDamage() + damage);
@@ -425,14 +419,14 @@ public class CannonEntity extends Entity implements iGun {
             BlockPos blockpos1 = blockPos.above();
             BlockState blockstate1 = level.getBlockState(blockpos1);
 
-            if (!blockstate1.getMaterial().isReplaceable()) return false;
+            if (!blockstate1.canBeReplaced()) return false;
             else return level.isUnobstructed(null, Shapes.block().move(blockpos1.getX(), blockpos1.getY(), blockpos1.getZ()));
         }
     }
 
     @Override
     public boolean isInvulnerableTo(DamageSource damageSource) {
-        return damageSource.isFire() || super.isInvulnerableTo(damageSource);
+        return damageSource.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(damageSource);
     }
 
     protected float getMaxHealth() {
@@ -468,7 +462,7 @@ public class CannonEntity extends Entity implements iGun {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

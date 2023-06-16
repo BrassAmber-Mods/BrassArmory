@@ -66,7 +66,7 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     }
 
     public boolean isExtended(LivingEntity living, ItemStack stack) {
-        List<Entity> flails = living.level.getEntities(living, living.getBoundingBox().inflate(20), entity -> entity instanceof FlailHeadEntity);
+        List<Entity> flails = living.level().getEntities(living, living.getBoundingBox().inflate(20), entity -> entity instanceof FlailHeadEntity);
         for (Entity entity : flails) {
             if (entity instanceof FlailHeadEntity flailHead && flailHead.getOwner() == living && flailHead.getItem().equals(stack, true)) return true;
         }

@@ -44,7 +44,7 @@ public class EffectCapabilityHandler implements IEffectCapability {
     @Override
     public void setSlow(float slow) {
         this.slow = slow;
-        if (!this.player.level.isClientSide) this.sendUpdatePacket();
+        if (!this.player.level().isClientSide) this.sendUpdatePacket();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class EffectCapabilityHandler implements IEffectCapability {
 
     @Override
     public void tick() {
-        if (!this.player.level.isClientSide) {
+        if (!this.player.level().isClientSide) {
             if (this.shake > 0.0F) this.reduceShake(this.shake * 0.1D);
             if (this.slow > 0.0F) this.setSlow(Math.max(this.slow - 0.005F, 0.0F));
         }

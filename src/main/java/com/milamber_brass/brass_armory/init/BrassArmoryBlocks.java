@@ -4,7 +4,6 @@ import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.block.RopeBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -21,7 +20,7 @@ public class BrassArmoryBlocks {
 
     //------------------------------------MISC----------------------------------------------------------
 
-    public static final RegistryObject<RopeBlock> EXPLORERS_ROPE_BLOCK = REGISTRY.register("explorers_rope", () -> new RopeBlock(Block.Properties.of(Material.DECORATION).strength(0.4F).sound(SoundType.WOOL).noOcclusion().noCollission()));
+    public static final RegistryObject<RopeBlock> EXPLORERS_ROPE_BLOCK = REGISTRY.register("explorers_rope", () -> new RopeBlock(Block.Properties.of().strength(0.4F).sound(SoundType.WOOL).noOcclusion().noCollission()));
 
     // Attach event handler for registry.
     public static void register(IEventBus eventBus) {

@@ -17,17 +17,15 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.TierSortingRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static net.minecraft.world.phys.HitResult.Type.BLOCK;
 
 @ParametersAreNonnullByDefault
 public class BulletEntity extends AbstractBulletEntity {
@@ -67,18 +65,18 @@ public class BulletEntity extends AbstractBulletEntity {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         BlockPos pos = blockHitResult.getBlockPos();
-        BlockState blockState = this.level.getBlockState(pos);
+        BlockState blockState = this.level().getBlockState(pos);
 
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.getMaterial().equals(Material.GLASS) && TierSortingRegistry.isCorrectTierForDrops(Tiers.IRON, blockState)) {
-            this.level.destroyBlock(pos, true, this.getOwner());
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierSortingRegistry.isCorrectTierForDrops(Tiers.IRON, blockState)) {
+            this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.8D));
         } else {
-            double hardness = Mth.clamp(blockState.getDestroySpeed(this.level, pos) * 0.15D, 0.0D, 1.0D) * 0.95D;
+            double hardness = Mth.clamp(blockState.getDestroySpeed(this.level(), pos) * 0.15D, 0.0D, 1.0D) * 0.95D;
 
             if (this.getDeltaMovement().length() > (0.95D - hardness)) {
                 this.setDeltaMovement(ricochet(this.getDeltaMovement(), blockHitResult.getDirection().getAxis(), this.random, hardness));
-                HitResult newHitResult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-                if (newHitResult.getType() == BLOCK) this.onHit(newHitResult);
+                HitResult newHitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+                if (newHitResult.getType() == HitResult.Type.BLOCK) this.onHit(newHitResult);
             } else super.onHitBlock(blockHitResult);
         }
     }

@@ -9,14 +9,12 @@ import com.milamber_brass.brass_armory.item.*;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.TorchBlock;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -93,17 +91,6 @@ public class BrassArmoryItems {
                         @Override
                         public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag tooltipFlag) {
                             components.add(Component.translatable(ArmoryUtil.loadStack(stack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance()).getDescriptionId()).withStyle(ChatFormatting.GRAY));
-                        }
-
-                        @Override
-                        public void fillItemCategory(CreativeModeTab creativeModeTab, NonNullList<ItemStack> items) {
-                            if (this.allowedIn (creativeModeTab)) {
-                                for (Item item : ForgeRegistries.ITEMS.getValues()) {
-                                    if (item instanceof StandingAndWallBlockItem torchItem && torchItem.getBlock() instanceof TorchBlock) {
-                                        items.add(Util.make(this.getDefaultInstance(), stack -> ArmoryUtil.addStack(stack.getOrCreateTag(), torchItem.getDefaultInstance(), "BATorch")));
-                                    }
-                                }
-                            }
                         }
                     });
 
@@ -424,7 +411,7 @@ public class BrassArmoryItems {
 
     @NotNull
     public static Item.Properties defaultBuilder() {
-        return new Item.Properties().tab(BrassArmoryItemGroups.BRASS_ARMORY);
+        return new Item.Properties();
     }
     
     // Attach event handler for registry.

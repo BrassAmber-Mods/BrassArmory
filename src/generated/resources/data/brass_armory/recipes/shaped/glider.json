@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "H": {
       "item": "minecraft:tripwire_hook"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "brass_armory:glider"
-  }
+  },
+  "show_notification": true
 }

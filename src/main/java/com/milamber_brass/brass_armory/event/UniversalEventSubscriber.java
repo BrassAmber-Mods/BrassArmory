@@ -46,13 +46,13 @@ public class UniversalEventSubscriber {
         Player player = event.getEntity();
         for (ItemStack stack : player.getInventory().items) {
             if (stack.getItem() instanceof BombItem bombItem && BombItem.getFuseLit(stack)) {
-                BombEntity bomb = bombItem.newBombFunction.apply(player.level, player, player.getMainArm());
+                BombEntity bomb = bombItem.newBombFunction.apply(player.level(), player, player.getMainArm());
                 bomb.setFuse(BombItem.getFuseLength(stack));
                 bomb.setItem(stack);
                 BombItem.setFuseLength(stack, 60);
                 BombItem.setFuseLit(stack, false);
                 if (!(player.getAbilities().instabuild)) stack.shrink(1);
-                player.level.addFreshEntity(bomb);
+                player.level().addFreshEntity(bomb);
             }
         }
     }
@@ -85,10 +85,10 @@ public class UniversalEventSubscriber {
     public static void onPotionAddedEvent(MobEffectEvent.Added event) {
         LivingEntity living = event.getEntity();
 
-        if (!living.level.isClientSide) {
+        if (!living.level().isClientSide) {
             MobEffect effect = event.getEffectInstance().getEffect();
             if (effect.equals(BrassArmoryEffects.BLEEDING.get()) || effect.equals(BrassArmoryEffects.CONFUSION.get())) {
-                ((ServerLevel)living.level).getChunkSource().chunkMap.broadcast(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getEffectInstance()));
+                ((ServerLevel)living.level()).getChunkSource().chunkMap.broadcast(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getEffectInstance()));
             }
         }
     }
@@ -102,7 +102,7 @@ public class UniversalEventSubscriber {
 
     @SubscribeEvent
     public static void onLivingUpdateEvent(LivingEvent.LivingTickEvent event) {
-        if (event.getEntity() instanceof Player player && !player.level.isClientSide() && !player.isDeadOrDying()) {
+        if (event.getEntity() instanceof Player player && !player.level().isClientSide() && !player.isDeadOrDying()) {
             player.getCapability(BrassArmoryCapabilities.QUIVER_CAPABILITY).ifPresent(IQuiverCapability::tick);
             player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(IEffectCapability::tick);
         }
@@ -115,7 +115,7 @@ public class UniversalEventSubscriber {
                 if (quiverStack.getItem() instanceof QuiverItem) {
                     Optional<ItemStack> optionalInQuiverStack = QuiverItem.getContents(quiverStack).findFirst();
                     if (optionalInQuiverStack.isPresent()) {
-                        if (!player.level.isClientSide()) {
+                        if (!player.level().isClientSide()) {
                             player.getCapability(BrassArmoryCapabilities.QUIVER_CAPABILITY).ifPresent(capability -> {
                                 capability.setAmmoStack(optionalInQuiverStack.get());
                                 capability.setQuiverStack(quiverStack);

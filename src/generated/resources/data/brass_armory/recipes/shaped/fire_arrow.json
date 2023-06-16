@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "F": {
       "tag": "forge:feathers"
@@ -24,5 +25,6 @@
   "result": {
     "count": 4,
     "item": "brass_armory:fire_arrow"
-  }
+  },
+  "show_notification": true
 }

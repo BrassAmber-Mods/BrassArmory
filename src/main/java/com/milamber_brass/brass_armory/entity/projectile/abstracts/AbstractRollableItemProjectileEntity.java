@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,15 +18,18 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +38,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static net.minecraft.core.Direction.UP;
-import static net.minecraft.world.phys.HitResult.Type.BLOCK;
 
 @ParametersAreNonnullByDefault
 public abstract class AbstractRollableItemProjectileEntity extends ThrowableItemProjectile {
@@ -68,7 +71,7 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
     public void tick() {
         this.hitPerTick = 0;
         super.tick();
-        if (this.isOnGround()) this.onGroundTick();
+        if (this.onGround()) this.onGroundTick();
         else if (!this.isNoGravity()) {
             this.setRotation0(this.getRotation());
             this.setRotation(this.getRotation() + this.rotDirection * (float)this.getDeltaMovement().length());
@@ -142,9 +145,9 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
             return;
         }
         BlockPos pos = blockHitResult.getBlockPos();
-        BlockState blockState = this.level.getBlockState(pos);
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.getMaterial().equals(Material.GLASS)) {
-            this.level.destroyBlock(pos, true, this.getOwner());
+        BlockState blockState = this.level().getBlockState(pos);
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierSortingRegistry.isCorrectTierForDrops(this.getItem().getItem() instanceof TieredItem tieredItem ? tieredItem.getTier() : Tiers.IRON, blockState)) {
+            this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
             return;
         }
@@ -152,8 +155,8 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
         Direction.Axis axis = blockHitResult.getDirection().getAxis();
         Vec3 movement = bounce(this.getDeltaMovement(), axis, this.getBounceMultiplier());
         this.setDeltaMovement(movement);
-        HitResult newHitResult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-        if (newHitResult.getType() == BLOCK) {
+        HitResult newHitResult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        if (newHitResult.getType() == HitResult.Type.BLOCK) {
             this.onHit(newHitResult);
         } else if (movement.y < 0.05D && blockHitResult.getDirection() == UP) {
             this.setOnGround(true);
@@ -202,8 +205,7 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
     }
 
     @Override
-    @NotNull
-    public Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

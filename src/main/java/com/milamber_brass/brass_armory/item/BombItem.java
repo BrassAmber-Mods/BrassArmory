@@ -91,7 +91,7 @@ public class BombItem extends Item {
     @Override //Summons a lit bomb instead of an ItemEntity if a player tries to drop a lit bomb
     public boolean onDroppedByPlayer(ItemStack bombStack, Player player) {
         if (BombItem.getFuseLit(bombStack)) {
-            this.throwBomb(player.getLevel(), player, InteractionHand.MAIN_HAND, bombStack, 0.24F);
+            this.throwBomb(player.level(), player, InteractionHand.MAIN_HAND, bombStack, 0.24F);
             return false;
         }
         return true;

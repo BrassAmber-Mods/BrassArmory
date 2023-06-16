@@ -1,11 +1,14 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -45,27 +47,26 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
+    protected ResourceKey<DamageType> onHitDamageType() {
+        return BrassArmoryDamageTypes.BATTLE_AXE;
+    }
+
+    @Override
     protected void onHitBlock(BlockHitResult result) {
         ItemStack battleaxeStack = this.getItem();
         if (battleaxeStack.getItem() instanceof TieredItem tieredItem) {
             BlockPos pos = result.getBlockPos();
-            BlockState hitBlockState = this.level.getBlockState(pos);
+            BlockState hitBlockState = this.level().getBlockState(pos);
             if (hitBlockState.getBlock() instanceof DoorBlock || hitBlockState.getBlock() instanceof TrapDoorBlock) {
-                boolean flag = !TierSortingRegistry.getTiersLowerThan(Tiers.DIAMOND).contains(tieredItem.getTier());
-                if (hitBlockState.getMaterial() == Material.WOOD || hitBlockState.getMaterial() == Material.NETHER_WOOD || flag) {
+                if (!TierSortingRegistry.getTiersLowerThan(Tiers.DIAMOND).contains(tieredItem.getTier())) {
                     Vec3 deltaMovement = this.onHitDeltaMovement();
-                    this.level.destroyBlock(pos, true, this.getOwner());
+                    this.level().destroyBlock(pos, true, this.getOwner());
                     this.setDeltaMovement(deltaMovement);
                     return;
                 }
             }
         }
         super.onHitBlock(result);
-    }
-
-    @Override
-    protected String onHitDamageSource() {
-        return "battleaxe";
     }
 
     @Override

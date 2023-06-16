@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.capabilities.EffectCapabilityHandler;
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmoryPackets;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
@@ -9,7 +10,6 @@ import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import com.milamber_brass.brass_armory.packets.ParticlePacket;
 import com.milamber_brass.brass_armory.util.ArmoryCooldownCache;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -21,7 +21,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,6 +42,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.network.PacketDistributor;
+import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,7 +51,7 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimationItem {
-    public static final DustParticleOptions DUST = new DustParticleOptions(new Vector3f(new Vec3(0.98D,0.94D,0.9D)), 0.8F);
+    public static final DustParticleOptions DUST = new DustParticleOptions(new Vector3f(0.98F,0.94F,0.9F), 0.8F);
     protected float DAMAGE_MULTIPLIER = 0.12F; //Make this smaller to nerf, make bigger to buff
 
     public MaceItem(Tier tier, float attackDamage, float attackSpeed, Properties builderIn) {
@@ -70,7 +70,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
     public void releaseUsing(ItemStack maceStack, Level level, LivingEntity livingEntity, int useDurationLeft) {
         if (livingEntity instanceof Player player) {
             if (this.getUseDuration(maceStack) - livingEntity.getUseItemRemainingTicks() >= this.getChargeDuration(maceStack)) {
-                double pRange = player.getReachDistance() * 1.1D;
+                double pRange = player.getBlockReach() * 1.1D;
                 Vec3 vec3 = player.getEyePosition(ArmoryUtil.frameTime(level));
                 Vec3 vec31 = player.getViewVector(ArmoryUtil.frameTime(level));
                 Vec3 vec32 = vec3.add(vec31.x * pRange, vec31.y * pRange, vec31.z * pRange);
@@ -78,7 +78,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
 
                 double trueDistance = blockHitResult.getLocation().distanceTo(player.getEyePosition());
                 double power = Mth.clamp((3.5D - trueDistance) * 2.0D, 0.5D, 5.0D);
-                if (player.fallDistance > 0.0F && !player.isOnGround() && !player.onClimbable() && !player.isInWater() && !player.hasEffect(MobEffects.BLINDNESS) && !player.isPassenger())
+                if (player.fallDistance > 0.0F && !player.onGround() && !player.onClimbable() && !player.isInWater() && !player.hasEffect(MobEffects.BLINDNESS) && !player.isPassenger())
                     power *= 1.2D;
 
                 BlockPos blockPos = blockHitResult.getBlockPos();
@@ -141,7 +141,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
 
                     if (finalDMG > 0) {
                         if (entity instanceof Player p) EffectCapabilityHandler.setShakePower(p, power);
-                        if (entity.hurt(new EntityDamageSource("brass_armory.mace_smash", player), entity instanceof LivingEntity ? finalDMG : finalDMG * 0.25F)) {
+                        if (entity.hurt(ArmoryUtil.getEntityDamageSource(level, BrassArmoryDamageTypes.MACE_SMASH, player), entity instanceof LivingEntity ? finalDMG : finalDMG * 0.25F)) {
                             if (entity instanceof LivingEntity) player.crit(entity);
                             hitAtLeastOne = true;
                         }
@@ -166,7 +166,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
             if (state.isFaceSturdy(level, pos, direction)) {
                 BlockPos relativePos = pos.relative(direction);
                 BlockState relativeState = level.getBlockState(relativePos);
-                if (relativeState.getMaterial().isReplaceable() || !relativeState.isFaceSturdy(level, relativePos, direction.getOpposite())) {
+                if (relativeState.canBeReplaced() || !relativeState.isFaceSturdy(level, relativePos, direction.getOpposite())) {
                     ParticlePacket particlePacket = new ParticlePacket();
                     for (int i = 0; i < Math.max((int)power, 1); i++) {
                         Vec3 offset = new Vec3(dirNormal.getX() * i, dirNormal.getY() * i, dirNormal.getZ() * i);

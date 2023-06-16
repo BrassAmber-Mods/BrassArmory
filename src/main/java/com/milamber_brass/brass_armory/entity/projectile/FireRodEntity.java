@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
@@ -7,7 +8,9 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.FireRodItem;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -33,31 +36,31 @@ public class FireRodEntity extends AbstractThrownWeaponEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.level.isClientSide && this.getSharedFlag(0) && (this.inGround || level.getRandom().nextInt(2) == 1)) {
+        if (this.level().isClientSide && this.getSharedFlag(0) && (this.inGround || level().getRandom().nextInt(2) == 1)) {
             Vec3 smokeVec = this.position();
-            this.level.addParticle(ParticleTypes.SMOKE, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
-            this.level.addParticle(this.getItem().getItem() instanceof FireRodItem fireRod ? fireRod.flameParticle : ParticleTypes.FLAME, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(ParticleTypes.SMOKE, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(this.getItem().getItem() instanceof FireRodItem fireRod ? fireRod.flameParticle : ParticleTypes.FLAME, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
         }
+    }
+
+    @Override
+    protected ResourceKey<DamageType> onHitDamageType() {
+        return BrassArmoryDamageTypes.FIRE_ROD;
     }
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        ArmoryUtil.blockHitSetOnFire(blockHitResult, this.level, this.getOwner());
+        ArmoryUtil.blockHitSetOnFire(blockHitResult, this.level(), this.getOwner());
     }
 
     @Override
     public boolean isOnFire() {
-        return !this.level.isClientSide && super.isOnFire();
+        return !this.level().isClientSide && super.isOnFire();
     }
 
     public boolean hasBeenExtinguished() {
         return !this.getSharedFlag(0);
-    }
-
-    @Override
-    protected String onHitDamageSource() {
-        return "fire_rod";
     }
 
     @Override

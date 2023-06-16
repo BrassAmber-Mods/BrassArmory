@@ -8,7 +8,6 @@ import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
@@ -18,6 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,7 +38,7 @@ public abstract class PlayerItemInHandLayerMixin<T extends Player, M extends Ent
     }
 
     @Inject(method = "renderArmWithItem", at = @At(value = "HEAD"), cancellable = true, remap = true)
-    private void renderArmWithWarpCrystal(LivingEntity living, ItemStack stack, ItemTransforms.TransformType transformType, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci) {
+    private void renderArmWithWarpCrystal(LivingEntity living, ItemStack stack, ItemDisplayContext context, HumanoidArm arm, PoseStack poseStack, MultiBufferSource source, int light, CallbackInfo ci) {
         if (living.isUsingItem() && stack.getItem() instanceof WarpCrystalItem && !living.getItemInHand(living.getUsedItemHand().equals(InteractionHand.MAIN_HAND) ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND).equals(stack) && living.swingTime == 0) {
             poseStack.pushPose();
             ModelPart modelpart = this.getParentModel().getHead();
@@ -49,7 +49,7 @@ public abstract class PlayerItemInHandLayerMixin<T extends Player, M extends Ent
             CustomHeadLayer.translateToHead(poseStack, false);
             boolean flag = arm == HumanoidArm.LEFT;
             poseStack.translate((flag ? -2.5F : 2.5F) / 16.0F, -0.75D, -1.1D);
-            this.itemInHandRenderer.renderItem(living, stack, ItemTransforms.TransformType.HEAD, false, poseStack, source, light);
+            this.itemInHandRenderer.renderItem(living, stack, ItemDisplayContext.HEAD, false, poseStack, source, light);
             poseStack.popPose();
             ci.cancel();
         }

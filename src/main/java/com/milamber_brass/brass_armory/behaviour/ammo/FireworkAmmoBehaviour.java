@@ -1,9 +1,7 @@
 package com.milamber_brass.brass_armory.behaviour.ammo;
 
-import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import com.milamber_brass.brass_armory.behaviour.iGun;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -12,6 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,10 +31,9 @@ public class FireworkAmmoBehaviour extends AbstractAmmoBehaviour {
         if (!level.isClientSide) {
             float speed = gun.speed();
             Vec3 vec31 = shooter.getUpVector(1.0F);
-            Quaternion quaternion = new Quaternion(new Vector3f(vec31), 0.0F, true);
+            Quaternionf quaternion = (new Quaternionf()).setAngleAxis(0.0D, vec31.x, vec31.y, vec31.z);
             Vec3 vec3 = shooter.getViewVector(1.0F);
-            Vector3f vector3f = new Vector3f(vec3);
-            vector3f.transform(quaternion);
+            Vector3f vector3f = vec3.toVector3f().rotate(quaternion);
             rocket.shoot(vector3f.x(), vector3f.y(), vector3f.z(), speed * 0.25F, gun.accuracy());
 
             gun.onShoot(level, owner, shooter, ammoStack, rocket);

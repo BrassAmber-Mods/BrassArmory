@@ -2,10 +2,7 @@ package com.milamber_brass.brass_armory.data.advancement;
 
 import com.google.gson.JsonObject;
 import com.milamber_brass.brass_armory.BrassArmory;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +20,7 @@ public class GunTrigger extends SimpleCriterionTrigger<GunTrigger.Instance> {
     }
 
     @Override
-    protected @NotNull GunTrigger.Instance createInstance(JsonObject json, EntityPredicate.Composite player, DeserializationContext ctx) {
+    protected @NotNull GunTrigger.Instance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext ctx) {
         return new GunTrigger.Instance(player);
     }
 
@@ -32,12 +29,12 @@ public class GunTrigger extends SimpleCriterionTrigger<GunTrigger.Instance> {
     }
 
     public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(EntityPredicate.Composite player) {
+        public Instance(ContextAwarePredicate player) {
             super(GunTrigger.ID, player);
         }
 
         public static @NotNull GunTrigger.Instance fire() {
-            return new GunTrigger.Instance(EntityPredicate.Composite.ANY);
+            return new GunTrigger.Instance(ContextAwarePredicate.ANY);
         }
     }
 }

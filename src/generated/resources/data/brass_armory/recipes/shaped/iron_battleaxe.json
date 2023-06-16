@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "M": {
       "tag": "forge:ingots/iron"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "brass_armory:iron_battleaxe"
-  }
+  },
+  "show_notification": true
 }

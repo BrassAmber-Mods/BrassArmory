@@ -26,5 +26,6 @@
     [
       "bomb_catch"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

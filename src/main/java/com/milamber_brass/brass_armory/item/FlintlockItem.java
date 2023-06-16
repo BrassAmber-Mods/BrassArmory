@@ -120,7 +120,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity entityLiving, int count) {
+    public void onUseTick(Level level, LivingEntity living, ItemStack stack, int count) {
         setLoadProgress(stack, getLoadProgress(stack) + this.loadSpeed);
     }
 
@@ -132,7 +132,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
             } else {
                 setLoad(stack, 2);
                 player.getCooldowns().addCooldown(stack.getItem(), 5);
-                player.level.playSound(player, player, this.getGunLoadSound(), SoundSource.PLAYERS, 1.0F, level.getRandom().nextFloat() * 0.25F + 0.75F);
+                player.level().playSound(player, player, this.getGunLoadSound(), SoundSource.PLAYERS, 1.0F, level.getRandom().nextFloat() * 0.25F + 0.75F);
                 if (player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.LOAD_GUN.trigger(serverPlayer);
             }
         }
@@ -237,12 +237,12 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
 
     @Override
     public void onOpen(Player owner, CompoundTag tag) {
-        owner.level.playSound(null, owner, BrassArmorySounds.GUN_OPEN.get(), SoundSource.PLAYERS, 0.3F, owner.level.getRandom().nextFloat() * 0.05F + 0.6F);
+        owner.level().playSound(null, owner, BrassArmorySounds.GUN_OPEN.get(), SoundSource.PLAYERS, 0.3F, owner.level().getRandom().nextFloat() * 0.05F + 0.6F);
     }
 
     @Override
     public void onLoad(Player owner, CompoundTag tag) {
-        owner.level.playSound(null, owner, BrassArmorySounds.GUN_CLOSE.get(), SoundSource.PLAYERS, 0.5F, owner.level.getRandom().nextFloat() * 0.06F + 0.2F);
+        owner.level().playSound(null, owner, BrassArmorySounds.GUN_CLOSE.get(), SoundSource.PLAYERS, 0.5F, owner.level().getRandom().nextFloat() * 0.06F + 0.2F);
     }
 
     @Override

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "B": {
       "item": "minecraft:golden_axe"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "brass_armory:golden_halberd"
-  }
+  },
+  "show_notification": true
 }

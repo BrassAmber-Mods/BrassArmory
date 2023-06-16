@@ -26,5 +26,6 @@
     [
       "wither_katana"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

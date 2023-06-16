@@ -1,0 +1,16 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "brass_armory:gui/empty_powder_slot"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "brass_armory:gui/empty_ammo_slot"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "brass_armory:entity/projectile/rope_arrow"
+    }
+  ]
+}

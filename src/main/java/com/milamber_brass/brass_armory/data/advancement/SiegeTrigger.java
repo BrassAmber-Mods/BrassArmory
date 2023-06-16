@@ -2,10 +2,7 @@ package com.milamber_brass.brass_armory.data.advancement;
 
 import com.google.gson.JsonObject;
 import com.milamber_brass.brass_armory.BrassArmory;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +20,7 @@ public class SiegeTrigger extends SimpleCriterionTrigger<SiegeTrigger.Instance> 
     }
 
     @Override
-    protected @NotNull SiegeTrigger.Instance createInstance(JsonObject json, EntityPredicate.Composite player, DeserializationContext ctx) {
+    protected @NotNull SiegeTrigger.Instance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext ctx) {
         return new SiegeTrigger.Instance(player);
     }
 
@@ -32,12 +29,12 @@ public class SiegeTrigger extends SimpleCriterionTrigger<SiegeTrigger.Instance> 
     }
 
     public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(EntityPredicate.Composite player) {
+        public Instance(ContextAwarePredicate player) {
             super(SiegeTrigger.ID, player);
         }
 
         public static @NotNull SiegeTrigger.Instance directHit() {
-            return new SiegeTrigger.Instance(EntityPredicate.Composite.ANY);
+            return new SiegeTrigger.Instance(ContextAwarePredicate.ANY);
         }
     }
 }

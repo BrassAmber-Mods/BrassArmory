@@ -31,7 +31,7 @@ public class BrassArmoryParticles {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void registerFactories(RegisterParticleProvidersEvent event) {
-        event.register(BrassArmoryParticles.BLOOD_FALL_PARTICLE.get(), BloodParticle.BloodFallProvider::new);
-        event.register(BrassArmoryParticles.BLOOD_LAND_PARTICLE.get(), BloodParticle.BloodLandProvider::new);
+        event.registerSpriteSet(BrassArmoryParticles.BLOOD_FALL_PARTICLE.get(), BloodParticle.BloodFallProvider::new);
+        event.registerSpriteSet(BrassArmoryParticles.BLOOD_LAND_PARTICLE.get(), BloodParticle.BloodLandProvider::new);
     }
 }

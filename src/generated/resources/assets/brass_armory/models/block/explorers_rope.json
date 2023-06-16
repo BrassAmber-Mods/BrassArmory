@@ -1,0 +1,146 @@
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            14.0,
+            10.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#rope_texture",
+          "uv": [
+            8.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "north": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#rope_texture",
+          "uv": [
+            8.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        7,
+        0,
+        13
+      ],
+      "to": [
+        9,
+        16,
+        15
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            14.0,
+            10.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "north": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        6,
+        11,
+        12
+      ],
+      "to": [
+        10,
+        15,
+        16
+      ]
+    }
+  ],
+  "render_type": "minecraft:solid",
+  "textures": {
+    "particle": "#rope_texture",
+    "rope_texture": "brass_armory:block/explorers_rope"
+  }
+}

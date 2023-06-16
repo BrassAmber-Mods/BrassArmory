@@ -2,8 +2,6 @@ package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
-import net.minecraft.Util;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -13,7 +11,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
@@ -74,12 +71,6 @@ public class KatanaItem extends SwordItem {
     @ParametersAreNonnullByDefault
     public static int getWither(ItemStack stack) {
         return stack.getOrCreateTag().getInt("BrassArmoryWithering");
-    }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
-        super.fillItemCategory(tab, items);
-        if (this.allowedIn(tab)) items.add(Util.make(this.getDefaultInstance(), stack -> setWither(stack, 100)));
     }
 
     private static final MutableComponent wilted = Component.translatable("item.brass_armory.katana_wilted");

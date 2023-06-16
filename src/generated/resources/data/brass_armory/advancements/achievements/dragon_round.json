@@ -26,5 +26,6 @@
     [
       "dragon_round"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

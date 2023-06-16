@@ -2,16 +2,16 @@ package com.milamber_brass.brass_armory.client.render;
 
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -34,11 +34,11 @@ public class SpearEntityRenderer extends EntityRenderer<AbstractThrownWeaponEnti
     public void render(AbstractThrownWeaponEntity spearEntity, float v, float v1, PoseStack stack, MultiBufferSource bufferSource, int light) {
         if (spearEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(spearEntity) < 12.5D)) {
             stack.pushPose();
-            stack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(v1, spearEntity.yRotO, spearEntity.getYRot()) - 90.0F));
-            stack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(v1, spearEntity.xRotO, spearEntity.getXRot()) - 45F));
+            stack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(v1, spearEntity.yRotO, spearEntity.getYRot()) - 90.0F));
+            stack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(v1, spearEntity.xRotO, spearEntity.getXRot()) - 45F));
             stack.translate(-0.6D, -0.6D, 0D);
             stack.scale(2F, 2F, 1);
-            this.itemRenderer.renderStatic(spearEntity.getItem(), ItemTransforms.TransformType.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, spearEntity.getId());
+            this.itemRenderer.renderStatic(spearEntity.getItem(), ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, spearEntity.level(), spearEntity.getId());
             stack.popPose();
             super.render(spearEntity, v, v1, stack, bufferSource, light);
         }
@@ -46,8 +46,7 @@ public class SpearEntityRenderer extends EntityRenderer<AbstractThrownWeaponEnti
 
     @Nonnull
     @Override
-    @SuppressWarnings("deprecation")
     public ResourceLocation getTextureLocation(AbstractThrownWeaponEntity spearEntity) {
-        return TextureAtlas.LOCATION_BLOCKS;
+        return InventoryMenu.BLOCK_ATLAS;
     }
 }

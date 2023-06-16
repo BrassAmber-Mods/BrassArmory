@@ -30,7 +30,7 @@ public class CannonItem extends Item {
         BlockPos blockpos = useOnContext.getClickedPos();
         Direction face = useOnContext.getClickedFace();
 
-        if (level.getBlockState(blockpos).getMaterial().isReplaceable()) {
+        if (level.getBlockState(blockpos).canBeReplaced()) {
             face = Direction.UP;
             blockpos = blockpos.relative(face.getOpposite());
         }

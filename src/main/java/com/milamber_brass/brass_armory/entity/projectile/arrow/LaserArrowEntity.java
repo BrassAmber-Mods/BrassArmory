@@ -50,7 +50,7 @@ public class LaserArrowEntity extends AbstractSpecialArrowEntity {
                 this.setDeltaMovement(deltaMovement);
             }
 
-            if (!this.level.hasChunk(this.chunkPosition().x, this.chunkPosition().z)) {
+            if (!this.level().hasChunk(this.chunkPosition().x, this.chunkPosition().z)) {
                 this.remove(RemovalReason.UNLOADED_TO_CHUNK);
             }
         } else {
@@ -67,7 +67,7 @@ public class LaserArrowEntity extends AbstractSpecialArrowEntity {
     @Override
     protected void spawnArrowParticles(int particleCount) {
         for (int j = 0; j < particleCount; ++j) {
-            this.level.addParticle(REDSTONE_PARTICLE, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
+            this.level().addParticle(REDSTONE_PARTICLE, this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
         }
     }
 

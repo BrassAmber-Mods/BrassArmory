@@ -45,7 +45,7 @@ public class StickyBombEntity extends BombEntity {
     }
 
     @Override
-    public boolean isOnGround() {
+    public boolean onGround() {
         return this.isNoGravity();
     }
 
@@ -57,7 +57,7 @@ public class StickyBombEntity extends BombEntity {
     private boolean isStuck(@Nullable Vec3 vec) { //Checks if the boundingBox is in a block or not, if it is, it stays put
         AABB aabb = this.getBoundingBox().inflate(0.1D);
         if (vec != null) aabb = aabb.move(vec);
-        boolean flag = !this.level.noCollision(this, aabb) || this.getVehicle() != null;
+        boolean flag = !this.level().noCollision(this, aabb) || this.getVehicle() != null;
         this.setNoGravity(flag);
         if (flag) this.setDeltaMovement(0, 0, 0);
         return flag;
@@ -65,7 +65,7 @@ public class StickyBombEntity extends BombEntity {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             Entity mount = entityHitResult.getEntity();
             if (this.getOwner() != mount || this.tickCount > 2) {
                 if (mount.canBeCollidedWith() || mount instanceof LivingEntity) {

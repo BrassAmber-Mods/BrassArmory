@@ -7,7 +7,7 @@ import com.milamber_brass.brass_armory.entity.CannonEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -73,7 +73,8 @@ public class CannonEntityRenderer extends EntityRenderer<CannonEntity> {
         float yRot = Mth.lerp(partialTicks, cannon.yRotO, cannon.getYRot());
         float xRot = cannon.getViewXRot(partialTicks);
 
-        if (cannon.getControllingPassenger() instanceof LivingEntity living) {
+        LivingEntity living = cannon.getControllingPassenger();
+        if (living != null) {
             yRot = living.getViewYRot(partialTicks);
             xRot = Mth.clamp(living.getViewXRot(partialTicks), -45F, 15F);
 
@@ -87,10 +88,10 @@ public class CannonEntityRenderer extends EntityRenderer<CannonEntity> {
         float f1 = cannon.getDamage() - partialTicks;
 
         if (f > 0.0F) {
-            stack.mulPose(Vector3f.XP.rotationDegrees(Mth.sin(f) * f * f1 / 200.0F * (float)cannon.getHurtDir()));
+            stack.mulPose(Axis.XP.rotationDegrees(Mth.sin(f) * f * f1 / 200.0F * (float)cannon.getHurtDir()));
         }
 
-        stack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+        stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
 
         BlockPos pos = cannon.blockPosition();
         double offset = (double)((pos.getX() % 2) + ((pos.getZ() % 2) * 2)) * 0.0003D;//This is so if you put multiple cannons next to each other, they don't Z-fight

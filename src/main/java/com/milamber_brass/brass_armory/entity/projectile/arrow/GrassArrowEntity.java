@@ -44,12 +44,12 @@ public class GrassArrowEntity extends AbstractSpecialArrowEntity {
         super.onHitBlock(result);
         if (!this.dealtDamage) {
             BlockPos resultPos = result.getBlockPos();
-            if (this.level.getBlockState(resultPos).is(Blocks.DIRT)) {
-                this.level.setBlock(resultPos, Blocks.GRASS_BLOCK.defaultBlockState(), 2);
+            if (this.level().getBlockState(resultPos).is(Blocks.DIRT)) {
+                this.level().setBlock(resultPos, Blocks.GRASS_BLOCK.defaultBlockState(), 2);
             }
-            if (this.level instanceof ServerLevel serverLevel && serverLevel.getBlockState(resultPos).is(BlockTags.DIRT)) {
-                if (!BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), this.level, resultPos, FakePlayerFactory.getMinecraft(serverLevel))) {
-                    BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), this.level, resultPos.above(), FakePlayerFactory.getMinecraft(serverLevel));
+            if (this.level() instanceof ServerLevel serverLevel && serverLevel.getBlockState(resultPos).is(BlockTags.DIRT)) {
+                if (!BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), this.level(), resultPos, FakePlayerFactory.getMinecraft(serverLevel))) {
+                    BoneMealItem.applyBonemeal(new ItemStack(Items.BONE_MEAL), this.level(), resultPos.above(), FakePlayerFactory.getMinecraft(serverLevel));
                 }
             }
         }
@@ -63,7 +63,7 @@ public class GrassArrowEntity extends AbstractSpecialArrowEntity {
     @Override
     protected void spawnArrowParticles(int particleCount) {
         for (int j = 0; j < particleCount; ++j) {
-            this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SEAGRASS.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
+            this.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SEAGRASS.defaultBlockState()), this.getRandomX(0.5D), this.getRandomY(), this.getRandomZ(0.5D), 40, 75, 40);
         }
     }
 

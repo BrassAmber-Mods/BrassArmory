@@ -26,5 +26,6 @@
     [
       "mace_smash"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

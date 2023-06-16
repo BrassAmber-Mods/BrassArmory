@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.mixin;
 
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import net.minecraft.client.ClientRecipeBook;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -19,7 +20,7 @@ public abstract class ClientRecipeBookMixin {
     @Inject(method = "getCategory", at = @At(value = "HEAD"), remap = true, cancellable = true)
     private static void getCategory(Recipe<?> recipe, CallbackInfoReturnable<RecipeBookCategories> cir) {
         if (recipe.getType() == RecipeType.CRAFTING) {
-            ItemStack item = recipe.getResultItem();
+            ItemStack item = recipe.getResultItem(Minecraft.getInstance().level.registryAccess());
             if (item.is(BrassArmoryTags.Items.BUILDING_BLOCKS)) {
                 cir.setReturnValue(RecipeBookCategories.CRAFTING_BUILDING_BLOCKS);
             }

@@ -50,7 +50,7 @@ public class FireRodItem extends AbstractThrownWeaponItem {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon damage modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon speed modifier", this.attackSpeed, AttributeModifier.Operation.ADDITION));
-            builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon range modifier", this.attackReachBonus, AttributeModifier.Operation.ADDITION));
+            builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon range modifier", this.attackReachBonus, AttributeModifier.Operation.ADDITION));
             this.defaultModifiers = builder.build();
         }
         return super.getAttributeModifiers(slot, stack);
@@ -58,7 +58,7 @@ public class FireRodItem extends AbstractThrownWeaponItem {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (!entity.level.isClientSide && entity instanceof LivingEntity living) {
+        if (!entity.level().isClientSide && entity instanceof LivingEntity living) {
             living.setRemainingFireTicks(60);
         }
         return false;

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "M": {
       "tag": "forge:ingots/gold"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "brass_armory:golden_battleaxe"
-  }
+  },
+  "show_notification": true
 }

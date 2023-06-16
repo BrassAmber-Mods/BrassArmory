@@ -17,7 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class ServerGamePacketListenerImplMixin {
     @Shadow public ServerPlayer player;
 
-    @Inject(method = "handlePlayerCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getVehicle()Lnet/minecraft/world/entity/Entity;", ordinal = 4, shift = At.Shift.BEFORE), remap = true)
+    @Inject(method = "handlePlayerCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getVehicle()Lnet/minecraft/world/entity/Entity;", shift = At.Shift.BEFORE), remap = true)
     private void handlePlayerCommand(ServerboundPlayerCommandPacket p_9891_, CallbackInfo ci) {
         if (this.player.getVehicle() instanceof CannonEntity cannon && cannon.getFuse() == 0) cannon.openInventory(this.player);
     }

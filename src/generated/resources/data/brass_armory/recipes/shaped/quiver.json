@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "L": {
       "tag": "forge:leather"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "brass_armory:quiver"
-  }
+  },
+  "show_notification": true
 }

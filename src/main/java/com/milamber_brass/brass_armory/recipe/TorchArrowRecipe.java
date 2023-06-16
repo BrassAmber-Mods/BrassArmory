@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.recipe;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmoryRecipes;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -23,13 +24,13 @@ import java.util.List;
 public class TorchArrowRecipe extends CustomRecipe {
     private List<Recipe<?>> TORCH_ARROW_RECIPES = new ArrayList<>();
 
-    public TorchArrowRecipe(ResourceLocation id) {
-        super(id);
+    public TorchArrowRecipe(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     @Override
     public boolean matches(CraftingContainer inv, Level level) {
-        this.TORCH_ARROW_RECIPES = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getResultItem().is(BrassArmoryItems.TORCH_ARROW.get())).toList();
+        this.TORCH_ARROW_RECIPES = level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getResultItem(level.registryAccess()).is(BrassArmoryItems.TORCH_ARROW.get())).toList();
 
         for (Recipe<?> recipe : this.TORCH_ARROW_RECIPES) {
             if (recipe instanceof ShapedRecipe shapedRecipe && !shapedRecipe.matches(inv, level)) {
@@ -109,7 +110,7 @@ public class TorchArrowRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(CraftingContainer inv, RegistryAccess access) {
         for (Recipe<?> recipe : this.TORCH_ARROW_RECIPES) {
             if (recipe instanceof ShapedRecipe shapedRecipe) {
                 for (int i = 0; i <= inv.getWidth() - shapedRecipe.getWidth(); ++i) {
@@ -117,7 +118,7 @@ public class TorchArrowRecipe extends CustomRecipe {
                         for (int b = 0; b < 2; b++) {
                             ItemStack stack = matches(inv, shapedRecipe, i, j, b == 0);
                             if (!stack.isEmpty()) {
-                                ItemStack result = shapedRecipe.getResultItem().copy();
+                                ItemStack result = shapedRecipe.getResultItem(access).copy();
                                 ArmoryUtil.addStack(result.getOrCreateTag(), stack, "BATorch");
                                 return result;
                             }
@@ -127,7 +128,7 @@ public class TorchArrowRecipe extends CustomRecipe {
             } else if (recipe instanceof ShapelessRecipe shapelessRecipe) {
                 ItemStack stack = matches(inv, shapelessRecipe);
                 if (!stack.isEmpty()) {
-                    ItemStack result = shapelessRecipe.getResultItem().copy();
+                    ItemStack result = shapelessRecipe.getResultItem(access).copy();
                     ArmoryUtil.addStack(result.getOrCreateTag(), stack, "BATorch");
                     return result;
                 }

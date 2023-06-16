@@ -14,14 +14,13 @@ import com.milamber_brass.brass_armory.entity.projectile.cannon_balls.CannonBall
 import com.milamber_brass.brass_armory.entity.projectile.cannon_balls.CarcassRoundEntity;
 import com.milamber_brass.brass_armory.entity.projectile.cannon_balls.SiegeRoundEntity;
 import com.milamber_brass.brass_armory.item.SpikyBallItem;
-import com.mojang.math.Vector3f;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.entity.projectile.ThrownEgg;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class BrassArmoryGunBehaviours {
     public static void init() {
@@ -41,7 +40,7 @@ public class BrassArmoryGunBehaviours {
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("bouncy_bomb"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(BrassArmoryItems.BOUNCY_BOMB.get()), BouncyBombEntity::new));
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("sticky_bomb"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(BrassArmoryItems.STICKY_BOMB.get()), StickyBombEntity::new));
 
-        GunBehaviours.registerPowderBehaviour(BrassArmory.locate("gunpowder"), new GunpowderBehaviour(new DustParticleOptions(new Vector3f(new Vec3(0.98D, 0.94D, 0.9D)), 0.8F), itemStack -> itemStack.is(Items.GUNPOWDER)));
+        GunBehaviours.registerPowderBehaviour(BrassArmory.locate("gunpowder"), new GunpowderBehaviour(new DustParticleOptions(new Vector3f(0.98F, 0.94F, 0.9F), 0.8F), itemStack -> itemStack.is(Items.GUNPOWDER)));
         GunBehaviours.registerPowderBehaviour(BrassArmory.locate("blaze_powder"), new BlazePowderBehaviour(ParticleTypes.SMOKE, itemStack -> itemStack.is(Items.BLAZE_POWDER)));
     }
 }

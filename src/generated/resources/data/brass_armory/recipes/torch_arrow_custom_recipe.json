@@ -1,3 +1,4 @@
 {
-  "type": "brass_armory:torch_arrow_custom_recipe"
+  "type": "brass_armory:torch_arrow_custom_recipe",
+  "category": "misc"
 }

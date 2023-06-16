@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "S": {
       "tag": "forge:string"
@@ -13,5 +14,6 @@
   "result": {
     "count": 3,
     "item": "brass_armory:explorers_rope"
-  }
+  },
+  "show_notification": true
 }

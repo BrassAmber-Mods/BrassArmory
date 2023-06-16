@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "P": {
       "tag": "minecraft:planks"
@@ -13,5 +14,6 @@
   ],
   "result": {
     "item": "brass_armory:gun_stock"
-  }
+  },
+  "show_notification": true
 }

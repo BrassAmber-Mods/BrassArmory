@@ -66,14 +66,14 @@ public class HalberdItem extends TieredItem implements Vanishable {//Uses vanill
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon damage modifier", this.axeDamage, AttributeModifier.Operation.ADDITION));
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon speed modifier", this.axeSpeed, AttributeModifier.Operation.ADDITION));
-            builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon range modifier", this.axeReach, AttributeModifier.Operation.ADDITION));
+            builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon range modifier", this.axeReach, AttributeModifier.Operation.ADDITION));
             this.axeModifiers = builder.build();
         }
         if (this.spearModifiers == null) {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
             builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon damage modifier", this.spearDamage, AttributeModifier.Operation.ADDITION));
             builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon speed modifier", this.spearSpeed, AttributeModifier.Operation.ADDITION));
-            builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon range modifier", this.spearReach, AttributeModifier.Operation.ADDITION));
+            builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(BASE_ATTACK_RANGE_UUID, "Weapon range modifier", this.spearReach, AttributeModifier.Operation.ADDITION));
             this.spearModifiers = builder.build();
         }
         return slot == EquipmentSlot.MAINHAND ? (getStance(stack) ? this.spearModifiers : this.axeModifiers) : super.getAttributeModifiers(slot, stack);
@@ -82,8 +82,8 @@ public class HalberdItem extends TieredItem implements Vanishable {//Uses vanill
     @Override
     @ParametersAreNonnullByDefault //Deal bonus damage when attacking if the stance is on spear mode
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (!entity.level.isClientSide && entity instanceof LivingEntity living && getStance(stack)) {
-            ArmoryUtil.impaleLivingEntity(living, (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE), player.level.random);
+        if (!entity.level().isClientSide && entity instanceof LivingEntity living && getStance(stack)) {
+            ArmoryUtil.impaleLivingEntity(living, (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE), player.level().random);
         }
         return false;
     }

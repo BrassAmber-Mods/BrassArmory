@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "S": {
       "tag": "forge:rods/wooden"
@@ -20,5 +21,6 @@
   ],
   "result": {
     "item": "brass_armory:fire_rod"
-  }
+  },
+  "show_notification": true
 }

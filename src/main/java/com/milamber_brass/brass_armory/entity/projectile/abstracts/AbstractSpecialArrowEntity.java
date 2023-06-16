@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -48,11 +49,11 @@ public abstract class AbstractSpecialArrowEntity extends AbstractArrow {
     @Override
     public void tick() {
         super.tick();
-        if (this.level.isClientSide) {
+        if (this.level().isClientSide) {
             if (!this.inGround) this.spawnArrowParticles(2);
             else if (this.inGroundTime % 20 == 0) this.spawnArrowParticles(1);
         } else if (this.inGround && this.inGroundTime != 0 && this.inGroundTime >= 600) {
-            this.level.broadcastEntityEvent(this, (byte)0);
+            this.level().broadcastEntityEvent(this, (byte)0);
         }
     }
 
@@ -67,7 +68,7 @@ public abstract class AbstractSpecialArrowEntity extends AbstractArrow {
 
     @Override
     @Nonnull
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }
