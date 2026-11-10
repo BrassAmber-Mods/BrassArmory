@@ -5,7 +5,7 @@ import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public interface IPowderCapability extends INBTSerializable<CompoundTag> {
 

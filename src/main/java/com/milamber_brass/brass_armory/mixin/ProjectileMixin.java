@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.mixin;
 
 import com.milamber_brass.brass_armory.capabilities.IPowderCapability;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
+import java.util.Optional;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -19,6 +20,6 @@ public abstract class ProjectileMixin extends Entity {
 
     @Inject(method = "tick", at = @At(value = "HEAD"), remap = true)
     private void tick(CallbackInfo ci) {
-        if (!this.level().isClientSide && this.isAlive()) this.getCapability(BrassArmoryCapabilities.POWDER_CAPABILITY).ifPresent(IPowderCapability::tick);
+        if (!this.level().isClientSide && this.isAlive()) Optional.of(this.getData(BrassArmoryCapabilities.POWDER_CAPABILITY)).ifPresent(IPowderCapability::tick);
     }
 }

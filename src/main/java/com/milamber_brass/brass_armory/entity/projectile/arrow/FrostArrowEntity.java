@@ -4,6 +4,8 @@ import com.milamber_brass.brass_armory.client.render.SpecialArrowRenderer;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpecialArrowEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,12 +26,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class FrostArrowEntity extends AbstractSpecialArrowEntity {
@@ -86,7 +85,7 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
             if (blockpos.closerThan(pos, 2.5F)) {
                 FluidState flu = level.getFluidState(blockpos);
 
-                if (flu.is(FluidTags.WATER) && flu.isSource() && level.getBlockState(blockpos).canBeReplaced() && blockstate.canSurvive(level, blockpos) && !ForgeEventFactory.onBlockPlace(entity, BlockSnapshot.create(level.dimension(), level, blockpos), Direction.UP)) {
+                if (flu.is(FluidTags.WATER) && flu.isSource() && level.getBlockState(blockpos).canBeReplaced() && blockstate.canSurvive(level, blockpos) && !EventHooks.onBlockPlace(entity, BlockSnapshot.create(level.dimension(), level, blockpos), Direction.UP)) {
                     level.setBlockAndUpdate(blockpos, blockstate);
                     level.scheduleTick(blockpos, Blocks.FROSTED_ICE, Mth.nextInt(level.random, 60, 120));
                 }

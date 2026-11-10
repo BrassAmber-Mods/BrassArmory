@@ -1,0 +1,30 @@
+{
+  "parent": "brass_armory:achievements/gun",
+  "criteria": {
+    "cannon": {
+      "conditions": {},
+      "trigger": "brass_armory:cannon"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.brass_armory.cannon.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:cannon"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.brass_armory.cannon"
+    }
+  },
+  "requirements": [
+    [
+      "cannon"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

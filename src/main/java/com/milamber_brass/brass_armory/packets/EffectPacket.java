@@ -1,18 +1,24 @@
 package com.milamber_brass.brass_armory.packets;
 
+import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.capabilities.IEffectCapability;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
+import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.NetworkEvent;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 @ParametersAreNonnullByDefault
-public class EffectPacket {
+public class EffectPacket implements CustomPacketPayload {
+    public static final Type<EffectPacket> TYPE = new Type<>(BrassArmory.locate("effectpacket"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, EffectPacket> STREAM_CODEC = StreamCodec.of((buf, packet) -> packet.encode(buf), EffectPacket::new);
+    @Override
+    public Type<EffectPacket> type() { return TYPE; }
     private final int entityID;
     private final double shake;
     private final float slow;
@@ -27,30 +33,30 @@ public class EffectPacket {
         this(entity.getId(), cap);
     }
 
-    public EffectPacket(FriendlyByteBuf buf) {
+    public EffectPacket(RegistryFriendlyByteBuf buf) {
         this.entityID = buf.readInt();
         this.shake = buf.readDouble();
         this.slow = buf.readFloat();
     }
 
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeInt(this.entityID);
         buf.writeDouble(this.shake);
         buf.writeFloat(this.slow);
     }
 
     public static class Handler {
-        public static void onMessage(EffectPacket message, Supplier<NetworkEvent.Context> ctx) {
-            ctx.get().enqueueWork(() -> {
+        public static void onMessage(EffectPacket message, IPayloadContext ctx) {
+            ctx.enqueueWork(() -> {
                 Entity entity = null;
                 if (Minecraft.getInstance().level != null) entity = Minecraft.getInstance().level.getEntity(message.entityID);
-                if (entity instanceof Player) entity.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(cap -> {
+                if (entity instanceof Player) Optional.of(entity.getData(BrassArmoryCapabilities.EFFECT_CAPABILITY)).ifPresent(cap -> {
                     cap.setShake(message.shake);
                     cap.setSlow(message.slow);
                 });
             });
 
-            ctx.get().setPacketHandled(true);
+
         }
     }
 }

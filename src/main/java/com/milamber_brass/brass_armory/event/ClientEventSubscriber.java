@@ -13,6 +13,8 @@ import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.util.Mth;
@@ -24,21 +26,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ComputeFovModifierEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
-@Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
 public class ClientEventSubscriber {
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
@@ -62,7 +62,7 @@ public class ClientEventSubscriber {
                     ItemStack itemStack = event.getItemStack();
                     if (doubleMace) poseStack.pushPose();
 
-                    float f8 = (float)itemStack.getUseDuration() - (float)player.getUseItemRemainingTicks();
+                    float f8 = (float)itemStack.getUseDuration(player) - (float)player.getUseItemRemainingTicks();
                     float f9 = f8 + event.getPartialTick();
                     poseStack.translate(k * 0.56F, -0.52F, -0.72F);
                     if (itemStack.getItem() instanceof ICustomAnimationItem animationItem) {
@@ -177,7 +177,7 @@ public class ClientEventSubscriber {
     public static void onCameraSetup(ViewportEvent.ComputeCameraAngles event) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.getCameraEntity() instanceof Player player && !minecraft.isPaused()) {
-            player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(iShakeCapability -> {
+            Optional.of(player.getData(BrassArmoryCapabilities.EFFECT_CAPABILITY)).ifPresent(iShakeCapability -> {
                 float intensity = (float)iShakeCapability.getShake() * 1.5F;
                 if (intensity > 0) {
                     float partialTicks = (float) event.getPartialTick();

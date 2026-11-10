@@ -3,6 +3,7 @@ package com.milamber_brass.brass_armory.mixin;
 import com.milamber_brass.brass_armory.inventory.GunContainer;
 import com.milamber_brass.brass_armory.item.FlintlockItem;
 import com.milamber_brass.brass_armory.item.MaceItem;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
@@ -18,8 +19,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @Mixin(HumanoidModel.class)
 public abstract class HumanoidModelMixin {
     @Shadow @Final public ModelPart leftArm;
@@ -32,14 +31,14 @@ public abstract class HumanoidModelMixin {
     @Unique float savedRightRot;
 
     @ParametersAreNonnullByDefault
-    @Inject(method = "setupAnim*", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/HumanoidArm;RIGHT:Lnet/minecraft/world/entity/HumanoidArm;", shift = At.Shift.AFTER, ordinal = 0), remap = true)
+    @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/HumanoidArm;RIGHT:Lnet/minecraft/world/entity/HumanoidArm;", shift = At.Shift.AFTER, ordinal = 0), remap = true)
     private void saveRotsMixin(LivingEntity living, float p_102867_, float p_102868_, float p_102869_, float p_102870_, float p_102871_, CallbackInfo ci) {
         this.savedLeftRot = this.leftArm.xRot;
         this.savedRightRot = this.rightArm.xRot;
     }
 
     @ParametersAreNonnullByDefault
-    @Inject(method = "setupAnim*", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/HumanoidModel;setupAttackAnimation(Lnet/minecraft/world/entity/LivingEntity;F)V", shift = At.Shift.AFTER), remap = true)
+    @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/HumanoidModel;setupAttackAnimation(Lnet/minecraft/world/entity/LivingEntity;F)V", shift = At.Shift.AFTER), remap = true)
     private void gunRePose(LivingEntity living, float p_102867_, float p_102868_, float p_102869_, float p_102870_, float p_102871_, CallbackInfo ci) {
         if (living.isUsingItem()) {
             if (living.getMainHandItem().getItem() instanceof MaceItem && living.getOffhandItem().getItem() instanceof MaceItem) {

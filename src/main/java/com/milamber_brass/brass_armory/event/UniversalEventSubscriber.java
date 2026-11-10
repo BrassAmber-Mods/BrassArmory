@@ -13,33 +13,31 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.BombItem;
 import com.milamber_brass.brass_armory.item.QuiverItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import java.util.Optional;
+import java.util.Set;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.BasicItemListing;
-import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
-import java.util.Set;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.BasicItemListing;
+import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
 @ParametersAreNonnullByDefault
-@Mod.EventBusSubscriber(modid = BrassArmory.MOD_ID)
+@EventBusSubscriber(modid = BrassArmory.MOD_ID)
 public class UniversalEventSubscriber {
     @SubscribeEvent //Drop any lit bombs if opening a container, to prevent storing lit bombs
     public static void onPlayerContainerEventOpen(PlayerContainerEvent.Open event) {
@@ -65,7 +63,7 @@ public class UniversalEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onLivingHurtEvent(LivingHurtEvent event) {
+    public static void onLivingHurtEvent(LivingIncomingDamageEvent event) {
         if (event.getSource().getDirectEntity() instanceof ItemSupplier itemSupplier && itemSupplier.getItem().is(BrassArmoryTags.Items.BLEEDING_EDGE)) {
             BleedEffect.bleedHarder(event.getEntity(), 50, 0);
         }
@@ -74,11 +72,10 @@ public class UniversalEventSubscriber {
     @SubscribeEvent
     public static void onPotionApplicableEvent(MobEffectEvent.Applicable event) {
         LivingEntity living = event.getEntity();
-        if (event.getEffectInstance().getEffect().equals(BrassArmoryEffects.BLEEDING.get()) && living != null && (living.getMobType() == MobType.UNDEAD || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
-            event.setResult(Event.Result.DENY);
+        if (event.getEffectInstance().getEffect().equals(BrassArmoryEffects.BLEEDING) && living != null && (living.getType().is(EntityTypeTags.UNDEAD) || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
+            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             return;
         }
-        event.setResult(Event.Result.DEFAULT);
     }
 
     @SubscribeEvent
@@ -86,9 +83,9 @@ public class UniversalEventSubscriber {
         LivingEntity living = event.getEntity();
 
         if (!living.level().isClientSide) {
-            MobEffect effect = event.getEffectInstance().getEffect();
-            if (effect.equals(BrassArmoryEffects.BLEEDING.get()) || effect.equals(BrassArmoryEffects.CONFUSION.get())) {
-                ((ServerLevel)living.level()).getChunkSource().chunkMap.broadcast(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getEffectInstance()));
+            var effect = event.getEffectInstance().getEffect();
+            if (effect.equals(BrassArmoryEffects.BLEEDING) || effect.equals(BrassArmoryEffects.CONFUSION)) {
+                ((ServerLevel)living.level()).getChunkSource().chunkMap.broadcast(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getEffectInstance(), false));
             }
         }
     }
@@ -101,10 +98,10 @@ public class UniversalEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onLivingUpdateEvent(LivingEvent.LivingTickEvent event) {
+    public static void onLivingUpdateEvent(EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player && !player.level().isClientSide() && !player.isDeadOrDying()) {
-            player.getCapability(BrassArmoryCapabilities.QUIVER_CAPABILITY).ifPresent(IQuiverCapability::tick);
-            player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(IEffectCapability::tick);
+            Optional.of(player.getData(BrassArmoryCapabilities.QUIVER_CAPABILITY)).ifPresent(IQuiverCapability::tick);
+            Optional.of(player.getData(BrassArmoryCapabilities.EFFECT_CAPABILITY)).ifPresent(IEffectCapability::tick);
         }
     }
 
@@ -116,7 +113,7 @@ public class UniversalEventSubscriber {
                     Optional<ItemStack> optionalInQuiverStack = QuiverItem.getContents(quiverStack).findFirst();
                     if (optionalInQuiverStack.isPresent()) {
                         if (!player.level().isClientSide()) {
-                            player.getCapability(BrassArmoryCapabilities.QUIVER_CAPABILITY).ifPresent(capability -> {
+                            Optional.of(player.getData(BrassArmoryCapabilities.QUIVER_CAPABILITY)).ifPresent(capability -> {
                                 capability.setAmmoStack(optionalInQuiverStack.get());
                                 capability.setQuiverStack(quiverStack);
                                 event.setProjectileItemStack(capability.getAmmoStack());

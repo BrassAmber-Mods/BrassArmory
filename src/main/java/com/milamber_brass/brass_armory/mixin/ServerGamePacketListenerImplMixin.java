@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.mixin;
 
 import com.milamber_brass.brass_armory.entity.CannonEntity;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -9,8 +10,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @Mixin(ServerGamePacketListenerImpl.class)

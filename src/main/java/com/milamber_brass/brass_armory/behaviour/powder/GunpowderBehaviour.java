@@ -1,11 +1,10 @@
 package com.milamber_brass.brass_armory.behaviour.powder;
 
+import java.util.function.Predicate;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 public class GunpowderBehaviour extends AbstractPowderBehaviour {

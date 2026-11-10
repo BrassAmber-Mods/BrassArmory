@@ -2,14 +2,13 @@ package com.milamber_brass.brass_armory.client.sound;
 
 import com.milamber_brass.brass_armory.entity.CannonEntity;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault

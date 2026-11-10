@@ -5,31 +5,29 @@ import com.milamber_brass.brass_armory.behaviour.GunBehaviours;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import com.milamber_brass.brass_armory.item.*;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import net.minecraft.Util;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.block.TorchBlock;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-
+import com.milamber_brass.brass_armory.util.ItemData;
+import com.milamber_brass.brass_armory.util.PotionData;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import net.minecraft.Util;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.TorchBlock;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class BrassArmoryItemGroups {
     public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BrassArmory.MOD_ID);
 
-    public static final RegistryObject<CreativeModeTab> BRASS_ARMORY = REGISTRY.register("brass_armory", () -> CreativeModeTab.builder()
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BRASS_ARMORY = REGISTRY.register("brass_armory", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.brass_armory"))
             .icon(() -> new ItemStack(BrassArmoryItems.GOLDEN_BATTLEAXE.get()))
             .withSearchBar(79)
-            .withBackgroundLocation(BrassArmory.locate("textures/gui/creative_tab.png"))
+            .backgroundTexture(BrassArmory.locate("textures/gui/creative_tab.png"))
             .withLabelColor(16755200)
             .displayItems((parameters, output) -> {
                 List<KatanaItem> katanaItems = new ArrayList<>();
@@ -44,7 +42,7 @@ public class BrassArmoryItemGroups {
                 List<GliderItem> gliderItems = new ArrayList<>();
                 List<Item> cannonStuff = new ArrayList<>();
 
-                List<Item> allItems = BrassArmoryItems.REGISTRY.getEntries().stream().map(RegistryObject::get).filter(item -> {
+                List<? extends Item> allItems = BrassArmoryItems.REGISTRY.getEntries().stream().map(DeferredHolder::get).filter(item -> {
                     if (item instanceof KatanaItem katanaItem) {
                         katanaItems.add(katanaItem);
                         return false;
@@ -111,9 +109,9 @@ public class BrassArmoryItemGroups {
                 bowItems.forEach(output::accept);
                 arrowItems.forEach(output::accept);
 
-                for (Item item : ForgeRegistries.ITEMS.getValues()) {
+                for (Item item : BuiltInRegistries.ITEM) {
                     if (item instanceof StandingAndWallBlockItem torchItem && torchItem.getBlock() instanceof TorchBlock) {
-                        output.accept(Util.make(BrassArmoryItems.TORCH_ARROW.get().getDefaultInstance(), stack -> ArmoryUtil.addStack(stack.getOrCreateTag(), torchItem.getDefaultInstance(), "BATorch")));
+                        output.accept(Util.make(BrassArmoryItems.TORCH_ARROW.get().getDefaultInstance(), stack -> ArmoryUtil.addStack(stack, torchItem.getDefaultInstance(), "BATorch")));
                     }
                 }
 
@@ -121,10 +119,10 @@ public class BrassArmoryItemGroups {
                 cannonStuff.forEach(output::accept);
                 output.accept(BrassArmoryItems.CARCASS_ROUND.get());
 
-                output.accept(Util.make(BrassArmoryItems.CARCASS_ROUND.get().getDefaultInstance(), stack -> stack.getOrCreateTag().putBoolean("BADragonRound", true)));
-                for(Potion potion : ForgeRegistries.POTIONS.getValues()) {
-                    if (potion != Potions.EMPTY) {
-                        output.accept(PotionUtils.setPotion(BrassArmoryItems.CARCASS_ROUND.get().getDefaultInstance(), potion));
+                output.accept(Util.make(BrassArmoryItems.CARCASS_ROUND.get().getDefaultInstance(), stack -> ItemData.update(stack, tag -> tag.putBoolean("BADragonRound", true))));
+                for(var potion : BuiltInRegistries.POTION.holders().toList()) {
+                    if (!potion.value().getEffects().isEmpty()) {
+                        output.accept(PotionData.setPotion(BrassArmoryItems.CARCASS_ROUND.get().getDefaultInstance(), potion));
                     }
                 }
             }).build());

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": {
+      "tag": "c:ingots/iron"
+    },
+    "M": {
+      "tag": "c:ingots/gold"
+    }
+  },
+  "pattern": [
+    "MLM",
+    "L  ",
+    "M  "
+  ],
+  "result": {
+    "id": "brass_armory:golden_boomerang"
+  },
+  "show_notification": true
+}

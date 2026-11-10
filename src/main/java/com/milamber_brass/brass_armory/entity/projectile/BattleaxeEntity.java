@@ -5,6 +5,7 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrow
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -23,10 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class BattleaxeEntity extends AbstractThrownWeaponEntity {
@@ -41,7 +39,7 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         if (entityHitResult.getEntity() instanceof Player player) {
-            player.disableShield(true);
+            player.disableShield();
         }
         super.onHitEntity(entityHitResult);
     }
@@ -58,7 +56,7 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
             BlockPos pos = result.getBlockPos();
             BlockState hitBlockState = this.level().getBlockState(pos);
             if (hitBlockState.getBlock() instanceof DoorBlock || hitBlockState.getBlock() instanceof TrapDoorBlock) {
-                if (!TierSortingRegistry.getTiersLowerThan(Tiers.DIAMOND).contains(tieredItem.getTier())) {
+                if (tieredItem.getTier().getAttackDamageBonus() >= Tiers.DIAMOND.getAttackDamageBonus()) {
                     Vec3 deltaMovement = this.onHitDeltaMovement();
                     this.level().destroyBlock(pos, true, this.getOwner());
                     this.setDeltaMovement(deltaMovement);

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": {
+      "tag": "c:leathers"
+    },
+    "S": {
+      "tag": "c:strings"
+    }
+  },
+  "pattern": [
+    "LS ",
+    "LLS",
+    " LL"
+  ],
+  "result": {
+    "id": "brass_armory:quiver"
+  },
+  "show_notification": true
+}

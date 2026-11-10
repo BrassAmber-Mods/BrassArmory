@@ -10,13 +10,14 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.inventory.GunContainer;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import java.util.function.Predicate;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,6 +30,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
@@ -43,12 +45,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 public class CannonEntity extends Entity implements iGun {
@@ -73,14 +70,14 @@ public class CannonEntity extends Entity implements iGun {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(DATA_TAG, new CompoundTag());
-        this.entityData.define(DATA_FUSE, 0);
-        this.entityData.define(DATA_DAMAGE, 0.0F);
-        this.entityData.define(DATA_HURTDIR, 1);
-        this.entityData.define(DATA_HURT, 0);
-        this.entityData.define(DATA_MOVE_TICKS, 0);
-        this.entityData.define(DATA_SOUND_TICKS, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(DATA_TAG, new CompoundTag());
+        builder.define(DATA_FUSE, 0);
+        builder.define(DATA_DAMAGE, 0.0F);
+        builder.define(DATA_HURTDIR, 1);
+        builder.define(DATA_HURT, 0);
+        builder.define(DATA_MOVE_TICKS, 0);
+        builder.define(DATA_SOUND_TICKS, 0);
     }
 
     public ItemStack getAmmo() {
@@ -338,8 +335,9 @@ public class CannonEntity extends Entity implements iGun {
     }
 
     @Override
-    protected float getEyeHeight(Pose pose, EntityDimensions dimensions) {
-        return dimensions.height * 0.7F;
+    public EntityDimensions getDimensions(Pose pose) {
+        var dimensions = super.getDimensions(pose);
+        return dimensions.withEyeHeight(dimensions.height() * 0.7F);
     }
 
     @Override
@@ -353,7 +351,7 @@ public class CannonEntity extends Entity implements iGun {
                     this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.putUUID(uuid, player.getUUID())));
                     this.getEntityData().set(DATA_FUSE, 1);
 
-                    player.getItemInHand(hand).hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+                    player.getItemInHand(hand).hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                 }
                 return InteractionResult.SUCCESS;
             } else return InteractionResult.CONSUME;
@@ -461,10 +459,7 @@ public class CannonEntity extends Entity implements iGun {
         tag.putInt("DataFuse", this.entityData.get(DATA_FUSE));
     }
 
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+
 
     @Override
     protected @NotNull Component getTypeName() {

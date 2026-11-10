@@ -4,6 +4,8 @@ import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.projectile.BulletEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryModels;
 import com.mojang.blaze3d.vertex.PoseStack;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -15,16 +17,13 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class BulletRenderer<T extends BulletEntity> extends EntityRenderer<T> {
-    private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/guns/cannonball.png");
+    private static final ResourceLocation RESOURCE_LOCATION = ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/item/guns/cannonball.png");
     private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(RESOURCE_LOCATION);
 
     private final ModelPart core;

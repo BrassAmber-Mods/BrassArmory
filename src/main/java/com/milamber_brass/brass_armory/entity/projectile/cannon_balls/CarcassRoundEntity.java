@@ -6,11 +6,18 @@ import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.CarcassRoundItem;
 import com.milamber_brass.brass_armory.util.Impact;
+import com.milamber_brass.brass_armory.util.ItemData;
+import com.milamber_brass.brass_armory.util.PotionData;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AreaEffectCloud;
@@ -21,7 +28,7 @@ import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -31,10 +38,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class CarcassRoundEntity extends AbstractBulletEntity {
@@ -60,7 +63,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
     @Override
     public @NotNull ItemStack getItem() {
         if (!this.level().isClientSide()) return super.getItem();
-        else return Util.make(super.getItem(), stack -> PotionUtils.setPotion(stack, Potions.SLOW_FALLING));
+        else return Util.make(super.getItem(), stack -> PotionData.setPotion(stack, Potions.SLOW_FALLING));
     }
 
     @Override
@@ -80,8 +83,8 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
             impact.explode();
             impact.finalizeExplosion(true);
             ItemStack stack = this.getItem();
-            Potion potion = PotionUtils.getPotion(stack);
-            List<MobEffectInstance> list = PotionUtils.getMobEffects(stack);
+            Holder<Potion> potion = PotionData.getPotion(stack);
+            List<MobEffectInstance> list = PotionData.getMobEffects(stack);
 
             Vec3 diff = pos.subtract(this.position());
             if (potion.equals(Potions.WATER) && list.isEmpty()) this.applyWater(diff);
@@ -91,7 +94,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
             }
 
             if (CarcassRoundItem.isADragonRound(stack)) this.level().levelEvent(2006, this.blockPosition(), -1);
-            else this.level().levelEvent(LEVEL_EVENT_CONSTANT, this.blockPosition(), PotionUtils.getColor(stack));
+            else this.level().levelEvent(LEVEL_EVENT_CONSTANT, this.blockPosition(), PotionData.getColor(stack));
 
             if (this.getOwner() instanceof ServerPlayer player) BrassArmoryAdvancements.DRAGON_ROUND.trigger(player);
         }
@@ -128,9 +131,9 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
                         if (livingentity.equals(victim)) durationMultiplier = 1.0D;
 
                         for(MobEffectInstance mobeffectinstance : mobEffectInstances) {
-                            MobEffect mobeffect = mobeffectinstance.getEffect();
-                            if (mobeffect.isInstantenous()) {
-                                mobeffect.applyInstantenousEffect(this, this.getOwner(), livingentity, mobeffectinstance.getAmplifier(), durationMultiplier);
+                            var mobeffect = mobeffectinstance.getEffect();
+                            if (mobeffect.value().isInstantenous()) {
+                                mobeffect.value().applyInstantenousEffect(this, this.getOwner(), livingentity, mobeffectinstance.getAmplifier(), durationMultiplier);
                             } else {
                                 int duration = (int)(durationMultiplier * (double)mobeffectinstance.getDuration() + 0.5D);
                                 if (duration > 20) {
@@ -145,7 +148,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
 
     }
 
-    protected void makeAreaOfEffectCloud(ItemStack itemStack, Potion potion, Vec3 pos) {
+    protected void makeAreaOfEffectCloud(ItemStack itemStack, Holder<Potion> potion, Vec3 pos) {
         AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level(), pos.x, pos.y, pos.z);
         if (this.getOwner() instanceof LivingEntity living) areaeffectcloud.setOwner(living);
 
@@ -160,15 +163,15 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
             areaeffectcloud.setRadiusOnUse(-0.5F);
             areaeffectcloud.setWaitTime(10);
             areaeffectcloud.setRadiusPerTick(-areaeffectcloud.getRadius() / (float)areaeffectcloud.getDuration());
-            areaeffectcloud.setPotion(potion);
+            areaeffectcloud.setPotionContents(itemStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY));
 
-            for(MobEffectInstance mobeffectinstance : PotionUtils.getCustomEffects(itemStack)) {
+            for(MobEffectInstance mobeffectinstance : PotionData.getCustomEffects(itemStack)) {
                 areaeffectcloud.addEffect(new MobEffectInstance(mobeffectinstance));
             }
 
-            CompoundTag compoundtag = itemStack.getTag();
+            CompoundTag compoundtag = ItemData.getTag(itemStack);
             if (compoundtag != null && compoundtag.contains("CustomPotionColor", 99)) {
-                areaeffectcloud.setFixedColor(compoundtag.getInt("CustomPotionColor"));
+                areaeffectcloud.setPotionContents(new PotionContents(Optional.of(potion), Optional.of(compoundtag.getInt("CustomPotionColor")), PotionData.getCustomEffects(itemStack)));
             }
         }
 

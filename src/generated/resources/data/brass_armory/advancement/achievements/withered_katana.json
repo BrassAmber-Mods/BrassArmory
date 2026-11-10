@@ -1,0 +1,36 @@
+{
+  "parent": "brass_armory:achievements/katana",
+  "criteria": {
+    "wither_katana": {
+      "conditions": {},
+      "trigger": "brass_armory:wither_katana"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.brass_armory.withered_katana.desc"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:katana",
+      "components": {
+        "minecraft:damage": 0,
+        "minecraft:custom_data": {
+          "BrassArmoryWithering": 100
+        }
+      }
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.brass_armory.withered_katana"
+    }
+  },
+  "requirements": [
+    [
+      "wither_katana"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

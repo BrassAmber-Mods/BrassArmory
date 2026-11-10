@@ -7,6 +7,9 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.BombItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -27,10 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class BombEntity extends AbstractRollableItemProjectileEntity {
@@ -62,9 +61,9 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
         this.defused = false;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_FUSE, 80);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_FUSE, 80);
     }
 
     @NotNull
@@ -147,8 +146,8 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
     }
 
     @Override
-    public double getMyRidingOffset() {
-        return 0.25D;
+    public Vec3 getVehicleAttachmentPoint(Entity vehicle) {
+        return new Vec3(0.0D, 0.25D, 0.0D);
     }
 
     protected void explode(Level level) {

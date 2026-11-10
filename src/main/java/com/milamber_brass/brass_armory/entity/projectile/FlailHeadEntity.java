@@ -7,6 +7,8 @@ import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.FlailItem;
+import com.milamber_brass.brass_armory.util.TierUtil;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -30,6 +32,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,13 +40,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.TierSortingRegistry;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static net.minecraft.core.Direction.UP;
 
 @ParametersAreNonnullByDefault
@@ -62,8 +61,8 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
         double damage = living.getAttributeValue(Attributes.ATTACK_DAMAGE);
         ItemStack mainHandItem = living.getMainHandItem();
         if (mainHandItem != weaponStack && !mainHandItem.isEmpty()) {
-            for (AttributeModifier attributeModifier : mainHandItem.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE)) {
-                damage -= attributeModifier.getAmount();
+            for (AttributeModifier attributeModifier : mainHandItem.getAttributeModifiers().modifiers().stream().filter(entry -> entry.attribute().equals(Attributes.ATTACK_DAMAGE) && entry.slot().test(EquipmentSlot.MAINHAND)).map(ItemAttributeModifiers.Entry::modifier).toList()) {
+                damage -= attributeModifier.amount();
             }
         }
         if (weaponStack.getItem() instanceof FlailItem flailItem) damage += flailItem.getAttackDamage();
@@ -71,9 +70,9 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_OWNER, Integer.MAX_VALUE);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_OWNER, Integer.MAX_VALUE);
     }
 
     @Override
@@ -140,7 +139,7 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
 
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState blockState = this.level().getBlockState(pos);
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierSortingRegistry.isCorrectTierForDrops(this.getItem().getItem() instanceof TieredItem tieredItem ? tieredItem.getTier() : Tiers.IRON, blockState)) {
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierUtil.isCorrectTierForDrops(this.getItem().getItem() instanceof TieredItem tieredItem ? tieredItem.getTier() : Tiers.IRON, blockState)) {
             this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
             return;

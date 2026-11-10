@@ -1,0 +1,33 @@
+{
+  "parent": "brass_armory:achievements/root",
+  "criteria": {
+    "longbow": {
+      "conditions": {},
+      "trigger": "brass_armory:longbow"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.brass_armory.longbow.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:longbow",
+      "components": {
+        "minecraft:damage": 0
+      }
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.brass_armory.longbow"
+    }
+  },
+  "requirements": [
+    [
+      "longbow"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

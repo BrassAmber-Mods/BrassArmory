@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": {
+      "tag": "minecraft:stone_tool_materials"
+    },
+    "M": {
+      "tag": "c:ingots/iron"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MLM",
+    " M "
+  ],
+  "result": {
+    "id": "brass_armory:iron_spiky_ball"
+  },
+  "show_notification": true
+}

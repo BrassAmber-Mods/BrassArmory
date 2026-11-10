@@ -1,15 +1,15 @@
 package com.milamber_brass.brass_armory.capabilities;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
-import com.milamber_brass.brass_armory.init.BrassArmoryPackets;
 import com.milamber_brass.brass_armory.packets.EffectPacket;
+import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.network.PacketDistributor;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @ParametersAreNonnullByDefault
 public class EffectCapabilityHandler implements IEffectCapability {
@@ -61,11 +61,11 @@ public class EffectCapabilityHandler implements IEffectCapability {
     }
 
     private void sendUpdatePacket() {
-        BrassArmoryPackets.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> this.player), new EffectPacket(this.player, this));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new EffectPacket(this.player, this));
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider registries) {
         return Util.make(new CompoundTag(), tag -> {
             tag.putDouble("BAShakeValue", this.getShake());
             tag.putFloat("BASlowValue", this.getSlow());
@@ -73,12 +73,12 @@ public class EffectCapabilityHandler implements IEffectCapability {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
         this.setShake(tag.getDouble("BAShakeValue"));
         this.setSlow(tag.getFloat("BASlowValue"));
     }
 
     public static void setShakePower(Player player, double shake) {
-        player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(iShakeCapability -> iShakeCapability.setShake(shake));
+        Optional.of(player.getData(BrassArmoryCapabilities.EFFECT_CAPABILITY)).ifPresent(iShakeCapability -> iShakeCapability.setShake(shake));
     }
 }

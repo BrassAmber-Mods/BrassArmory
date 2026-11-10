@@ -1,6 +1,10 @@
 {
     "pack": {
         "description": "Brass's Armory resources",
-        "pack_format": 8
+        "pack_format": 34,
+        "supported_formats": [
+            34,
+            48
+        ]
     }
 }

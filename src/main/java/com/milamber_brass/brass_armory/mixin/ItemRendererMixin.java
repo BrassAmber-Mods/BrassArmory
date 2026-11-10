@@ -1,17 +1,18 @@
 package com.milamber_brass.brass_armory.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.item.QuiverItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import com.milamber_brass.brass_armory.util.ItemData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -20,24 +21,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Iterator;
 
 @Mixin(ItemRenderer.class)
 @ParametersAreNonnullByDefault
 public abstract class ItemRendererMixin {
     @Shadow public abstract BakedModel getModel(ItemStack stack, @Nullable Level level, @Nullable LivingEntity living, int i);
-    @Shadow public abstract void renderModelLists(BakedModel bakedModel, ItemStack stack, int x, int y, PoseStack poseStack, VertexConsumer vertexConsumer);
+    @Shadow protected abstract void renderModelLists(BakedModel bakedModel, ItemStack stack, int x, int y, PoseStack poseStack, VertexConsumer vertexConsumer);
 
-    @SuppressWarnings("rawtypes")
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;renderModelLists(Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/item/ItemStack;IILcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;)V", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILSOFT, remap = true)
-    private void renderGuiItem(ItemStack stack, ItemDisplayContext context, boolean b, PoseStack poseStack, MultiBufferSource source, int x, int y, BakedModel bakedModel, CallbackInfo ci, boolean flag, boolean flag1, Iterator var11, BakedModel model, Iterator var13, RenderType rendertype, VertexConsumer vertexconsumer) {
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;renderModelLists(Lnet/minecraft/client/resources/model/BakedModel;Lnet/minecraft/world/item/ItemStack;IILcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;)V"))
+    private void renderGuiItem(ItemRenderer renderer, BakedModel model, ItemStack stack, int x, int y, PoseStack poseStack, VertexConsumer vertexconsumer, Operation<Void> original) {
         if (stack.is(BrassArmoryItems.TORCH_ARROW.get())) {
-            this.renderTorch(poseStack, ArmoryUtil.loadStack(stack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance()), x, y, vertexconsumer);
+            this.renderTorch(poseStack, ArmoryUtil.loadStack(ItemData.getTag(stack), "BATorch", Items.TORCH.getDefaultInstance()), x, y, vertexconsumer);
         } else if (stack.getItem() instanceof QuiverItem) {
             QuiverItem.getContents(stack).findFirst().ifPresent(itemStack -> {
                 poseStack.pushPose();
@@ -46,11 +40,12 @@ public abstract class ItemRendererMixin {
                 poseStack.scale(1.0F, 1.0F, 0.75F);
                 this.renderModelLists(this.getModel(itemStack, null, null, 0), itemStack, x, y, poseStack, vertexconsumer);
                 if (itemStack.is(BrassArmoryItems.TORCH_ARROW.get())) {
-                    this.renderTorch(poseStack, ArmoryUtil.loadStack(itemStack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance()), x, y, vertexconsumer);
+                    this.renderTorch(poseStack, ArmoryUtil.loadStack(ItemData.getTag(itemStack), "BATorch", Items.TORCH.getDefaultInstance()), x, y, vertexconsumer);
                 }
                 poseStack.popPose();
             });
         }
+        original.call(renderer, model, stack, x, y, poseStack, vertexconsumer);
     }
 
     @Unique

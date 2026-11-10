@@ -1,0 +1,38 @@
+{
+  "criteria": {
+    "killed_by_something": {
+      "conditions": {},
+      "trigger": "minecraft:entity_killed_player"
+    },
+    "killed_something": {
+      "conditions": {},
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "brass_armory:textures/gui/advancements.png",
+    "description": {
+      "translate": "advancement.brass_armory.root.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:golden_battleaxe",
+      "components": {
+        "minecraft:damage": 0
+      }
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "itemGroup.brass_armory"
+    }
+  },
+  "requirements": [
+    [
+      "killed_something",
+      "killed_by_something"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

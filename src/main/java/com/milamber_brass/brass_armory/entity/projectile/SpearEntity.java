@@ -1,12 +1,13 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
 import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
-import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.SpearItem;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
@@ -17,8 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class SpearEntity extends AbstractThrownWeaponEntity {

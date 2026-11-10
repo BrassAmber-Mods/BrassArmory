@@ -3,6 +3,9 @@ package com.milamber_brass.brass_armory.data;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.item.FireRodItem;
+import java.util.concurrent.CompletableFuture;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -16,14 +19,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.concurrent.CompletableFuture;
 
 @ParametersAreNonnullByDefault
 public abstract class BrassArmoryTags {
@@ -68,6 +69,25 @@ public abstract class BrassArmoryTags {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
+            this.tag(ItemTags.DYEABLE).add(BrassArmoryItems.GLIDER.get());
+
+            for (var entry : BrassArmoryItems.REGISTRY.getEntries()) {
+                Item item = entry.get();
+                boolean weapon = item instanceof TieredItem
+                        && !(item instanceof FireRodItem);
+                if (weapon) {
+                    this.tag(ItemTags.WEAPON_ENCHANTABLE).add(item);
+                    this.tag(ItemTags.SHARP_WEAPON_ENCHANTABLE).add(item);
+                    this.tag(ItemTags.DURABILITY_ENCHANTABLE).add(item);
+                    this.tag(ItemTags.VANISHING_ENCHANTABLE).add(item);
+                }
+            }
+            this.tag(ItemTags.SWORD_ENCHANTABLE).add(BrassArmoryItems.KATANA.get());
+            this.tag(ItemTags.BOW_ENCHANTABLE).add(BrassArmoryItems.LONGBOW.get());
+            this.tag(ItemTags.DURABILITY_ENCHANTABLE).add(BrassArmoryItems.LONGBOW.get(), BrassArmoryItems.GLIDER.get());
+            this.tag(ItemTags.VANISHING_ENCHANTABLE).add(BrassArmoryItems.LONGBOW.get(), BrassArmoryItems.GLIDER.get(),
+                    BrassArmoryItems.FLINTLOCK_PISTOL.get(), BrassArmoryItems.MUSKET.get(), BrassArmoryItems.BLUNDERBUSS.get());
+
             this.tag(BOMB).add(
                     BrassArmoryItems.BOMB.get(),
                     BrassArmoryItems.BOUNCY_BOMB.get(),

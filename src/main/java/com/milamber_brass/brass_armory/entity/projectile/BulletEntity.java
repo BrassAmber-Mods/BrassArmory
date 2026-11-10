@@ -3,6 +3,9 @@ package com.milamber_brass.brass_armory.entity.projectile;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractBulletEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.util.TierUtil;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -21,11 +24,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.TierSortingRegistry;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.neoforged.neoforge.common.Tags;
 
 @ParametersAreNonnullByDefault
 public class BulletEntity extends AbstractBulletEntity {
@@ -67,7 +66,7 @@ public class BulletEntity extends AbstractBulletEntity {
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState blockState = this.level().getBlockState(pos);
 
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierSortingRegistry.isCorrectTierForDrops(Tiers.IRON, blockState)) {
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierUtil.isCorrectTierForDrops(Tiers.IRON, blockState)) {
             this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.8D));
         } else {

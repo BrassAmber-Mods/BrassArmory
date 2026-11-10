@@ -5,6 +5,11 @@ import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import com.milamber_brass.brass_armory.effect.BleedEffect;
 import com.milamber_brass.brass_armory.item.KatanaItem;
+import com.milamber_brass.brass_armory.util.ItemData;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -40,16 +45,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ArmoryUtil {
     public static void impaleLivingEntity(LivingEntity living, float damage, RandomSource random) {
-        float damageAfterAbsorb = CombatRules.getDamageAfterAbsorb(damage, living.getArmorValue(), (float)living.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        float damageAfterAbsorb = CombatRules.getDamageAfterAbsorb(living, damage, ArmoryUtil.getDamageSource(living.level(), BrassArmoryDamageTypes.IMPALE), living.getArmorValue(), (float)living.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
         float finalDamage = damage - damageAfterAbsorb;
         finalDamage = Math.min(finalDamage, (float)Math.sqrt(finalDamage * 10F) / 10F);
 
@@ -59,7 +59,7 @@ public class ArmoryUtil {
             if (random.nextBoolean()) break;
             ItemStack slotStack = living.getItemBySlot(slot);
             if (!slotStack.isEmpty()) {
-                slotStack.hurtAndBreak(random.nextInt(4), living, (livingEntity) -> livingEntity.broadcastBreakEvent(slot));
+                slotStack.hurtAndBreak(random.nextInt(4), living, slot);
             }
         }
     }
@@ -106,7 +106,7 @@ public class ArmoryUtil {
             ListTag listtag = compoundtag.getList(name, 10);
             for(int i = 0; i < listtag.size(); ++i) {
                 CompoundTag ammoCompoundTag = listtag.getCompound(i);
-                list.add(ItemStack.of(ammoCompoundTag));
+                list.add(ItemData.load(ammoCompoundTag));
             }
         }
         return list;
@@ -119,13 +119,21 @@ public class ArmoryUtil {
         else return list.get(0);
     }
 
+    public static void addStack(ItemStack target, ItemStack itemStack, String name) {
+        ItemData.update(target, tag -> addStack(tag, itemStack, name));
+    }
+
+    public static void clearStack(ItemStack target, String name) {
+        ItemData.update(target, tag -> clearStack(tag, name));
+    }
+
     public static void addStack(CompoundTag compoundTag, ItemStack itemStack, String name) {
         ListTag listtag;
         if (compoundTag.contains(name, 9)) listtag = compoundTag.getList(name, 10);
         else listtag = new ListTag();
 
         CompoundTag ammoCompoundTag = new CompoundTag();
-        itemStack.save(ammoCompoundTag);
+        ItemData.save(itemStack, ammoCompoundTag);
         listtag.add(ammoCompoundTag);
         compoundTag.put(name, listtag);
     }
@@ -144,7 +152,7 @@ public class ArmoryUtil {
     }
 
     public static boolean isFuseLighter(ItemStack stack) {
-        return stack.is(BrassArmoryTags.Items.FUSE_LIGHTER) || (stack.isEnchanted() && (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_ASPECT, stack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, stack) > 0));
+        return stack.is(BrassArmoryTags.Items.FUSE_LIGHTER) || (stack.isEnchanted() && (EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FIRE_ASPECT), stack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FLAME), stack) > 0));
     }
 
     public static void addCooldownToList(Player player, List<Item> items, int ticks) {
@@ -154,7 +162,7 @@ public class ArmoryUtil {
     }
 
     public static float frameTime(Level level) {
-        return !level.isClientSide ? 1.0F : Minecraft.getInstance().getFrameTime();
+        return !level.isClientSide ? 1.0F : Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
     }
 
     public static DamageSource getDamageSource(Level level, ResourceKey<DamageType> type) {

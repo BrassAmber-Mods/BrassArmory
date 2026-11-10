@@ -25,7 +25,7 @@ public abstract class LocalPlayerMixin extends LivingEntity {
 
     @Inject(method = "serverAiStep", at = @At(value = "TAIL"), remap = true)
     private void getSpeed(CallbackInfo ci) {
-        if (this.isControlledCamera() && this.hasEffect(BrassArmoryEffects.CONFUSION.get())) {
+        if (this.isControlledCamera() && this.hasEffect(BrassArmoryEffects.CONFUSION)) {
             this.zza *= this.tickCount % 40 <= 20 ? 0.8F : -0.5F;
             this.xxa *= this.tickCount % 30 <= 15 ? 0.8F : -0.8F;
         }

@@ -2,8 +2,12 @@ package com.milamber_brass.brass_armory.behaviour.powder;
 
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
-import com.milamber_brass.brass_armory.init.BrassArmoryPackets;
 import com.milamber_brass.brass_armory.packets.ParticlePacket;
+import java.util.Optional;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -13,12 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Predicate;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 @ParametersAreNonnullByDefault
 public abstract class AbstractPowderBehaviour {
@@ -48,7 +47,7 @@ public abstract class AbstractPowderBehaviour {
                     }
                 }
             }
-            BrassArmoryPackets.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> shooter), particlePacket);
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(shooter, particlePacket);
         }
     }
 
@@ -65,7 +64,7 @@ public abstract class AbstractPowderBehaviour {
 
     public void applyEffect(Entity entity) {
         if (entity instanceof Projectile projectile) {
-            projectile.getCapability(BrassArmoryCapabilities.POWDER_CAPABILITY).ifPresent(capability -> capability.setPowderBehaviour(this));
+            Optional.of(projectile.getData(BrassArmoryCapabilities.POWDER_CAPABILITY)).ifPresent(capability -> capability.setPowderBehaviour(this));
         }
     }
 

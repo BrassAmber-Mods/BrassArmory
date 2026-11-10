@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "minecraft:bow"
+    },
+    "I": {
+      "tag": "c:strings"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    " SI",
+    "SBI",
+    " SI"
+  ],
+  "result": {
+    "id": "brass_armory:longbow"
+  },
+  "show_notification": true
+}

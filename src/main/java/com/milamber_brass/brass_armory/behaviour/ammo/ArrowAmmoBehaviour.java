@@ -2,6 +2,9 @@ package com.milamber_brass.brass_armory.behaviour.ammo;
 
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
+import java.util.function.Predicate;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -12,10 +15,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Predicate;
-
 @ParametersAreNonnullByDefault
 public class ArrowAmmoBehaviour extends AbstractAmmoBehaviour {
     public ArrowAmmoBehaviour() {
@@ -25,7 +24,7 @@ public class ArrowAmmoBehaviour extends AbstractAmmoBehaviour {
     @Override
     public boolean onShoot(Level level, LivingEntity owner, Entity shooter, ItemStack ammoStack, @Nullable AbstractPowderBehaviour powderBehaviour, iGun gun) {
         super.onShoot(level, owner, shooter, ammoStack, powderBehaviour, gun);
-        AbstractArrow abstractarrow = ((ArrowItem)(ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW)).createArrow(level, ammoStack, owner);
+        AbstractArrow abstractarrow = ((ArrowItem)(ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW)).createArrow(level, ammoStack, owner, null);
         if (powderBehaviour != null) powderBehaviour.applyEffect(abstractarrow);
         if (!level.isClientSide) {
             float speed = gun.speed();

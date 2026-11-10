@@ -5,6 +5,7 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRolla
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpecialArrowEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -17,8 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class SlimeArrowEntity extends AbstractSpecialArrowEntity {

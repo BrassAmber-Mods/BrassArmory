@@ -1,20 +1,17 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public abstract class AbstractSpecialArrowEntity extends AbstractArrow {
@@ -25,12 +22,12 @@ public abstract class AbstractSpecialArrowEntity extends AbstractArrow {
     }
 
     public AbstractSpecialArrowEntity(EntityType<? extends AbstractArrow> entityType, Level level, LivingEntity shooter) {
-        super(entityType, shooter, level);
+        super(entityType, shooter, level, Items.ARROW.getDefaultInstance(), null);
         this.pickup = Pickup.CREATIVE_ONLY;
     }
 
     public AbstractSpecialArrowEntity(EntityType<? extends AbstractArrow> entityType, Level level, double x, double y, double z) {
-        super(entityType, x, y, z, level);
+        super(entityType, x, y, z, level, Items.ARROW.getDefaultInstance(), null);
         this.pickup = Pickup.CREATIVE_ONLY;
     }
 
@@ -66,9 +63,7 @@ public abstract class AbstractSpecialArrowEntity extends AbstractArrow {
         return this.getPickupItem().getItem().getName(this.getPickupItem());
     }
 
+
     @Override
-    @Nonnull
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+    protected ItemStack getDefaultPickupItem() { return this.getPickupItem(); }
 }

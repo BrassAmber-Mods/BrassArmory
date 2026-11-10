@@ -1,18 +1,17 @@
 package com.milamber_brass.brass_armory.behaviour.ammo;
 
-import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import com.milamber_brass.brass_armory.behaviour.iGun;
+import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 public class ThrownItemAmmoBehaviour extends AbstractAmmoBehaviour {

@@ -5,6 +5,8 @@ import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.util.Impact;
+import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,9 +27,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Optional;
-
 @ParametersAreNonnullByDefault
 public class CannonBallEntity extends AbstractBulletEntity {
     private static final EntityDataAccessor<Integer> DATA_HITS = SynchedEntityData.defineId(CannonBallEntity.class, EntityDataSerializers.INT);
@@ -46,9 +45,9 @@ public class CannonBallEntity extends AbstractBulletEntity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_HITS, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_HITS, 0);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class CannonBallEntity extends AbstractBulletEntity {
                 impact.explode();
                 impact.finalizeExplosion(true);
                 this.getEntityData().set(DATA_HITS, this.getEntityData().get(DATA_HITS) + 1);
-                this.getCapability(BrassArmoryCapabilities.POWDER_CAPABILITY).ifPresent(iPowderCapability -> {
+                Optional.of(this.getData(BrassArmoryCapabilities.POWDER_CAPABILITY)).ifPresent(iPowderCapability -> {
                     for (BlockPos blockpos : impact.toBlow) {
                         BlockState blockstate = serverLevel.getBlockState(blockpos);
                         if (!blockstate.isAir()) iPowderCapability.getPowderBehaviour().sendParticles(serverLevel, Vec3.atCenterOf(blockpos));
@@ -108,12 +107,11 @@ public class CannonBallEntity extends AbstractBulletEntity {
 
         if (victimEntity.hurt(this.damageSources().thrown(this, ownerEntity), damage)) {
             if (victimEntity.getType() == EntityType.ENDERMAN) return;
-            if (this.isOnFire()) victimEntity.setSecondsOnFire(40);
+            if (this.isOnFire()) victimEntity.igniteForSeconds(40);
 
             if (victimEntity instanceof LivingEntity livingVictim) {
                 if (ownerEntity instanceof LivingEntity livingOwner) {
-                    EnchantmentHelper.doPostHurtEffects(livingVictim, livingOwner);
-                    EnchantmentHelper.doPostDamageEffects(livingOwner, livingVictim);
+                    if (this.level() instanceof ServerLevel serverLevel) EnchantmentHelper.doPostAttackEffects(serverLevel, livingVictim, this.damageSources().thrown(this, livingOwner));
                 }
                 this.doPostHurtEffects(livingVictim);
             }

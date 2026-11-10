@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.client.gui;
 
 import com.milamber_brass.brass_armory.inventory.QuiverTooltip;
 import com.milamber_brass.brass_armory.item.QuiverItem;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -9,15 +10,13 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class ClientQuiverTooltip implements ClientTooltipComponent {
-    public static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation("textures/gui/container/bundle.png");
+    public static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.parse("textures/gui/container/bundle.png");
     private final NonNullList<ItemStack> items;
     private final int weight;
 

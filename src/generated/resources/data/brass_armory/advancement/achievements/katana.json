@@ -1,0 +1,41 @@
+{
+  "parent": "brass_armory:achievements/root",
+  "criteria": {
+    "katana": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "brass_armory:katana"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.brass_armory.katana.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:katana",
+      "components": {
+        "minecraft:damage": 0
+      }
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.brass_armory.katana"
+    }
+  },
+  "requirements": [
+    [
+      "katana"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

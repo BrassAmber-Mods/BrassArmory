@@ -3,14 +3,13 @@ package com.milamber_brass.brass_armory.behaviour;
 import com.google.common.collect.Maps;
 import com.milamber_brass.brass_armory.behaviour.ammo.AbstractAmmoBehaviour;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
+import java.util.Map;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Map;
-import java.util.Optional;
 
 @ParametersAreNonnullByDefault
 public class GunBehaviours {

@@ -1,13 +1,13 @@
 package com.milamber_brass.brass_armory.jei;
 
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import com.milamber_brass.brass_armory.util.ItemData;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class TorchSubtypeInterpreter implements IIngredientSubtypeInterpreter<ItemStack> {
@@ -19,7 +19,7 @@ public class TorchSubtypeInterpreter implements IIngredientSubtypeInterpreter<It
 
     @Override
     public @NotNull String apply(ItemStack itemStack, UidContext context) {
-        ItemStack torch = ArmoryUtil.loadStack(itemStack.getOrCreateTag(), "BATorch", Items.TORCH.getDefaultInstance());
+        ItemStack torch = ArmoryUtil.loadStack(ItemData.getTag(itemStack), "BATorch", Items.TORCH.getDefaultInstance());
         return torch.toString();
     }
 }

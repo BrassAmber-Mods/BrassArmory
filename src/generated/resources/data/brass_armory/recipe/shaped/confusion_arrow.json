@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "F": {
+      "tag": "c:feathers"
+    },
+    "M": {
+      "tag": "c:sands"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "M",
+    "S",
+    "F"
+  ],
+  "result": {
+    "count": 4,
+    "id": "brass_armory:confusion_arrow"
+  },
+  "show_notification": true
+}

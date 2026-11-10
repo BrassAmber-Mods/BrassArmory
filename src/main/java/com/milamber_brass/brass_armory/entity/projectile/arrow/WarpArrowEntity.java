@@ -5,6 +5,7 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpeci
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,11 +19,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class WarpArrowEntity extends AbstractSpecialArrowEntity {
@@ -50,8 +49,8 @@ public class WarpArrowEntity extends AbstractSpecialArrowEntity {
         if (!this.level().isClientSide && this.isAlive()) {
             // Check if the shooter is a Player.
             if (entity instanceof ServerPlayer serverPlayer) {
-                if (serverPlayer.connection.connection.isConnected() && serverPlayer.level() == this.level() && !serverPlayer.isSleeping()) {
-                    EntityTeleportEvent.EnderPearl event = ForgeEventFactory.onEnderPearlLand(serverPlayer, pos.x, pos.y, pos.z, EntityType.ENDER_PEARL.create(this.level()), 5.0F, result);
+                if (serverPlayer.connection.isAcceptingMessages() && serverPlayer.level() == this.level() && !serverPlayer.isSleeping()) {
+                    EntityTeleportEvent.EnderPearl event = EventHooks.onEnderPearlLand(serverPlayer, pos.x, pos.y, pos.z, EntityType.ENDER_PEARL.create(this.level()), 5.0F, result);
                     if (!event.isCanceled()) {
                         // Small chance to spawn an Endermite.
                         if (this.random.nextFloat() < 0.05F && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {

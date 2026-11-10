@@ -1,11 +1,13 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
+import com.milamber_brass.brass_armory.util.TierUtil;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -28,15 +30,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static net.minecraft.core.Direction.UP;
 
 @ParametersAreNonnullByDefault
@@ -61,10 +56,10 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
         this.rotDirection = arm == HumanoidArm.LEFT ? 10F : -10F;
     }
 
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_RENDER_ROTATION, 0F);
-        this.entityData.define(DATA_RENDER_ROTATION0, 0F);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_RENDER_ROTATION, 0F);
+        builder.define(DATA_RENDER_ROTATION0, 0F);
     }
 
     @Override
@@ -146,7 +141,7 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
         }
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState blockState = this.level().getBlockState(pos);
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierSortingRegistry.isCorrectTierForDrops(this.getItem().getItem() instanceof TieredItem tieredItem ? tieredItem.getTier() : Tiers.IRON, blockState)) {
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierUtil.isCorrectTierForDrops(this.getItem().getItem() instanceof TieredItem tieredItem ? tieredItem.getTier() : Tiers.IRON, blockState)) {
             this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
             return;
@@ -204,8 +199,5 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
         this.setRotation0(this.getRotation());
     }
 
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+
 }

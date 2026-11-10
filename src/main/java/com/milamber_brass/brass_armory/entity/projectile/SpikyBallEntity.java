@@ -7,6 +7,10 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.SpikyBallItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.Stats;
@@ -22,10 +26,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
@@ -65,7 +65,7 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
 
     protected boolean hurt() {
         ItemStack stack = this.getItem().copy();
-        if (stack.hurt(1, this.level().random, this.getOwner() instanceof ServerPlayer serverPlayer ? serverPlayer : null)) {
+        if (damageStack(stack)) {
             if (this.getOwner() instanceof Player player) player.awardStat(Stats.ITEM_BROKEN.get(stack.getItem()));
             this.discard();
             return true;
@@ -109,5 +109,11 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
     @Override
     protected Item getDefaultItem() {
         return BrassArmoryItems.IRON_SPIKY_BALL.get();
+    }
+    private boolean damageStack(ItemStack stack) {
+        if (this.level() instanceof ServerLevel serverLevel) {
+            stack.hurtAndBreak(1, serverLevel, this.getOwner() instanceof ServerPlayer player ? player : null, item -> {});
+        }
+        return stack.isEmpty();
     }
 }

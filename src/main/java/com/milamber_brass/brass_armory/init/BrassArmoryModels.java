@@ -3,12 +3,11 @@ package com.milamber_brass.brass_armory.init;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.client.model.CannonModel;
 import com.milamber_brass.brass_armory.client.render.BulletRenderer;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-
 import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class BrassArmoryModels {

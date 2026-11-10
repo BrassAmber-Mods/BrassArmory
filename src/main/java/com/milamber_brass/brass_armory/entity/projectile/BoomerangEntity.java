@@ -6,7 +6,11 @@ import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.BoomerangItem;
+import com.milamber_brass.brass_armory.util.ItemData;
+import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -30,9 +34,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-
 @ParametersAreNonnullByDefault
 public class BoomerangEntity extends AbstractThrownWeaponEntity {
     protected static final EntityDataAccessor<Float> DATA_PLAYER_X = SynchedEntityData.defineId(BoomerangEntity.class, EntityDataSerializers.FLOAT);
@@ -48,15 +49,15 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
 
     public BoomerangEntity(Level level, LivingEntity livingEntity, ItemStack boomerangStack) {
         super(BrassArmoryEntityTypes.BOOMERANG.get(), livingEntity, level, boomerangStack);
-        if (boomerangStack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) this.setSecondsOnFire(100);
+        if (boomerangStack.getEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FLAME)) > 0) this.igniteForSeconds(100);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(DATA_PLAYER_X, 0F);
-        this.entityData.define(DATA_PLAYER_Y, 0F);
-        this.entityData.define(DATA_PLAYER_Z, 0F);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_PLAYER_X, 0F);
+        builder.define(DATA_PLAYER_Y, 0F);
+        builder.define(DATA_PLAYER_Z, 0F);
     }
 
     @Override

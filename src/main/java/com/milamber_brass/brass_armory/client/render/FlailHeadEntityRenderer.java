@@ -3,10 +3,13 @@ package com.milamber_brass.brass_armory.client.render;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.entity.projectile.FlailHeadEntity;
 import com.milamber_brass.brass_armory.item.FlailItem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.milamber_brass.brass_armory.util.ItemData;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -22,20 +25,18 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRenderer<T> {
-    protected static final ResourceLocation IRON_LINK = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/iron/iron_link.png");
-    protected static final ResourceLocation NETHERITE_LINK = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/netherite/netherite_link.png");
-    protected static final ResourceLocation GOLD_LINK = new ResourceLocation(BrassArmory.MOD_ID,"textures/item/gold/golden_link.png");
+    protected static final ResourceLocation IRON_LINK = ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/item/iron/iron_link.png");
+    protected static final ResourceLocation NETHERITE_LINK = ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/item/netherite/netherite_link.png");
+    protected static final ResourceLocation GOLD_LINK = ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/item/gold/golden_link.png");
     protected final ItemRenderer itemRenderer;
 
     public FlailHeadEntityRenderer(Context context) {
@@ -51,7 +52,7 @@ public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRe
             poseStack.pushPose();
             ItemStack stack = flailHead.getItem();
             if (stack.getItem() instanceof FlailItem flailItem) stack = flailItem.getHead().getDefaultInstance();
-            stack.setTag(flailHead.getItem().getTag());
+            ItemData.setTag(stack, ItemData.getTag(flailHead.getItem()));
             poseStack.translate(0D, 0.1D, 0D);
             poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
@@ -130,7 +131,8 @@ public class FlailHeadEntityRenderer<T extends FlailHeadEntity> extends EntityRe
     }
 
     private static void vertex(VertexConsumer vertexConsumer, Matrix4f matrix4f, Matrix3f matrix3f, int light, float v, int i, int j, int k) {
-        vertexConsumer.vertex(matrix4f, v - 0.5F, (float)i - 0.5F, 0.0F).color(255, 255, 255, 255).uv((float)j, (float)k).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(matrix3f, 0.0F, 1.0F, 0.0F).endVertex();
+        Vector3f normal = matrix3f.transform(new Vector3f(0.0F, 1.0F, 0.0F));
+        vertexConsumer.addVertex(matrix4f, v - 0.5F, (float)i - 0.5F, 0.0F).setColor(255, 255, 255, 255).setUv((float)j, (float)k).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(normal.x, normal.y, normal.z);
     }
 
     @Nonnull

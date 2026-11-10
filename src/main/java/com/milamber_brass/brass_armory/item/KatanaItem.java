@@ -2,6 +2,8 @@ package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import com.milamber_brass.brass_armory.util.ItemData;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -17,14 +19,12 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @ParametersAreNonnullByDefault
 public class KatanaItem extends SwordItem {
     private final boolean canWither;
 
     public KatanaItem(Tier tier, int attackDamage, float attackSpeed, boolean canWither, Properties properties) {
-        super(tier, attackDamage, attackSpeed, properties);
+        super(tier, properties.attributes(SwordItem.createAttributes(tier, attackDamage, attackSpeed)));
         this.canWither = canWither;
     }
 
@@ -65,12 +65,12 @@ public class KatanaItem extends SwordItem {
 
     @ParametersAreNonnullByDefault
     public static void setWither(ItemStack stack, int wither) {
-        stack.getOrCreateTag().putInt("BrassArmoryWithering", wither);
+        ItemData.update(stack, tag -> tag.putInt("BrassArmoryWithering", wither));
     }
 
     @ParametersAreNonnullByDefault
     public static int getWither(ItemStack stack) {
-        return stack.getOrCreateTag().getInt("BrassArmoryWithering");
+        return ItemData.getTag(stack).getInt("BrassArmoryWithering");
     }
 
     private static final MutableComponent wilted = Component.translatable("item.brass_armory.katana_wilted");

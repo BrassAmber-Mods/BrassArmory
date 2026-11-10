@@ -1,6 +1,9 @@
 package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
+import com.milamber_brass.brass_armory.util.ItemData;
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,8 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-
-import javax.annotation.ParametersAreNonnullByDefault;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class LongBowItem extends BowItem {
     public LongBowItem(Properties properties) {
@@ -26,11 +28,11 @@ public class LongBowItem extends BowItem {
     @ParametersAreNonnullByDefault
     public void releaseUsing(ItemStack itemStack, Level level, LivingEntity living, int ticks) {
         if (living instanceof Player player) {
-            boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, itemStack) > 0;
+            boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.INFINITY), itemStack) > 0;
             ItemStack itemstack = player.getProjectile(itemStack);
 
-            int i = this.getUseDuration(itemStack) - ticks;
-            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(itemStack, level, player, i, !itemstack.isEmpty() || flag);
+            int i = this.getUseDuration(itemStack, living) - ticks;
+            i = EventHooks.onArrowLoose(itemStack, level, player, i, !itemstack.isEmpty() || flag);
             if (i < 0) return;
 
             if (!itemstack.isEmpty() || flag) {
@@ -43,25 +45,12 @@ public class LongBowItem extends BowItem {
                     boolean flag1 = player.getAbilities().instabuild || (itemstack.getItem() instanceof ArrowItem && ((ArrowItem) itemstack.getItem()).isInfinite(itemstack, itemStack, player));
                     if (!level.isClientSide) {
                         ArrowItem arrowitem = (ArrowItem) (itemstack.getItem() instanceof ArrowItem ? itemstack.getItem() : Items.ARROW);
-                        AbstractArrow abstractarrow = arrowitem.createArrow(level, itemstack, player);
-                        abstractarrow = customArrow(abstractarrow);
+                        AbstractArrow abstractarrow = arrowitem.createArrow(level, itemstack, player, itemStack);
+                        abstractarrow = customArrow(abstractarrow, itemstack, itemStack);
                         abstractarrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 4.5F, 1.0F);
                         if (f == 1.0F) abstractarrow.setCritArrow(true);
 
-                        int j = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.POWER_ARROWS, itemStack);
-                        if (j > 0)
-                            abstractarrow.setBaseDamage(abstractarrow.getBaseDamage() + (double) j * 0.5D + 0.5D);
-
-                        int k = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, itemStack);
-                        if (k > 0) abstractarrow.setKnockback(k);
-
-                        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, itemStack) > 0) {
-                            abstractarrow.setSecondsOnFire(100);
-                        }
-
-                        itemStack.hurtAndBreak(1, player, (player1) -> {
-                            player1.broadcastBreakEvent(player.getUsedItemHand());
-                        });
+                        itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
                         if (flag1 || player.getAbilities().instabuild && (itemstack.is(Items.SPECTRAL_ARROW) || itemstack.is(Items.TIPPED_ARROW))) {
                             abstractarrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }

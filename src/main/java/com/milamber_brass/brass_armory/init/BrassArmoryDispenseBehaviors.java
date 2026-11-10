@@ -8,17 +8,17 @@ import com.milamber_brass.brass_armory.entity.projectile.cannon_balls.SiegeRound
 import com.milamber_brass.brass_armory.item.BombItem;
 import com.milamber_brass.brass_armory.item.SpecialArrowItem;
 import com.milamber_brass.brass_armory.item.SpikyBallItem;
+import com.milamber_brass.brass_armory.util.ArmoryProjectileDispenseBehavior;
+import com.milamber_brass.brass_armory.util.ItemData;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
@@ -31,7 +31,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
                 BrassArmoryItems.SLIME_ARROW.get(), BrassArmoryItems.WARP_ARROW.get(),
                 BrassArmoryItems.FIRE_ARROW.get(), BrassArmoryItems.CONFUSION_ARROW.get()
         }) {
-            DispenserBlock.registerBehavior(arrowItem, new AbstractProjectileDispenseBehavior() {
+            DispenserBlock.registerBehavior(arrowItem, new ArmoryProjectileDispenseBehavior() {
                 @Override
                 protected @NotNull Projectile getProjectile(Level level, Position pos, ItemStack stack) {
                     return arrowItem.newPosArrowFunction.apply(level, pos.x(), pos.y(), pos.z());
@@ -39,10 +39,10 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
             });
         }
 
-        DispenserBlock.registerBehavior(BrassArmoryItems.TORCH_ARROW.get(), new AbstractProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.TORCH_ARROW.get(), new ArmoryProjectileDispenseBehavior() {
             @Override
             protected @NotNull Projectile getProjectile(Level level, Position pos, ItemStack stack) {
-                return Util.make(new TorchArrowEntity(level, pos.x(), pos.y(), pos.z()), torchArrow -> torchArrow.setTorch(stack.getOrCreateTag()));
+                return Util.make(new TorchArrowEntity(level, pos.x(), pos.y(), pos.z()), torchArrow -> torchArrow.setTorch(ItemData.getTag(stack)));
             }
         });
 
@@ -51,7 +51,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
                 BrassArmoryItems.IRON_SPIKY_BALL.get(), BrassArmoryItems.GOLDEN_SPIKY_BALL.get(),
                 BrassArmoryItems.DIAMOND_SPIKY_BALL.get(), BrassArmoryItems.NETHERITE_SPIKY_BALL.get()
         }) {
-            DispenserBlock.registerBehavior(spikyBall, new AbstractProjectileDispenseBehavior() {
+            DispenserBlock.registerBehavior(spikyBall, new ArmoryProjectileDispenseBehavior() {
                 @Override
                 protected @NotNull Projectile getProjectile(Level level, Position pos, ItemStack stack) {
                     return Util.make(new SpikyBallEntity(level, pos.x(), pos.y(), pos.z()), spikyBallEntity -> spikyBallEntity.setItem(stack));
@@ -65,7 +65,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
         }
 
         for (BombItem bomb : new BombItem[] { BrassArmoryItems.BOMB.get(), BrassArmoryItems.BOUNCY_BOMB.get(), BrassArmoryItems.STICKY_BOMB.get() }) {
-            DispenserBlock.registerBehavior(bomb, new AbstractProjectileDispenseBehavior() {
+            DispenserBlock.registerBehavior(bomb, new ArmoryProjectileDispenseBehavior() {
                 @Override
                 protected @NotNull Projectile getProjectile(Level level, Position pos, ItemStack stack) {
                     return Util.make(bomb.newPosBombFunction.apply(level, pos.x(), pos.y(), pos.z()), spikyBallEntity -> spikyBallEntity.setItem(stack));
@@ -78,7 +78,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
             });
         }
 
-        DispenserBlock.registerBehavior(BrassArmoryItems.CANNON_BALL.get(), new AbstractProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.CANNON_BALL.get(), new ArmoryProjectileDispenseBehavior() {
             @Override
             protected @NotNull Projectile getProjectile(Level level, Position pos, ItemStack stack) {
                 return Util.make(new CannonBallEntity(pos.x(), pos.y(), pos.z(), level), cannonBall -> cannonBall.setItem(stack));
@@ -90,7 +90,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
             }
         });
 
-        DispenserBlock.registerBehavior(BrassArmoryItems.CARCASS_ROUND.get(), new AbstractProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.CARCASS_ROUND.get(), new ArmoryProjectileDispenseBehavior() {
             @Override
             protected @NotNull Projectile getProjectile(Level level, Position pos, ItemStack stack) {
                 return Util.make(new CarcassRoundEntity(pos.x(), pos.y(), pos.z(), level), carcassRound -> carcassRound.setItem(stack));
@@ -102,7 +102,7 @@ public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
             }
         });
 
-        DispenserBlock.registerBehavior(BrassArmoryItems.SIEGE_ROUND.get(), new AbstractProjectileDispenseBehavior() {
+        DispenserBlock.registerBehavior(BrassArmoryItems.SIEGE_ROUND.get(), new ArmoryProjectileDispenseBehavior() {
             @Override
             protected @NotNull Projectile getProjectile(Level level, Position pos, ItemStack stack) {
                 return Util.make(new SiegeRoundEntity(pos.x(), pos.y(), pos.z(), level), siegeRound -> siegeRound.setItem(stack));

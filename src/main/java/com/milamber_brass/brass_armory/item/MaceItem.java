@@ -3,19 +3,23 @@ package com.milamber_brass.brass_armory.item;
 import com.milamber_brass.brass_armory.capabilities.EffectCapabilityHandler;
 import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
-import com.milamber_brass.brass_armory.init.BrassArmoryPackets;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractTieredWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
 import com.milamber_brass.brass_armory.packets.ParticlePacket;
 import com.milamber_brass.brass_armory.util.ArmoryCooldownCache;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -23,8 +27,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -40,14 +44,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimationItem {
@@ -69,8 +68,8 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
     @Override
     public void releaseUsing(ItemStack maceStack, Level level, LivingEntity livingEntity, int useDurationLeft) {
         if (livingEntity instanceof Player player) {
-            if (this.getUseDuration(maceStack) - livingEntity.getUseItemRemainingTicks() >= this.getChargeDuration(maceStack)) {
-                double pRange = player.getBlockReach() * 1.1D;
+            if (this.getUseDuration(maceStack, livingEntity) - livingEntity.getUseItemRemainingTicks() >= this.getChargeDuration(maceStack)) {
+                double pRange = player.blockInteractionRange() * 1.1D;
                 Vec3 vec3 = player.getEyePosition(ArmoryUtil.frameTime(level));
                 Vec3 vec31 = player.getViewVector(ArmoryUtil.frameTime(level));
                 Vec3 vec32 = vec3.add(vec31.x * pRange, vec31.y * pRange, vec31.z * pRange);
@@ -92,11 +91,11 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                     if (otherItemStack.getItem() instanceof MaceItem otherMace) {
                         power *= 1.2D;
                         otherMace.smash((ServerPlayer) player, level, vec, maceStack, otherItemStack, power);
-                        maceStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.MAIN_HAND));
-                        otherItemStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(InteractionHand.OFF_HAND));
+                        maceStack.hurtAndBreak(10, player, EquipmentSlot.MAINHAND);
+                        otherItemStack.hurtAndBreak(10, player, EquipmentSlot.OFFHAND);
                     } else {
                         smash((ServerPlayer) player, level, vec, maceStack, null, power);
-                        maceStack.hurtAndBreak(10, player, (player1) -> player1.broadcastBreakEvent(player.getUsedItemHand()));
+                        maceStack.hurtAndBreak(10, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
                     }
                     smashParticles(livingEntity, vec, level, blockPos, power, blockHitResult.getDirection());
                     level.playSound(null, vec.x, vec.y, vec.z, BrassArmorySounds.MACE_SMASH.get(), SoundSource.PLAYERS, (float) power * 0.2F, 0.5F - (float) power * 0.1F);
@@ -127,17 +126,12 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                     float maceEnchantment;
                     float otherMaceEnchantment;
 
-                    if (entity instanceof LivingEntity living) {
-                        maceEnchantment = EnchantmentHelper.getDamageBonus(maceStack, living.getMobType());
-                        otherMaceEnchantment = otherMaceFlag ? EnchantmentHelper.getDamageBonus(otherMaceStack, living.getMobType()) : 0F;
-                    } else {
-                        maceEnchantment = EnchantmentHelper.getDamageBonus(maceStack, MobType.UNDEFINED);
-                        otherMaceEnchantment = otherMaceFlag ? EnchantmentHelper.getDamageBonus(otherMaceStack, MobType.UNDEFINED) : 0F;
-                    }
+                    maceEnchantment = level instanceof ServerLevel serverLevel ? EnchantmentHelper.modifyDamage(serverLevel, maceStack, entity, player.damageSources().playerAttack(player), 0F) : 0F;
+                    otherMaceEnchantment = otherMaceFlag && level instanceof ServerLevel serverLevel ? EnchantmentHelper.modifyDamage(serverLevel, otherMaceStack, entity, player.damageSources().playerAttack(player), 0F) : 0F;
 
                     float totalDMG = Math.max(maceDamage + maceEnchantment, otherMaceDamage + otherMaceEnchantment);
                     float bonusDMG = Math.min(maceDamage + maceEnchantment, otherMaceDamage + otherMaceEnchantment) * 0.5F;
-                    float finalDMG = (totalDMG + bonusDMG) * seenPercent * ((float)power * this.DAMAGE_MULTIPLIER) * 3.0F;
+                    float finalDMG = (totalDMG + bonusDMG) * seenPercent * ((float)power * DAMAGE_MULTIPLIER) * 3.0F;
 
                     if (finalDMG > 0) {
                         if (entity instanceof Player p) EffectCapabilityHandler.setShakePower(p, power);
@@ -182,7 +176,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                         Vec3 finalPos = Vec3.atCenterOf(pos).add((double)dirNormal.getX() * 0.5D, (double)dirNormal.getY() * 0.5D, (double)dirNormal.getZ() * 0.5D).add(level.random.nextGaussian() * off.x, level.random.nextGaussian() * off.y, level.random.nextGaussian() * off.z);
                         if (finalPos.distanceTo(vec) < power * 1.5D) particlePacket.queueParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, finalPos.x, finalPos.y, finalPos.z, 0.0D, 0.0D, 0.0D);
                     }
-                    BrassArmoryPackets.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), particlePacket);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, particlePacket);
                 }
             }
         }
@@ -195,12 +189,12 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
+    public boolean canPerformAction(ItemStack stack, ItemAbility toolAction) {
         return false;
     }
 
     @Override
-    public int getUseDuration(ItemStack maceStack) {
+    public int getUseDuration(ItemStack maceStack, LivingEntity living) {
         return 72000;
     }
 

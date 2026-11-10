@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.mixin;
 
 import com.milamber_brass.brass_armory.item.WarpCrystalItem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
@@ -25,8 +26,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @Mixin(PlayerItemInHandLayer.class)

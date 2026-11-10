@@ -1,10 +1,13 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
-import net.minecraft.data.models.blockstates.PropertyDispatch.TriFunction;
+import com.milamber_brass.brass_armory.util.ItemData;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.data.models.blockstates.PropertyDispatch.QuadFunction;
+import net.minecraft.data.models.blockstates.PropertyDispatch.TriFunction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -18,9 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class BombItem extends Item {
@@ -103,18 +103,18 @@ public class BombItem extends Item {
     }
 
     public static void setFuseLength(ItemStack bombStack, int fuse) {
-        bombStack.getOrCreateTag().putInt("BrassArmoryFuseLength", Math.min(60, fuse));
+        ItemData.update(bombStack, tag -> tag.putInt("BrassArmoryFuseLength", Math.min(60, fuse)));
     }
 
     public static int getFuseLength(ItemStack bombStack) {
-        return bombStack.getOrCreateTag().getInt("BrassArmoryFuseLength");
+        return ItemData.getTag(bombStack).getInt("BrassArmoryFuseLength");
     }
 
     public static void setFuseLit(ItemStack bombStack, boolean fuseLit) {
-        bombStack.getOrCreateTag().putBoolean("BrassArmoryFuseLit", fuseLit);
+        ItemData.update(bombStack, tag -> tag.putBoolean("BrassArmoryFuseLit", fuseLit));
     }
 
     public static boolean getFuseLit(ItemStack bombStack) {
-        return bombStack.getOrCreateTag().getBoolean("BrassArmoryFuseLit");
+        return ItemData.getTag(bombStack).getBoolean("BrassArmoryFuseLit");
     }
 }

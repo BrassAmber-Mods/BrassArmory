@@ -1,24 +1,25 @@
 package com.milamber_brass.brass_armory.mixin;
 
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @ParametersAreNonnullByDefault
 @Mixin(ClientRecipeBook.class)
 public abstract class ClientRecipeBookMixin {
     @Inject(method = "getCategory", at = @At(value = "HEAD"), remap = true, cancellable = true)
-    private static void getCategory(Recipe<?> recipe, CallbackInfoReturnable<RecipeBookCategories> cir) {
+    private static void getCategory(RecipeHolder<?> holder, CallbackInfoReturnable<RecipeBookCategories> cir) {
+        Recipe<?> recipe = holder.value();
         if (recipe.getType() == RecipeType.CRAFTING) {
             ItemStack item = recipe.getResultItem(Minecraft.getInstance().level.registryAccess());
             if (item.is(BrassArmoryTags.Items.BUILDING_BLOCKS)) {

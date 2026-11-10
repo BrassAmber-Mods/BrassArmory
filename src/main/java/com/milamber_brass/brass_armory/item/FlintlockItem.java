@@ -7,8 +7,16 @@ import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.inventory.GunContainer;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import com.milamber_brass.brass_armory.util.ItemData;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,21 +31,16 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-
 @ParametersAreNonnullByDefault
-public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, iGun {
+public class FlintlockItem extends ProjectileWeaponItem implements iGun {
     protected final boolean oneHanded;
     public final double damageMultiplier;
     protected final float loadSpeed;
@@ -64,7 +67,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity living) {
         return 72000;
     }
 
@@ -74,7 +77,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
         ItemStack stack = player.getItemInHand(interactionHand);
 
         int load = getLoad(stack);
-        if (load == 0 && !ArmoryUtil.loadStack(stack.getOrCreateTag(), GunContainer.gunAmmo, ItemStack.EMPTY).isEmpty() && !ArmoryUtil.loadStack(stack.getOrCreateTag(), GunContainer.gunPowder, ItemStack.EMPTY).isEmpty()) {
+        if (load == 0 && !ArmoryUtil.loadStack(ItemData.getTag(stack), GunContainer.gunAmmo, ItemStack.EMPTY).isEmpty() && !ArmoryUtil.loadStack(ItemData.getTag(stack), GunContainer.gunPowder, ItemStack.EMPTY).isEmpty()) {
             load = 1;
             setLoad(stack, 1);
         }
@@ -82,30 +85,30 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
         switch (load) {
             case 0 -> {
                 if (!level.isClientSide) {
-                    ArmoryUtil.addStack(stack.getOrCreateTag(), this.getDefaultInstance(), GunContainer.gunIcon);
-                    MenuProvider container = new SimpleMenuProvider(GunContainer.getServerContainer(this, stack.getOrCreateTag()), Component.empty());
+                    ArmoryUtil.addStack(stack, this.getDefaultInstance(), GunContainer.gunIcon);
+                    MenuProvider container = new SimpleMenuProvider(GunContainer.getServerContainer(this, stack), Component.empty());
                     player.openMenu(container);
                 }
             }
             case 1 -> {
-                ArmoryUtil.clearStack(stack.getOrCreateTag(), GunContainer.gunIcon);
+                ArmoryUtil.clearStack(stack, GunContainer.gunIcon);
                 player.startUsingItem(interactionHand);
             }
-            default -> GunBehaviours.getPowderBehaviour(ArmoryUtil.loadStack(stack.getOrCreateTag(), GunContainer.gunPowder, ItemStack.EMPTY)).ifPresent(powderBehaviour -> {
+            default -> GunBehaviours.getPowderBehaviour(ArmoryUtil.loadStack(ItemData.getTag(stack), GunContainer.gunPowder, ItemStack.EMPTY)).ifPresent(powderBehaviour -> {
                 Vec3 view = player.getViewVector(ArmoryUtil.frameTime(level)).scale(-this.recoil);
                 player.push(view.x, view.y, view.z);
-                ItemStack ammo = ArmoryUtil.loadStack(stack.getOrCreateTag(), GunContainer.gunAmmo, ItemStack.EMPTY);
+                ItemStack ammo = ArmoryUtil.loadStack(ItemData.getTag(stack), GunContainer.gunAmmo, ItemStack.EMPTY);
                 GunBehaviours.getAmmoBehavior(ammo).ifPresent(ammoBehaviour -> {
                     if (ammoBehaviour.onShoot(level, player, player, ammo, powderBehaviour, this)) {
-                        stack.hurtAndBreak(1, player, (living) -> player.broadcastBreakEvent(player.getUsedItemHand()));
+                        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
                     }
                 });
 
                 if (!level.isClientSide) {
                     level.playSound(null, player, this.getGunShootSound(), SoundSource.PLAYERS, 1.0F, 1.0F);
                     setLoad(stack, 0);
-                    ArmoryUtil.clearStack(stack.getOrCreateTag(), GunContainer.gunAmmo);
-                    ArmoryUtil.clearStack(stack.getOrCreateTag(), GunContainer.gunPowder);
+                    ArmoryUtil.clearStack(stack, GunContainer.gunAmmo);
+                    ArmoryUtil.clearStack(stack, GunContainer.gunPowder);
                     setLoadProgress(stack, 0F);
                     player.getCooldowns().addCooldown(stack.getItem(), 10);
                     player.awardStat(Stats.ITEM_USED.get(this));
@@ -162,50 +165,50 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         return false;
     }
 
 
     public static void setLoadProgress(ItemStack gunStack, float progress) {
-        if (gunStack.getTag() != null) gunStack.setTag(Util.make(gunStack.getOrCreateTag().copy(), tag -> tag.putFloat("LoadProgress", Math.min(progress, 20F))));
+        if (ItemData.getTag(gunStack) != null) ItemData.setTag(gunStack, Util.make(ItemData.getTag(gunStack).copy(), tag -> tag.putFloat("LoadProgress", Math.min(progress, 20F))));
     }
 
     public static float getLoadProgress(ItemStack gunStack) {
-        if (gunStack.hasTag() && gunStack.getTag() != null) return gunStack.getTag().getFloat("LoadProgress");
+        if (!ItemData.getTag(gunStack).isEmpty() && ItemData.getTag(gunStack) != null) return ItemData.getTag(gunStack).getFloat("LoadProgress");
         else {
-            gunStack.setTag(Util.make(new CompoundTag(), tag -> tag.putFloat("LoadProgress", 0F)));
+            ItemData.setTag(gunStack, Util.make(new CompoundTag(), tag -> tag.putFloat("LoadProgress", 0F)));
             return 0F;
         }
     }
 
     public static void setLoad(ItemStack gunStack, int load) {
-        CompoundTag tag = gunStack.getTag() != null ? gunStack.getTag().copy() : new CompoundTag();
+        CompoundTag tag = ItemData.getTag(gunStack) != null ? ItemData.getTag(gunStack).copy() : new CompoundTag();
         tag.putInt("BAGunLoaded", load);
-        gunStack.setTag(tag);
+        ItemData.setTag(gunStack, tag);
     }
 
     public static int getLoad(ItemStack gunStack) {
-        if (gunStack.hasTag() && gunStack.getTag() != null) {
-            return gunStack.getTag().getInt("BAGunLoaded");
+        if (!ItemData.getTag(gunStack).isEmpty() && ItemData.getTag(gunStack) != null) {
+            return ItemData.getTag(gunStack).getInt("BAGunLoaded");
         } else {
             CompoundTag compoundtag = new CompoundTag();
             compoundtag.putInt("BAGunLoaded", 0);
-            gunStack.setTag(new CompoundTag());
+            ItemData.setTag(gunStack, new CompoundTag());
             return 0;
         }
     }
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        stack.hurtAndBreak(1, attacker, (entity) -> entity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+        stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
     @Override
     public boolean mineBlock(ItemStack stack, Level worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
         if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
-            stack.hurtAndBreak(2, entityLiving, (entity) -> entity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+            stack.hurtAndBreak(2, entityLiving, EquipmentSlot.MAINHAND);
         }
         return true;
     }
@@ -227,9 +230,9 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> components, TooltipFlag tooltipFlag) {
         if (getLoad(stack) == 2) {
-            for (ItemStack ammoStack : ArmoryUtil.loadStackList(stack.getOrCreateTag(), GunContainer.gunAmmo)) {
+            for (ItemStack ammoStack : ArmoryUtil.loadStackList(ItemData.getTag(stack), GunContainer.gunAmmo)) {
                 components.add((Component.translatable("item.minecraft.crossbow.projectile")).append(" ").append(ammoStack.getDisplayName()));
             }
         }
@@ -278,5 +281,9 @@ public class FlintlockItem extends ProjectileWeaponItem implements Vanishable, i
     @Override
     public double particleOffset() {
         return 0.05D;
+    }
+    @Override
+    protected void shootProjectile(LivingEntity shooter, Projectile projectile, int index, float velocity, float inaccuracy, float angle, @Nullable LivingEntity target) {
+        projectile.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), angle, velocity, inaccuracy);
     }
 }

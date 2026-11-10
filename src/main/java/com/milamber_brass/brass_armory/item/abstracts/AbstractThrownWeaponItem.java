@@ -1,6 +1,10 @@
 package com.milamber_brass.brass_armory.item.abstracts;
 
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
+import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -16,10 +20,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem {
@@ -38,7 +38,7 @@ public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem 
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity living) {
         return 72000;
     }
 
@@ -63,10 +63,10 @@ public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof Player playerEntity) {
-            float time = this.getUseDuration(stack) - timeLeft;
+            float time = this.getUseDuration(stack, entityLiving) - timeLeft;
             if (time >= 5) {
                 if (!level.isClientSide) {
-                    stack.hurtAndBreak(1, playerEntity, (player) -> player.broadcastBreakEvent(entityLiving.getUsedItemHand()));
+                    stack.hurtAndBreak(1, playerEntity, LivingEntity.getSlotForHand(entityLiving.getUsedItemHand()));
                     AbstractThrownWeaponEntity thrownWeapon = getEntity(level, playerEntity, stack.copy());
                     float power = Math.min(time / this.chargeDuration, 1F);
                     thrownWeapon.setPower(power);
@@ -91,7 +91,7 @@ public abstract class AbstractThrownWeaponItem extends AbstractTieredWeaponItem 
     protected abstract AbstractThrownWeaponEntity getEntity(Level level, LivingEntity living, ItemStack weaponStack);
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return super.canApplyAtEnchantingTable(stack, enchantment) || enchantment == Enchantments.LOYALTY;
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+        return super.supportsEnchantment(stack, enchantment) || enchantment.is(Enchantments.LOYALTY);
     }
 }

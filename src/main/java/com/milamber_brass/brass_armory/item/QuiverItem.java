@@ -2,8 +2,14 @@ package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
 import com.milamber_brass.brass_armory.inventory.QuiverTooltip;
+import com.milamber_brass.brass_armory.util.ItemData;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -22,14 +28,10 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 public class QuiverItem extends Item {
@@ -87,7 +89,7 @@ public class QuiverItem extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
-        player.getCapability(BrassArmoryCapabilities.QUIVER_CAPABILITY).ifPresent(cap -> cap.getAmmoStack().shrink(1));
+        Optional.of(player.getData(BrassArmoryCapabilities.QUIVER_CAPABILITY)).ifPresent(cap -> cap.getAmmoStack().shrink(1));
 
         ItemStack itemstack = player.getItemInHand(interactionHand);
         if (dropContents(itemstack, player)) {
@@ -114,7 +116,7 @@ public class QuiverItem extends Item {
 
     public static int add(ItemStack stack, ItemStack stack1) {
         if (!stack1.isEmpty() && stack1.is(ItemTags.ARROWS) && stack1.getItem().canFitInsideContainerItems()) {
-            CompoundTag compoundTag = stack.getOrCreateTag();
+            CompoundTag compoundTag = ItemData.getTag(stack);
             if (!compoundTag.contains(TAG_ITEMS)) compoundTag.put(TAG_ITEMS, new ListTag());
 
             int i = getContentWeight(stack);
@@ -126,7 +128,7 @@ public class QuiverItem extends Item {
                 Optional<CompoundTag> optional = getMatchingItem(stack1, listtag);
                 if (optional.isPresent()) {
                     CompoundTag compoundTag1 = optional.get();
-                    ItemStack itemstack = ItemStack.of(compoundTag1);
+                    ItemStack itemstack = ItemData.load(compoundTag1);
 
                     int maxSize = itemstack.getMaxStackSize();
                     int currentSize = itemstack.getCount();
@@ -135,33 +137,34 @@ public class QuiverItem extends Item {
                         ItemStack stack2 = stack1.copy();
                         stack2.setCount(k);
                         CompoundTag compoundTag2 = new CompoundTag();
-                        stack2.save(compoundTag2);
+                        ItemData.save(stack2, compoundTag2);
                         listtag.add(0, compoundTag2);
                     } else if (currentSize + k <= maxSize) {
                         itemstack.grow(k);
-                        itemstack.save(compoundTag1);
+                        ItemData.save(itemstack, compoundTag1);
                         listtag.remove(compoundTag1);
                         listtag.add(0, compoundTag1);
                     } else {
                         itemstack.setCount(maxSize);
-                        itemstack.save(compoundTag1);
+                        ItemData.save(itemstack, compoundTag1);
                         listtag.remove(compoundTag1);
                         listtag.add(0, compoundTag1);
 
                         ItemStack stack2 = stack1.copy();
                         stack2.setCount(k - (maxSize - currentSize));
                         CompoundTag compoundTag2 = new CompoundTag();
-                        stack2.save(compoundTag2);
+                        ItemData.save(stack2, compoundTag2);
                         listtag.add(0, compoundTag2);
                     }
                 } else {
                     ItemStack stack2 = stack1.copy();
                     stack2.setCount(k);
                     CompoundTag compoundTag1 = new CompoundTag();
-                    stack2.save(compoundTag1);
+                    ItemData.save(stack2, compoundTag1);
                     listtag.add(0, compoundTag1);
                 }
 
+                ItemData.setTag(stack, compoundTag);
                 return k;
             }
         } else return 0;
@@ -169,14 +172,14 @@ public class QuiverItem extends Item {
 
     private static Optional<CompoundTag> getMatchingItem(ItemStack stack, ListTag listTag) {
         return stack.is(Items.BUNDLE) ? Optional.empty() : listTag.stream().filter(CompoundTag.class::isInstance).map(CompoundTag.class::cast).filter((compoundTag) ->
-                ItemStack.isSameItemSameTags(ItemStack.of(compoundTag), stack)).findFirst();
+                ItemStack.isSameItemSameComponents(ItemData.load(compoundTag), stack)).findFirst();
     }
 
     private static int getWeight(ItemStack stack) {
         if (stack.is(Items.BUNDLE)) return BUNDLE_IN_BUNDLE_WEIGHT + getContentWeight(stack);
         else {
-            if ((stack.is(Items.BEEHIVE) || stack.is(Items.BEE_NEST)) && stack.hasTag()) {
-                CompoundTag compoundtag = BlockItem.getBlockEntityData(stack);
+            if ((stack.is(Items.BEEHIVE) || stack.is(Items.BEE_NEST)) && !ItemData.getTag(stack).isEmpty()) {
+                CompoundTag compoundtag = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
                 if (compoundtag != null && !compoundtag.getList("Bees", 10).isEmpty()) {
                     return 64;
                 }
@@ -191,15 +194,16 @@ public class QuiverItem extends Item {
     }
 
     public static Optional<ItemStack> removeOne(ItemStack stack) {
-        CompoundTag compoundTag = stack.getOrCreateTag();
+        CompoundTag compoundTag = ItemData.getTag(stack);
         if (!compoundTag.contains(TAG_ITEMS)) return Optional.empty();
         else {
             ListTag listtag = compoundTag.getList(TAG_ITEMS, 10);
             if (listtag.isEmpty()) return Optional.empty();
             else {
-                ItemStack itemstack = ItemStack.of(listtag.getCompound(0));
+                ItemStack itemstack = ItemData.load(listtag.getCompound(0));
                 listtag.remove(0);
-                if (listtag.isEmpty()) stack.removeTagKey(TAG_ITEMS);
+                if (listtag.isEmpty()) compoundTag.remove(TAG_ITEMS);
+                ItemData.setTag(stack, compoundTag);
 
                 return Optional.of(itemstack);
             }
@@ -207,7 +211,7 @@ public class QuiverItem extends Item {
     }
 
     private static boolean dropContents(ItemStack stack, Player player) {
-        CompoundTag compoundTag = stack.getOrCreateTag();
+        CompoundTag compoundTag = ItemData.getTag(stack);
         if (!compoundTag.contains(TAG_ITEMS)) return false;
         else {
             if (player instanceof ServerPlayer) {
@@ -215,22 +219,22 @@ public class QuiverItem extends Item {
 
                 for(int i = 0; i < listtag.size(); ++i) {
                     CompoundTag compoundTag1 = listtag.getCompound(i);
-                    ItemStack itemstack = ItemStack.of(compoundTag1);
+                    ItemStack itemstack = ItemData.load(compoundTag1);
                     player.drop(itemstack, true);
                 }
             }
 
-            stack.removeTagKey(TAG_ITEMS);
+            ItemData.update(stack, tag -> tag.remove(TAG_ITEMS));
             return true;
         }
     }
 
     public static Stream<ItemStack> getContents(ItemStack stack) {
-        CompoundTag compoundtag = stack.getTag();
+        CompoundTag compoundtag = ItemData.getTag(stack);
         if (compoundtag == null) return Stream.empty();
         else {
             ListTag listtag = compoundtag.getList(TAG_ITEMS, 10);
-            return listtag.stream().map(CompoundTag.class::cast).map(ItemStack::of);
+            return listtag.stream().map(CompoundTag.class::cast).map(ItemData::load);
         }
     }
 
@@ -242,13 +246,13 @@ public class QuiverItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag tooltipFlag) {
         list.add((Component.translatable("item.minecraft.bundle.fullness", getContentWeight(stack), MAX_WEIGHT)).withStyle(ChatFormatting.GRAY));
     }
 
     @Override
     public void onDestroyed(ItemEntity itemEntity) {
-        ItemUtils.onContainerDestroyed(itemEntity, getContents(itemEntity.getItem()));
+        ItemUtils.onContainerDestroyed(itemEntity, getContents(itemEntity.getItem()).toList());
     }
 
     private void playRemoveOneSound(Entity entity) {

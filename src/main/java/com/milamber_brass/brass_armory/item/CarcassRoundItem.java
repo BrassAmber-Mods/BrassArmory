@@ -1,15 +1,16 @@
 package com.milamber_brass.brass_armory.item;
 
+import com.milamber_brass.brass_armory.util.ItemData;
+import com.milamber_brass.brass_armory.util.PotionData;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class CarcassRoundItem extends Item {
@@ -18,10 +19,10 @@ public class CarcassRoundItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> components, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, List<Component> components, TooltipFlag tooltipFlag) {
         if (!isADragonRound(itemStack)) {
-            components.add((Component.translatable(PotionUtils.getPotion(itemStack).getName(Items.LINGERING_POTION.getDescriptionId() + ".effect."))).withStyle(ChatFormatting.GRAY));
-            PotionUtils.addPotionTooltip(itemStack, components, 0.25F);
+            components.add((Component.translatable(Potion.getName(Optional.of(PotionData.getPotion(itemStack)), Items.LINGERING_POTION.getDescriptionId() + ".effect."))).withStyle(ChatFormatting.GRAY));
+            PotionData.addPotionTooltip(itemStack, components, 0.25F);
         }
     }
 
@@ -31,13 +32,8 @@ public class CarcassRoundItem extends Item {
         else return super.getName(stack);
     }
 
-    @Override
-    public @NotNull Rarity getRarity(ItemStack stack) {
-        if (isADragonRound(stack)) return Rarity.UNCOMMON;
-        else return super.getRarity(stack);
-    }
 
     public static boolean isADragonRound(ItemStack stack) {
-        return stack.hasTag() && stack.getOrCreateTag().getBoolean("BADragonRound");
+        return !ItemData.getTag(stack).isEmpty() && ItemData.getTag(stack).getBoolean("BADragonRound");
     }
 }

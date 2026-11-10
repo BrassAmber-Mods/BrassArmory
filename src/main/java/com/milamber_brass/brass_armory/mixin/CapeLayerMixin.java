@@ -2,6 +2,7 @@ package com.milamber_brass.brass_armory.mixin;
 
 import com.milamber_brass.brass_armory.item.GliderItem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.CapeLayer;
@@ -10,8 +11,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @Mixin(CapeLayer.class)
 @ParametersAreNonnullByDefault

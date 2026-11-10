@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": {
+      "tag": "minecraft:planks"
+    },
+    "M": {
+      "tag": "minecraft:stone_tool_materials"
+    }
+  },
+  "pattern": [
+    "MLM",
+    "L  ",
+    "M  "
+  ],
+  "result": {
+    "id": "brass_armory:stone_boomerang"
+  },
+  "show_notification": true
+}

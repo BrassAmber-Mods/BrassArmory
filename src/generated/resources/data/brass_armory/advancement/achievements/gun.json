@@ -1,0 +1,33 @@
+{
+  "parent": "brass_armory:achievements/root",
+  "criteria": {
+    "gun": {
+      "conditions": {},
+      "trigger": "brass_armory:gun_fire"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.brass_armory.gun.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:musket",
+      "components": {
+        "minecraft:damage": 0
+      }
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.brass_armory.gun"
+    }
+  },
+  "requirements": [
+    [
+      "gun"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

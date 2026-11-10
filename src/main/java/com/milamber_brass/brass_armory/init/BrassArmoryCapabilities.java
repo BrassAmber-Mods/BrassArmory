@@ -1,103 +1,29 @@
 package com.milamber_brass.brass_armory.init;
 
+import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.capabilities.*;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
+import java.util.function.Supplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraftforge.common.capabilities.*;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 public class BrassArmoryCapabilities {
-    public static final Capability<IQuiverCapability> QUIVER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-    public static final Capability<IPowderCapability> POWDER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-    public static final Capability<IEffectCapability> EFFECT_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-
-    public static void capabilitySetup(RegisterCapabilitiesEvent event) {
-        event.register(IQuiverCapability.class);
-        event.register(IPowderCapability.class);
-        event.register(IEffectCapability.class);
-    }
-
-    public static void addCapabilities(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player player) {
-            event.addCapability(IQuiverCapability.ID, new ICapabilitySerializable<CompoundTag>() {
-                final LazyOptional<IQuiverCapability> inst = LazyOptional.of(() -> {
-                    QuiverCapabilityHandler quiverCapabilityHandler = new QuiverCapabilityHandler();
-                    quiverCapabilityHandler.setEntity(player);
-                    return quiverCapabilityHandler;
-                });
-
-                @Nonnull
-                @Override
-                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-                    return QUIVER_CAPABILITY.orEmpty(capability, inst.cast());
-                }
-
-                @Override
-                public CompoundTag serializeNBT() {
-                    return inst.orElseThrow(NullPointerException::new).serializeNBT();
-                }
-
-                @Override
-                public void deserializeNBT(CompoundTag compoundTag) {
-                    inst.orElseThrow(NullPointerException::new).deserializeNBT(compoundTag);
-                }
-            });
-            event.addCapability(IEffectCapability.ID, new ICapabilitySerializable<CompoundTag>() {
-                final LazyOptional<IEffectCapability> inst = LazyOptional.of(() -> {
-                    EffectCapabilityHandler shakeCapabilityHandler = new EffectCapabilityHandler();
-                    shakeCapabilityHandler.setEntity(player);
-                    return shakeCapabilityHandler;
-                });
-
-                @Nonnull
-                @Override
-                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-                    return EFFECT_CAPABILITY.orEmpty(capability, inst.cast());
-                }
-
-                @Override
-                public CompoundTag serializeNBT() {
-                    return inst.orElseThrow(NullPointerException::new).serializeNBT();
-                }
-
-                @Override
-                public void deserializeNBT(CompoundTag compoundTag) {
-                    inst.orElseThrow(NullPointerException::new).deserializeNBT(compoundTag);
-                }
-            });
-        } else if (event.getObject() instanceof Projectile projectile) {
-            event.addCapability(IPowderCapability.ID, new ICapabilitySerializable<CompoundTag>() {
-                final LazyOptional<IPowderCapability> inst = LazyOptional.of(() -> {
-                    PowderCapabilityHandler powderCapabilityHandler = new PowderCapabilityHandler();
-                    powderCapabilityHandler.setEntity(projectile);
-                    return powderCapabilityHandler;
-                });
-
-                @Nonnull
-                @Override
-                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-                    return POWDER_CAPABILITY.orEmpty(capability, inst.cast());
-                }
-
-                @Override
-                public CompoundTag serializeNBT() {
-                    return inst.orElseThrow(NullPointerException::new).serializeNBT();
-                }
-
-                @Override
-                public void deserializeNBT(CompoundTag compoundTag) {
-                    inst.orElseThrow(NullPointerException::new).deserializeNBT(compoundTag);
-                }
-            });
-        }
-    }
+    public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, BrassArmory.MOD_ID);
+    public static final Supplier<AttachmentType<QuiverCapabilityHandler>> QUIVER_CAPABILITY = REGISTRY.register("quiver_capability", () -> AttachmentType.serializable(holder -> {
+        QuiverCapabilityHandler handler = new QuiverCapabilityHandler();
+        handler.setEntity((Player) holder);
+        return handler;
+    }).build());
+    public static final Supplier<AttachmentType<EffectCapabilityHandler>> EFFECT_CAPABILITY = REGISTRY.register("effect_capability", () -> AttachmentType.serializable(holder -> {
+        EffectCapabilityHandler handler = new EffectCapabilityHandler();
+        handler.setEntity((Player) holder);
+        return handler;
+    }).build());
+    public static final Supplier<AttachmentType<PowderCapabilityHandler>> POWDER_CAPABILITY = REGISTRY.register("powder_capability", () -> AttachmentType.serializable(holder -> {
+        PowderCapabilityHandler handler = new PowderCapabilityHandler();
+        handler.setEntity((Projectile) holder);
+        return handler;
+    }).build());
 }

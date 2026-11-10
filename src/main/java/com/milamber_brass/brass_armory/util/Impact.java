@@ -2,6 +2,9 @@ package com.milamber_brass.brass_armory.util;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import java.util.Collections;
+import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -20,10 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
-import java.util.Optional;
-
 @ParametersAreNonnullByDefault
 public class Impact extends Explosion {
     public Impact(Level level, @Nullable Entity entity, Vec3 pos, float range, boolean fire, BlockInteraction blockInteraction) {
@@ -38,7 +37,7 @@ public class Impact extends Explosion {
     @Override
     public void finalizeExplosion(boolean emitter) {
         if (this.level instanceof ServerLevel serverLevel) {
-            Vec3 vec3 = this.getPosition();
+            Vec3 vec3 = this.center();
             this.level.playSound(null, vec3.x, vec3.y, vec3.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 3.7F);
 
             if (this.blockInteraction != BlockInteraction.KEEP) {
@@ -57,7 +56,7 @@ public class Impact extends Explosion {
                                 builder.withParameter(LootContextParams.EXPLOSION_RADIUS, this.radius);
                             }
 
-                            blockstate.getDrops(builder).forEach((itemStack) -> addBlockDrops(list, itemStack, blockpos1));
+                            blockstate.getDrops(builder).forEach((itemStack) -> addOrAppendStack(list, itemStack, blockpos1));
                         }
                         if (emitter) this.level.levelEvent(2001, blockpos, Block.getId(blockstate));
                         blockstate.onBlockExploded(this.level, blockpos, this);

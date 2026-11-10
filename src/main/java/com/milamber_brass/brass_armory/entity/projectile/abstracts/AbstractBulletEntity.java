@@ -1,11 +1,11 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import com.milamber_brass.brass_armory.util.ItemData;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,15 +17,13 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public abstract class AbstractBulletEntity extends AbstractArrow implements ItemSupplier {
@@ -36,17 +34,17 @@ public abstract class AbstractBulletEntity extends AbstractArrow implements Item
     }
 
     protected AbstractBulletEntity(EntityType<? extends AbstractArrow> entityType, double x, double y, double z, Level level) {
-        super(entityType, x, y, z, level);
+        super(entityType, x, y, z, level, Items.ARROW.getDefaultInstance(), null);
     }
 
     protected AbstractBulletEntity(EntityType<? extends AbstractArrow> entityType, LivingEntity living, Level level) {
-        super(entityType, living, level);
+        super(entityType, living, level, Items.ARROW.getDefaultInstance(), null);
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.getEntityData().define(DATA_ITEM_STACK, ItemStack.EMPTY);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_ITEM_STACK, ItemStack.EMPTY);
     }
 
     @Override
@@ -70,7 +68,7 @@ public abstract class AbstractBulletEntity extends AbstractArrow implements Item
         this.setCritArrow(false);
         this.setPierceLevel((byte)0);
         this.setSoundEvent(this.getDefaultHitGroundSoundEvent());
-        this.setShotFromCrossbow(false);
+
         this.resetPiercedEntities();
     }
 
@@ -128,17 +126,16 @@ public abstract class AbstractBulletEntity extends AbstractArrow implements Item
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         ItemStack stack = this.getItemRaw();
-        if (!stack.isEmpty()) tag.put("BulletStack", stack.save(new CompoundTag()));
+        if (!stack.isEmpty()) tag.put("BulletStack", stack.save(ItemData.registries()));
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.setItem(ItemStack.of(tag.getCompound("BulletStack")));
+        this.setItem(ItemData.load(tag.getCompound("BulletStack")));
     }
 
+
     @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
+    protected ItemStack getDefaultPickupItem() { return this.getPickupItem(); }
 }

@@ -6,21 +6,21 @@ import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
-
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelBuilder;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import static net.minecraft.core.Direction.*;
 
 public class BrassArmoryBlockModelBuilder extends BlockStateProvider {
     public static final ResourceLocation ROPE_ARROW_TEXTURE = BrassArmory.locate("entity/projectile/rope_arrow");
-    protected static final ResourceLocation SOLID = new ResourceLocation("solid");
-    protected static final ResourceLocation CUTOUT = new ResourceLocation("cutout");
+    protected static final ResourceLocation SOLID = ResourceLocation.parse("solid");
+    protected static final ResourceLocation CUTOUT = ResourceLocation.parse("cutout");
 
     public BrassArmoryBlockModelBuilder(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, BrassArmory.MOD_ID, exFileHelper);
@@ -28,7 +28,7 @@ public class BrassArmoryBlockModelBuilder extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        RegistryObject<RopeBlock> block = BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK;
+        DeferredHolder<Block, RopeBlock> block = BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK;
         String blockName = "block/" + block.getId().getPath();
         ResourceLocation textureLocation = BrassArmory.locate("block/" + block.getId().getPath());
 

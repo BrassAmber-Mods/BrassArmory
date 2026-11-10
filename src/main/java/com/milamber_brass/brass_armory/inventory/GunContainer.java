@@ -1,10 +1,14 @@
 package com.milamber_brass.brass_armory.inventory;
 
-import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.init.BrassArmoryMenus;
+import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import com.milamber_brass.brass_armory.util.ItemData;
 import com.mojang.datafixers.util.Pair;
+import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -15,15 +19,11 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 public class GunContainer<T extends iGun> extends AbstractContainerMenu {
@@ -122,6 +122,16 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
     @Nonnull
     public static MenuConstructor getServerContainer(iGun gun, CompoundTag tag) {
         return (id, playerInv, player) -> new GunContainer<>(id, playerInv, new ItemStackHandler(3), gun, tag);
+    }
+
+    public static MenuConstructor getServerContainer(iGun gun, ItemStack stack) {
+        return (id, playerInv, player) -> new GunContainer<>(id, playerInv, new ItemStackHandler(3), gun, ItemData.getTag(stack)) {
+            @Override
+            public void removed(Player player) {
+                super.removed(player);
+                ItemData.setTag(stack, this.tag);
+            }
+        };
     }
 
     @Override

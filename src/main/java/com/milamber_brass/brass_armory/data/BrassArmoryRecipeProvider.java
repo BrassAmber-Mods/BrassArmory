@@ -2,7 +2,13 @@ package com.milamber_brass.brass_armory.data;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import com.milamber_brass.brass_armory.init.BrassArmoryRecipes;
+import com.milamber_brass.brass_armory.recipe.CarcassRoundRecipe;
+import com.milamber_brass.brass_armory.recipe.TorchArrowRecipe;
+import java.util.concurrent.CompletableFuture;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -11,21 +17,17 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.Tags;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Consumer;
+import net.neoforged.neoforge.common.Tags;
 
 @ParametersAreNonnullByDefault
 public class BrassArmoryRecipeProvider extends RecipeProvider {
 
-    public BrassArmoryRecipeProvider(PackOutput output) {
-        super(output);
+    public BrassArmoryRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void buildRecipes(RecipeOutput consumer) {
         //BOOMERANGS
         boomerangRecipe(consumer, Tags.Items.GEMS_DIAMOND, Tags.Items.INGOTS_GOLD, BrassArmoryItems.DIAMOND_BOOMERANG.get());
         boomerangRecipe(consumer, Tags.Items.INGOTS_GOLD, Tags.Items.INGOTS_IRON, BrassArmoryItems.GOLDEN_BOOMERANG.get());
@@ -50,7 +52,7 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('S', Tags.Items.RODS_WOODEN)
                 .unlockedBy("has_coal", has(Items.COAL))
                 .unlockedBy("has_charcoal", has(Items.CHARCOAL))
-                .save(consumer, shapedLocate(BrassArmoryItems.FIRE_ROD.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.FIRE_ROD.get()));
 
         //DAGGERS
         daggerRecipe(consumer, Tags.Items.GEMS_DIAMOND, BrassArmoryItems.DIAMOND_DAGGER.get());
@@ -104,13 +106,13 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .pattern(" M ")
                 .define('M', ItemTags.PLANKS)
                 .unlockedBy("has_item", has(ItemTags.PLANKS))
-                .save(consumer, shapedLocate(BrassArmoryItems.WOODEN_SPIKY_BALL.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.WOODEN_SPIKY_BALL.get()));
 
         netheriteRecipe(consumer, BrassArmoryItems.DIAMOND_SPIKY_BALL.get(), BrassArmoryItems.NETHERITE_SPIKY_BALL.get());
 
         //ARROWS
         arrowRecipe(consumer, Ingredient.of(Items.ENDER_PEARL), Items.ENDER_PEARL, BrassArmoryItems.WARP_ARROW.get());
-        arrowRecipe(consumer, Tags.Items.SAND, BrassArmoryItems.CONFUSION_ARROW.get());
+        arrowRecipe(consumer, Tags.Items.SANDS, BrassArmoryItems.CONFUSION_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(Items.DIRT, Items.COARSE_DIRT), Items.DIRT, BrassArmoryItems.DIRT_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(BrassArmoryItems.BOMB.get()), BrassArmoryItems.BOMB.get(), BrassArmoryItems.EX_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(Items.COAL, Items.CHARCOAL), Items.COAL, BrassArmoryItems.FIRE_ARROW.get());
@@ -118,16 +120,16 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
         arrowRecipe(consumer, Tags.Items.SEEDS, BrassArmoryItems.GRASS_ARROW.get());
         arrowRecipe(consumer, Tags.Items.STORAGE_BLOCKS_REDSTONE, BrassArmoryItems.LASER_ARROW.get());
         arrowRecipe(consumer, Ingredient.of(BrassArmoryItems.EXPLORERS_ROPE.get()), BrassArmoryItems.EXPLORERS_ROPE.get(), BrassArmoryItems.ROPE_ARROW.get());
-        arrowRecipe(consumer, Tags.Items.SLIMEBALLS, BrassArmoryItems.SLIME_ARROW.get());
+        arrowRecipe(consumer, Tags.Items.SLIME_BALLS, BrassArmoryItems.SLIME_ARROW.get());
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, BrassArmoryItems.TORCH_ARROW.get())
                 .requires(Items.ARROW)
                 .requires(Items.TORCH)
                 .unlockedBy("has_arrows", has(ItemTags.ARROWS))
-                .save(consumer, shapelessLocate(BrassArmoryItems.TORCH_ARROW.get().toString()));
+                .save(consumer, shapelessLocate(BrassArmoryItems.TORCH_ARROW.get()));
 
-        SpecialRecipeBuilder.special(BrassArmoryRecipes.TORCH_ARROW_CUSTOM_RECIPE.get()).save(consumer, BrassArmory.locate("torch_arrow_custom_recipe").toString());
-        SpecialRecipeBuilder.special(BrassArmoryRecipes.CARCASS_ROUND_CUSTOM_RECIPE.get()).save(consumer, BrassArmory.locate("carcass_round_custom_recipe").toString());
+        SpecialRecipeBuilder.special(TorchArrowRecipe::new).save(consumer, BrassArmory.locate("torch_arrow_custom_recipe").toString());
+        SpecialRecipeBuilder.special(CarcassRoundRecipe::new).save(consumer, BrassArmory.locate("carcass_round_custom_recipe").toString());
 
         //LONGBOW
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.LONGBOW.get())
@@ -135,20 +137,20 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .pattern("SBI")
                 .pattern(" SI")
                 .define('S', Tags.Items.RODS_WOODEN)
-                .define('I', Tags.Items.STRING)
+                .define('I', Tags.Items.STRINGS)
                 .define('B', Items.BOW)
                 .unlockedBy("has_item", has(Items.BOW))
-                .save(consumer, shapedLocate(BrassArmoryItems.LONGBOW.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.LONGBOW.get()));
 
         //QUIVER
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.QUIVER.get())
                 .pattern("LS ")
                 .pattern("LLS")
                 .pattern(" LL")
-                .define('L', Tags.Items.LEATHER)
-                .define('S', Tags.Items.STRING)
+                .define('L', Tags.Items.LEATHERS)
+                .define('S', Tags.Items.STRINGS)
                 .unlockedBy("has_arrow", has(ItemTags.ARROWS))
-                .save(consumer, shapedLocate(BrassArmoryItems.QUIVER.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.QUIVER.get()));
 
         //BOMBS
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.BOMB.get(), 4)
@@ -156,19 +158,19 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .pattern("IGI")
                 .pattern(" I ")
                 .define('I', Tags.Items.INGOTS_IRON)
-                .define('S', Tags.Items.STRING)
-                .define('G', Tags.Items.GUNPOWDER)
-                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapedLocate(BrassArmoryItems.BOMB.get().toString()));
+                .define('S', Tags.Items.STRINGS)
+                .define('G', Tags.Items.GUNPOWDERS)
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapedLocate(BrassArmoryItems.BOMB.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.BOUNCY_BOMB.get(), 4)
                 .pattern(" B ")
                 .pattern("BSB")
                 .pattern(" B ")
                 .define('B', BrassArmoryItems.BOMB.get())
-                .define('S', Tags.Items.SLIMEBALLS)
+                .define('S', Tags.Items.SLIME_BALLS)
                 .unlockedBy("has_item", has(BrassArmoryItems.BOMB.get()))
-                .save(consumer, shapedLocate(BrassArmoryItems.BOUNCY_BOMB.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.BOUNCY_BOMB.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.STICKY_BOMB.get(), 4)
                 .pattern(" B ")
@@ -177,22 +179,22 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('B', BrassArmoryItems.BOMB.get())
                 .define('H', Items.HONEY_BOTTLE)
                 .unlockedBy("has_item", has(BrassArmoryItems.BOMB.get()))
-                .save(consumer, shapedLocate(BrassArmoryItems.STICKY_BOMB.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.STICKY_BOMB.get()));
 
         //GUNS
         ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, BrassArmoryItems.BLUNDERBUSS.get())
                 .requires(BrassArmoryItems.BLUNDERBUSS_PARTS.get())
                 .requires(BrassArmoryItems.GUN_STOCK.get())
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
                 .unlockedBy("has_parts", has(BrassArmoryItems.BLUNDERBUSS_PARTS.get()))
-                .save(consumer, shapelessLocate(BrassArmoryItems.BLUNDERBUSS.get().toString()));
+                .save(consumer, shapelessLocate(BrassArmoryItems.BLUNDERBUSS.get()));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, BrassArmoryItems.MUSKET.get())
                 .requires(BrassArmoryItems.MUSKET_PARTS.get())
                 .requires(BrassArmoryItems.GUN_STOCK.get())
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
                 .unlockedBy("has_parts", has(BrassArmoryItems.MUSKET_PARTS.get()))
-                .save(consumer, shapelessLocate(BrassArmoryItems.MUSKET.get().toString()));
+                .save(consumer, shapelessLocate(BrassArmoryItems.MUSKET.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.FLINTLOCK_PISTOL.get())
                 .pattern("IIF")
@@ -201,9 +203,9 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('F', Items.FLINT_AND_STEEL)
                 .define('N', Tags.Items.NUGGETS_IRON)
                 .define('P', ItemTags.PLANKS)
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
                 .unlockedBy("has_item", has(Items.FLINT_AND_STEEL))
-                .save(consumer, shapedLocate(BrassArmoryItems.FLINTLOCK_PISTOL.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.FLINTLOCK_PISTOL.get()));
 
         //GUN PARTS
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.BLUNDERBUSS_PARTS.get())
@@ -213,9 +215,9 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('I', Tags.Items.INGOTS_IRON)
                 .define('F', Items.FLINT_AND_STEEL)
                 .define('N', Tags.Items.NUGGETS_IRON)
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
                 .unlockedBy("has_item", has(Items.FLINT_AND_STEEL))
-                .save(consumer, shapedLocate(BrassArmoryItems.BLUNDERBUSS_PARTS.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.BLUNDERBUSS_PARTS.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.MUSKET_PARTS.get())
                 .pattern("IIF")
@@ -223,16 +225,16 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('I', Tags.Items.INGOTS_IRON)
                 .define('F', Items.FLINT_AND_STEEL)
                 .define('N', Tags.Items.NUGGETS_IRON)
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
                 .unlockedBy("has_item", has(Items.FLINT_AND_STEEL))
-                .save(consumer, shapedLocate(BrassArmoryItems.MUSKET_PARTS.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.MUSKET_PARTS.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.GUN_STOCK.get())
                 .pattern("SSP")
                 .define('S', Tags.Items.RODS_WOODEN)
                 .define('P', ItemTags.PLANKS)
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapedLocate(BrassArmoryItems.GUN_STOCK.get().toString()));
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapedLocate(BrassArmoryItems.GUN_STOCK.get()));
 
         //AMMO
         ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, BrassArmoryItems.BUNDLE_SHOT.get(), 4)
@@ -243,23 +245,23 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .requires(Tags.Items.NUGGETS_IRON)
                 .requires(Tags.Items.NUGGETS_IRON)
                 .requires(Items.PAPER)
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapelessLocate(BrassArmoryItems.BUNDLE_SHOT.get().toString()));
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapelessLocate(BrassArmoryItems.BUNDLE_SHOT.get()));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, BrassArmoryItems.MUSKET_BALL.get(), 8)
                 .requires(Tags.Items.INGOTS_IRON)
                 .requires(Items.PAPER)
-                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapelessLocate(BrassArmoryItems.MUSKET_BALL.get().toString()));
+                .unlockedBy("has_gunpowder", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapelessLocate(BrassArmoryItems.MUSKET_BALL.get()));
 
         //ROPE
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.EXPLORERS_ROPE.get(), 3)
                 .pattern("SS")
                 .pattern("SS")
                 .pattern("SS")
-                .define('S', Tags.Items.STRING)
-                .unlockedBy("has_item", has(Tags.Items.STRING))
-                .save(consumer, shapedLocate(BrassArmoryItems.EXPLORERS_ROPE.get().toString()));
+                .define('S', Tags.Items.STRINGS)
+                .unlockedBy("has_item", has(Tags.Items.STRINGS))
+                .save(consumer, shapedLocate(BrassArmoryItems.EXPLORERS_ROPE.get()));
 
         //GLIDER
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.GLIDER.get())
@@ -268,10 +270,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .pattern("LSL")
                 .define('H', Items.TRIPWIRE_HOOK)
                 .define('R', BrassArmoryItems.EXPLORERS_ROPE.get())
-                .define('L', Tags.Items.LEATHER)
+                .define('L', Tags.Items.LEATHERS)
                 .define('S', Tags.Items.RODS_WOODEN)
                 .unlockedBy("has_rope", has(BrassArmoryItems.EXPLORERS_ROPE.get()))
-                .save(consumer, shapedLocate(BrassArmoryItems.GLIDER.get().toString()));
+                .save(consumer, shapedLocate(BrassArmoryItems.GLIDER.get()));
 
         //CANNON SHIT
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.CANNON.get())
@@ -279,39 +281,39 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .pattern("  I")
                 .pattern("IIL")
                 .define('I', Tags.Items.INGOTS_IRON)
-                .define('S', Tags.Items.STRING)
+                .define('S', Tags.Items.STRINGS)
                 .define('L', ItemTags.LOGS)
-                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapedLocate(BrassArmoryItems.CANNON.get().toString()));
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapedLocate(BrassArmoryItems.CANNON.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.CANNON_BALL.get())
                 .pattern(" S ")
                 .pattern("SSS")
                 .pattern(" S ")
-                .define('S', Tags.Items.STONE)
-                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapedLocate(BrassArmoryItems.CANNON_BALL.get().toString()));
+                .define('S', Tags.Items.STONES)
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapedLocate(BrassArmoryItems.CANNON_BALL.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.CARCASS_ROUND.get())
                 .pattern(" S ")
                 .pattern("SPS")
                 .pattern(" S ")
-                .define('S', Tags.Items.STONE)
+                .define('S', Tags.Items.STONES)
                 .define('P', Items.LINGERING_POTION)
-                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapedLocate(BrassArmoryItems.CARCASS_ROUND.get().toString()));
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapedLocate(BrassArmoryItems.CARCASS_ROUND.get()));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, BrassArmoryItems.SIEGE_ROUND.get())
                 .pattern(" S ")
                 .pattern("STS")
                 .pattern(" S ")
-                .define('S', Tags.Items.STONE)
+                .define('S', Tags.Items.STONES)
                 .define('T', Items.TNT)
-                .unlockedBy("has_item", has(Tags.Items.GUNPOWDER))
-                .save(consumer, shapedLocate(BrassArmoryItems.SIEGE_ROUND.get().toString()));
+                .unlockedBy("has_item", has(Tags.Items.GUNPOWDERS))
+                .save(consumer, shapedLocate(BrassArmoryItems.SIEGE_ROUND.get()));
     }
 
-    protected final void boomerangRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> material, TagKey<Item> lesserMaterial, Item result) {
+    protected final void boomerangRecipe(RecipeOutput consumer, TagKey<Item> material, TagKey<Item> lesserMaterial, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern("MLM")
                 .pattern("L  ")
@@ -319,10 +321,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('M', material)
                 .define('L', lesserMaterial)
                 .unlockedBy("has_item", has(material == ItemTags.PLANKS ? lesserMaterial : material))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void spearRecipe(Consumer<FinishedRecipe> consumer, Item tipItem, Item result) {
+    protected final void spearRecipe(RecipeOutput consumer, Item tipItem, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern("T  ")
                 .pattern(" S ")
@@ -330,19 +332,19 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('T', tipItem)
                 .define('S', Tags.Items.RODS_WOODEN)
                 .unlockedBy("has_item", has(tipItem))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void daggerRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> material, Item result) {
+    protected final void daggerRecipe(RecipeOutput consumer, TagKey<Item> material, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern("SM")
                 .define('M', material)
                 .define('S', Tags.Items.RODS_WOODEN)
                 .unlockedBy("has_item", has(material == ItemTags.PLANKS ? Tags.Items.RODS_WOODEN : material))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void battleaxeRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> material, Item result) {
+    protected final void battleaxeRecipe(RecipeOutput consumer, TagKey<Item> material, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern("MSM")
                 .pattern("MSM")
@@ -350,10 +352,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('M', material)
                 .define('S', Tags.Items.RODS_WOODEN)
                 .unlockedBy("has_item", has(material == ItemTags.PLANKS ? Tags.Items.RODS_WOODEN : material))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void halberdRecipe(Consumer<FinishedRecipe> consumer, Item tipItem, Item baseItem, Item result) {
+    protected final void halberdRecipe(RecipeOutput consumer, Item tipItem, Item baseItem, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern("T  ")
                 .pattern(" B ")
@@ -362,10 +364,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('B', baseItem)
                 .define('S', Tags.Items.RODS_WOODEN)
                 .unlockedBy("has_item", has(baseItem))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void maceRecipe(Consumer<FinishedRecipe> consumer, Item material, Item result) {
+    protected final void maceRecipe(RecipeOutput consumer, Item material, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern("M")
                 .pattern("S")
@@ -373,10 +375,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('M', material)
                 .define('S', Tags.Items.RODS_WOODEN)
                 .unlockedBy("has_item", has(material))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void flailRecipe(Consumer<FinishedRecipe> consumer, Item material, Item result) {
+    protected final void flailRecipe(RecipeOutput consumer, Item material, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern("  S")
                 .pattern(" SC")
@@ -385,10 +387,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('S', Tags.Items.RODS_WOODEN)
                 .define('C', Items.CHAIN)
                 .unlockedBy("has_item", has(material))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void ballRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> material, TagKey<Item> lesserMaterial, Item result) {
+    protected final void ballRecipe(RecipeOutput consumer, TagKey<Item> material, TagKey<Item> lesserMaterial, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
                 .pattern(" M ")
                 .pattern("MLM")
@@ -396,10 +398,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('M', material)
                 .define('L', lesserMaterial)
                 .unlockedBy("has_item", has(material == ItemTags.PLANKS ? lesserMaterial : material))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void arrowRecipe(Consumer<FinishedRecipe> consumer, Ingredient material, Item unlock, Item result) {
+    protected final void arrowRecipe(RecipeOutput consumer, Ingredient material, Item unlock, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result, 4)
                 .pattern("M")
                 .pattern("S")
@@ -408,10 +410,10 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('S', Tags.Items.RODS_WOODEN)
                 .define('F', Tags.Items.FEATHERS)
                 .unlockedBy("has_item", has(unlock))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
     //Same as above, just uses TagKey<Item> instead
-    protected final void arrowRecipe(Consumer<FinishedRecipe> consumer, TagKey<Item> material, Item result) {
+    protected final void arrowRecipe(RecipeOutput consumer, TagKey<Item> material, Item result) {
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result, 4)
                 .pattern("M")
                 .pattern("S")
@@ -420,22 +422,22 @@ public class BrassArmoryRecipeProvider extends RecipeProvider {
                 .define('S', Tags.Items.RODS_WOODEN)
                 .define('F', Tags.Items.FEATHERS)
                 .unlockedBy("has_item", has(material))
-                .save(consumer, shapedLocate(result.toString()));
+                .save(consumer, shapedLocate(result));
     }
 
-    protected final void netheriteRecipe(Consumer<FinishedRecipe> consumer, Item ingredient, Item result) {
+    protected final void netheriteRecipe(RecipeOutput consumer, Item ingredient, Item result) {
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(ingredient), Ingredient.of(Items.NETHERITE_INGOT), RecipeCategory.COMBAT,  result)
                 .unlocks("has_netherite_ingot", has(Items.NETHERITE_INGOT))
-                .save(consumer, new ResourceLocation(BrassArmory.MOD_ID, "smithing/" + result));
+                .save(consumer, ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID, "smithing/" + BuiltInRegistries.ITEM.getKey(result).getPath()));
     }
 
     @Nonnull
-    private static ResourceLocation shapedLocate(String name) {
-        return new ResourceLocation(BrassArmory.MOD_ID, "shaped/" + name);
+    private static ResourceLocation shapedLocate(Item item) {
+        return ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID, "shaped/" + BuiltInRegistries.ITEM.getKey(item).getPath());
     }
 
     @Nonnull
-    private static ResourceLocation shapelessLocate(String name) {
-        return new ResourceLocation(BrassArmory.MOD_ID, "shapeless/" + name);
+    private static ResourceLocation shapelessLocate(Item item) {
+        return ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID, "shapeless/" + BuiltInRegistries.ITEM.getKey(item).getPath());
     }
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": {
+      "tag": "minecraft:planks"
+    },
+    "M": {
+      "tag": "minecraft:stone_tool_materials"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MLM",
+    " M "
+  ],
+  "result": {
+    "id": "brass_armory:stone_spiky_ball"
+  },
+  "show_notification": true
+}

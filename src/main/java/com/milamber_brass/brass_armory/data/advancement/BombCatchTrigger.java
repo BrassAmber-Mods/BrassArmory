@@ -1,40 +1,27 @@
 package com.milamber_brass.brass_armory.data.advancement;
 
-import com.google.gson.JsonObject;
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 public class BombCatchTrigger extends SimpleCriterionTrigger<BombCatchTrigger.Instance> {
-
     public static final ResourceLocation ID = BrassArmory.locate("bomb_catch");
-
     @Override
-    public @NotNull ResourceLocation getId() {
-        return ID;
-    }
+    public Codec<Instance> codec() { return Instance.CODEC; }
+    public void trigger(ServerPlayer player) { this.trigger(player, instance -> true); }
 
-    @Override
-    protected @NotNull Instance createInstance(JsonObject json, ContextAwarePredicate predicate, DeserializationContext ctx) {
-        return new BombCatchTrigger.Instance(predicate);
-    }
-
-    public void trigger(ServerPlayer player) {
-        this.trigger(player, (instance) -> true);
-    }
-
-    public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(ContextAwarePredicate player) {
-            super(BombCatchTrigger.ID, player);
-        }
-
-        public static @NotNull Instance catchBomb() {
-            return new Instance(ContextAwarePredicate.ANY);
+    public record Instance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player)
+        ).apply(instance, Instance::new));
+        public static Criterion<Instance> catchBomb() {
+            return new Criterion<>(BrassArmoryAdvancements.CATCH_BOMB, new Instance(Optional.empty()));
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.milamber_brass.brass_armory.behaviour;
 
+import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -7,9 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 public interface iGun {
      default void onOpen(Player owner, CompoundTag tag) {

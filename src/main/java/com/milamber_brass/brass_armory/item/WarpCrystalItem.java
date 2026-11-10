@@ -4,6 +4,8 @@ import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.util.ArmoryCooldownCache;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import java.util.Optional;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -22,8 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 @ParametersAreNonnullByDefault
 public class WarpCrystalItem extends Item {
     public static final int WARP_TICKS = 40;
@@ -35,7 +35,7 @@ public class WarpCrystalItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack stack, LivingEntity living) {
         return 72000;
     }
 
@@ -57,8 +57,8 @@ public class WarpCrystalItem extends Item {
         }
 
         if (living instanceof Player player) {
-            player.getCapability(BrassArmoryCapabilities.EFFECT_CAPABILITY).ifPresent(iEffectCapability -> {
-                int usedTicks = this.getUseDuration(stack) - useDurationLeft;
+            Optional.of(player.getData(BrassArmoryCapabilities.EFFECT_CAPABILITY)).ifPresent(iEffectCapability -> {
+                int usedTicks = this.getUseDuration(stack, living) - useDurationLeft;
                 float slow = iEffectCapability.getSlow();
 
                 if (level.isClientSide) {
@@ -87,7 +87,7 @@ public class WarpCrystalItem extends Item {
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity living, int useDurationLeft) {
-        int usedTicks = this.getUseDuration(stack) - useDurationLeft;
+        int usedTicks = this.getUseDuration(stack, living) - useDurationLeft;
 
         Vec3 farPoint = living.getLookAngle().scale(this.maxDistance).add(living.position());
         double farY = farPoint.y;
@@ -104,7 +104,7 @@ public class WarpCrystalItem extends Item {
                             }
 
                             farPoint = Vec3.atBottomCenterOf(blockpos);
-                            living.teleportToWithTicket(farPoint.x, farPoint.y, farPoint.z);
+                            living.teleportTo(farPoint.x, farPoint.y, farPoint.z);
 
                             level.playSound(null, living, BrassArmorySounds.CRYSTAL_WARP.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 

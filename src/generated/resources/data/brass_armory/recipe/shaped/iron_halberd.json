@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "minecraft:iron_axe"
+    },
+    "S": {
+      "tag": "c:rods/wooden"
+    },
+    "T": {
+      "item": "brass_armory:iron_dagger"
+    }
+  },
+  "pattern": [
+    "T  ",
+    " B ",
+    "  S"
+  ],
+  "result": {
+    "id": "brass_armory:iron_halberd"
+  },
+  "show_notification": true
+}

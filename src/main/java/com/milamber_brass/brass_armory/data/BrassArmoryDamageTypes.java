@@ -1,23 +1,20 @@
 package com.milamber_brass.brass_armory.data;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -40,15 +37,13 @@ public class BrassArmoryDamageTypes extends DatapackBuiltinEntriesProvider {
     }
 
     public static void addProviders(boolean isServer, DataGenerator generator, PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        generator.addProvider(isServer, new BrassArmoryDamageTypes(output, provider));
-        generator.addProvider(isServer, new BrassArmoryTags.DamageTypes(output, provider.thenApply(BrassArmoryDamageTypes::append), helper));
+        var entries = new BrassArmoryDamageTypes(output, provider);
+        generator.addProvider(isServer, entries);
+        generator.addProvider(isServer, new BrassArmoryTags.DamageTypes(output, entries.getRegistryProvider(), helper));
     }
 
-    private static HolderLookup.Provider append(HolderLookup.Provider original) {
-        return BrassArmoryDamageTypes.BUILDER.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), original);
-    }
 
-    public static void bootstrap(BootstapContext<DamageType> context) {
+    public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(BATTLE_AXE, new DamageType("brass_armory.battleaxe", 0.0F));
         context.register(BOOMERANG, new DamageType("brass_armory.boomerang", 0.0F));
         context.register(DAGGER, new DamageType("brass_armory.dagger", 0.0F));

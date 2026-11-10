@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.mixin;
 
 import com.milamber_brass.brass_armory.entity.projectile.cannon_balls.CarcassRoundEntity;
+import javax.annotation.Nullable;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -13,8 +14,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import javax.annotation.Nullable;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {

@@ -1,28 +1,27 @@
 package com.milamber_brass.brass_armory.item;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.milamber_brass.brass_armory.entity.projectile.FlailHeadEntity;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
+import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimationItem {
@@ -44,7 +43,7 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     }
 
     @Override
-    protected ImmutableMultimap.Builder<Attribute, AttributeModifier> setDefaultModifiers(float attackDamage, float attackSpeed) {
+    protected ItemAttributeModifiers.Builder setDefaultModifiers(float attackDamage, float attackSpeed) {
         return null;
     }
 
@@ -56,7 +55,7 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
 
     @Override
     public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
-        stack.hurtAndBreak(1, entityLiving, (player1) -> player1.broadcastBreakEvent(InteractionHand.MAIN_HAND));
+        stack.hurtAndBreak(1, entityLiving, EquipmentSlot.MAINHAND);
         super.releaseUsing(stack, level, entityLiving, timeLeft);
     }
 
@@ -68,7 +67,7 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     public boolean isExtended(LivingEntity living, ItemStack stack) {
         List<Entity> flails = living.level().getEntities(living, living.getBoundingBox().inflate(20), entity -> entity instanceof FlailHeadEntity);
         for (Entity entity : flails) {
-            if (entity instanceof FlailHeadEntity flailHead && flailHead.getOwner() == living && flailHead.getItem().equals(stack, true)) return true;
+            if (entity instanceof FlailHeadEntity flailHead && flailHead.getOwner() == living && ItemStack.isSameItemSameComponents(flailHead.getItem(), stack)) return true;
         }
         return false;
     }
@@ -90,7 +89,7 @@ public class FlailItem extends AbstractThrownWeaponItem implements ICustomAnimat
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return super.canApplyAtEnchantingTable(stack, enchantment) && enchantment != Enchantments.LOYALTY;
+    public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
+        return super.supportsEnchantment(stack, enchantment) && !enchantment.is(Enchantments.LOYALTY);
     }
 }

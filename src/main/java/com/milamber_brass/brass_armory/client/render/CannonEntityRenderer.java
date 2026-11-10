@@ -8,6 +8,7 @@ import com.milamber_brass.brass_armory.init.BrassArmoryModels;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -16,48 +17,46 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
 public class CannonEntityRenderer extends EntityRenderer<CannonEntity> {
-    private static final ResourceLocation RESOURCE_LOCATION = new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/cannon.png");
+    private static final ResourceLocation RESOURCE_LOCATION = ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/cannon.png");
     private static final ResourceLocation[] RESOURCE_LOCATIONS = {
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/0.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/1.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/2.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/3.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/4.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/5.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/6.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/7.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/8.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/9.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/10.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/11.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/12.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/13.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/14.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/15.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/16.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/17.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/18.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/19.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/20.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/21.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/22.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/23.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/24.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/25.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/26.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/27.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/28.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/29.png"),
-            new ResourceLocation(BrassArmory.MOD_ID,"textures/entity/cannon/30.png")
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/0.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/1.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/2.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/3.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/4.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/5.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/6.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/7.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/8.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/9.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/10.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/11.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/12.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/13.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/14.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/15.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/16.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/17.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/18.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/19.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/20.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/21.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/22.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/23.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/24.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/25.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/26.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/27.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/28.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/29.png"),
+            ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/cannon/30.png")
     };
     private final CannonModel<CannonEntity> model;
 
@@ -105,11 +104,11 @@ public class CannonEntityRenderer extends EntityRenderer<CannonEntity> {
         }
 
         VertexConsumer vertexConsumer = bufferSource.getBuffer(this.model.renderType(this.getTextureLocation(cannon)));
-        this.model.renderToBuffer(stack, vertexConsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(stack, vertexConsumer, light, OverlayTexture.NO_OVERLAY, -1);
 
         if (fuse <= 30) {
             VertexConsumer fuseConsumer = bufferSource.getBuffer(this.model.renderType(this.getTextureLocation(fuse)));
-            this.model.renderToBuffer(stack, fuseConsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.model.renderToBuffer(stack, fuseConsumer, light, OverlayTexture.NO_OVERLAY, -1);
         }
 
         this.model.cannon_end.z = z;

@@ -1,0 +1,33 @@
+{
+  "parent": "brass_armory:achievements/root",
+  "criteria": {
+    "mace_smash": {
+      "conditions": {},
+      "trigger": "brass_armory:mace_smash"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.brass_armory.mace_smash.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:diamond_mace",
+      "components": {
+        "minecraft:damage": 0
+      }
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.brass_armory.mace_smash"
+    }
+  },
+  "requirements": [
+    [
+      "mace_smash"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

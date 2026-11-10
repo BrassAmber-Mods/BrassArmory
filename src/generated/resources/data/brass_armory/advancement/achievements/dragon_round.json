@@ -1,0 +1,35 @@
+{
+  "parent": "brass_armory:achievements/cannon",
+  "criteria": {
+    "dragon_round": {
+      "conditions": {},
+      "trigger": "brass_armory:dragon_round"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.brass_armory.dragon_round.desc"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "id": "brass_armory:carcass_round",
+      "components": {
+        "minecraft:custom_data": {
+          "BADragonRound": true
+        }
+      }
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.brass_armory.dragon_round"
+    }
+  },
+  "requirements": [
+    [
+      "dragon_round"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,40 +1,27 @@
 package com.milamber_brass.brass_armory.data.advancement;
 
-import com.google.gson.JsonObject;
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 public class MaceSmashTrigger extends SimpleCriterionTrigger<MaceSmashTrigger.Instance> {
-
     public static final ResourceLocation ID = BrassArmory.locate("mace_smash");
-
     @Override
-    public @NotNull ResourceLocation getId() {
-        return ID;
-    }
+    public Codec<Instance> codec() { return Instance.CODEC; }
+    public void trigger(ServerPlayer player) { this.trigger(player, instance -> true); }
 
-    @Override
-    protected @NotNull Instance createInstance(JsonObject json, ContextAwarePredicate player, DeserializationContext ctx) {
-        return new MaceSmashTrigger.Instance(player);
-    }
-
-    public void trigger(ServerPlayer player) {
-        this.trigger(player, (instance) -> true);
-    }
-
-    public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(ContextAwarePredicate player) {
-            super(MaceSmashTrigger.ID, player);
-        }
-
-        public static @NotNull Instance maceSmash() {
-            return new Instance(ContextAwarePredicate.ANY);
+    public record Instance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player)
+        ).apply(instance, Instance::new));
+        public static Criterion<Instance> maceSmash() {
+            return new Criterion<>(BrassArmoryAdvancements.MACE_SMASH_TRIGGER, new Instance(Optional.empty()));
         }
     }
 }

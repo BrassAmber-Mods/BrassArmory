@@ -2,13 +2,13 @@ package com.milamber_brass.brass_armory.capabilities;
 
 import com.milamber_brass.brass_armory.behaviour.GunBehaviours;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class PowderCapabilityHandler implements IPowderCapability {
@@ -38,14 +38,14 @@ public class PowderCapabilityHandler implements IPowderCapability {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         GunBehaviours.resourceLocationByPowderBehaviour(this.powderBehaviour).ifPresent(resourceLocation -> tag.putString("BAPowderBehaviour", resourceLocation.toString()));
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
         ResourceLocation resourceLocation = ResourceLocation.tryParse(tag.getString("BAPowderBehaviour"));
         if (resourceLocation != null) this.powderBehaviour = GunBehaviours.getPowderBehaviours().get(resourceLocation);
     }

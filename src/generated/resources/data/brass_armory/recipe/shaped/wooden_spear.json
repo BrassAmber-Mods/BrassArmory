@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "tag": "c:rods/wooden"
+    },
+    "T": {
+      "item": "brass_armory:wooden_dagger"
+    }
+  },
+  "pattern": [
+    "T  ",
+    " S ",
+    "  S"
+  ],
+  "result": {
+    "id": "brass_armory:wooden_spear"
+  },
+  "show_notification": true
+}

@@ -2,6 +2,8 @@ package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.entity.projectile.SpikyBallEntity;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -10,9 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SpikyBallItem extends TieredItem {
 

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": {
+      "tag": "c:ingots/iron"
+    },
+    "M": {
+      "tag": "c:ingots/gold"
+    }
+  },
+  "pattern": [
+    " M ",
+    "MLM",
+    " M "
+  ],
+  "result": {
+    "id": "brass_armory:golden_spiky_ball"
+  },
+  "show_notification": true
+}

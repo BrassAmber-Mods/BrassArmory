@@ -18,7 +18,7 @@ public abstract class MouseHandlerMixin {
     @Shadow private double accumulatedDY;
 
     @Inject(method = "turnPlayer", at = @At(value = "HEAD"), remap = true)
-    private void turnPlayer(CallbackInfo ci) {
+    private void turnPlayer(double frameTime, CallbackInfo ci) {
         if (this.minecraft.player != null && this.minecraft.player.isPassenger() && this.minecraft.player.getVehicle() instanceof CannonEntity) {
             this.accumulatedDX = Mth.clamp(this.accumulatedDX * 0.25D, -5.0D, 5.0D);
             this.accumulatedDY = Mth.clamp(this.accumulatedDY * 0.25D, -5.0D, 5.0D);
