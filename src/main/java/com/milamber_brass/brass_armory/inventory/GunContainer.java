@@ -7,11 +7,10 @@ import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.util.ItemData;
 import com.mojang.datafixers.util.Pair;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,16 +18,15 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+
+
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
 public class GunContainer<T extends iGun> extends AbstractContainerMenu {
-    public static final ResourceLocation EMPTY_POWDER_SLOT = BrassArmory.locate("gui/empty_powder_slot");
-    public static final ResourceLocation EMPTY_AMMO_SLOT = BrassArmory.locate("gui/empty_ammo_slot");
+    public static final Identifier EMPTY_POWDER_SLOT = BrassArmory.locate("gui/empty_powder_slot");
+    public static final Identifier EMPTY_AMMO_SLOT = BrassArmory.locate("gui/empty_ammo_slot");
     public static final String gunIcon = "BAGunIcon";
     public static final String gunAmmo = "BAAmmo";
     public static final String gunPowder = "BAPowder";
@@ -40,10 +38,10 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
     public final Slot iconSlot;
 
     public GunContainer(int id, Inventory playerInventory) {
-        this(id, playerInventory, new ItemStackHandler(3), null, new CompoundTag());
+        this(id, playerInventory, new SimpleContainer(3), null, new CompoundTag());
     }
 
-    public GunContainer(int id, Inventory playerInventory, IItemHandler slot, @Nullable T gun, CompoundTag tag) {
+    public GunContainer(int id, Inventory playerInventory, Container slot, @Nullable T gun, CompoundTag tag) {
         super(BrassArmoryMenus.GUN_MENU.get(), id);
         this.gun = gun;
         this.tag = tag;
@@ -60,15 +58,15 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
 
         this.addSlot(new DefaultSlot(playerInventory, 40, 8, 50) {
             @Override
-            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+            public Identifier getNoItemIcon() {
+                return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
             }
         });
 
         this.ammoSlot = this.addSlot(new GunSlot(slot, 0, 61, 24, gun != null ? gun.ammoPredicate() : inputStack -> true, 1) {
             @Override
-            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                return Pair.of(InventoryMenu.BLOCK_ATLAS, EMPTY_AMMO_SLOT);
+            public Identifier getNoItemIcon() {
+                return EMPTY_AMMO_SLOT;
             }
         });
 
@@ -76,8 +74,8 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
 
         this.powderSlot = this.addSlot(new GunSlot(slot, 1, 99, 24, gun != null ? gun.powderPredicate() : inputStack -> true, 1) {
             @Override
-            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                return Pair.of(InventoryMenu.BLOCK_ATLAS, EMPTY_POWDER_SLOT);
+            public Identifier getNoItemIcon() {
+                return EMPTY_POWDER_SLOT;
             }
         });
 
@@ -100,8 +98,7 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
         if (gun != null) gun.onOpen(playerInventory.player, tag); //Gun is null on client
     }
 
-    @Nonnull
-    @Override
+        @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack retStack = ItemStack.EMPTY;
         Slot slot = getSlot(index);
@@ -119,13 +116,12 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
         return retStack;
     }
 
-    @Nonnull
-    public static MenuConstructor getServerContainer(iGun gun, CompoundTag tag) {
-        return (id, playerInv, player) -> new GunContainer<>(id, playerInv, new ItemStackHandler(3), gun, tag);
+        public static MenuConstructor getServerContainer(iGun gun, CompoundTag tag) {
+        return (id, playerInv, player) -> new GunContainer<>(id, playerInv, new SimpleContainer(3), gun, tag);
     }
 
     public static MenuConstructor getServerContainer(iGun gun, ItemStack stack) {
-        return (id, playerInv, player) -> new GunContainer<>(id, playerInv, new ItemStackHandler(3), gun, ItemData.getTag(stack)) {
+        return (id, playerInv, player) -> new GunContainer<>(id, playerInv, new SimpleContainer(3), gun, ItemData.getTag(stack)) {
             @Override
             public void removed(Player player) {
                 super.removed(player);
@@ -154,17 +150,17 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
         if (this.gun != null) this.gun.onLoad(player, this.tag); //Null on client side, not null on server side
     }
 
-    static class GunSlot extends SlotItemHandler {
+    static class GunSlot extends Slot {
         private final Predicate<ItemStack> mayPlace;
         private final int maxStack;
 
-        public GunSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, Predicate<ItemStack> mayPlace, int maxStack) {
+        public GunSlot(Container itemHandler, int index, int xPosition, int yPosition, Predicate<ItemStack> mayPlace, int maxStack) {
             super(itemHandler, index, xPosition, yPosition);
             this.mayPlace = mayPlace;
             this.maxStack = maxStack;
         }
 
-        public GunSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+        public GunSlot(Container itemHandler, int index, int xPosition, int yPosition) {
             this(itemHandler, index, xPosition, yPosition, itemStack -> true, 64);
         }
 

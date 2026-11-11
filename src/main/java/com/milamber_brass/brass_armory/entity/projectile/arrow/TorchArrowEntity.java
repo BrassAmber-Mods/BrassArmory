@@ -1,23 +1,23 @@
 package com.milamber_brass.brass_armory.entity.projectile.arrow;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import com.milamber_brass.brass_armory.client.render.SpecialArrowRenderer;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpecialArrowEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -30,7 +30,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class TorchArrowEntity extends AbstractSpecialArrowEntity implements ItemSupplier {
     protected static final EntityDataAccessor<ItemStack> DATA_ITEM_STACK = SynchedEntityData.defineId(TorchArrowEntity.class, EntityDataSerializers.ITEM_STACK);
 
@@ -89,7 +88,7 @@ public class TorchArrowEntity extends AbstractSpecialArrowEntity implements Item
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.TORCH_ARROW_TEXTURE;
     }
 
@@ -99,14 +98,14 @@ public class TorchArrowEntity extends AbstractSpecialArrowEntity implements Item
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        ArmoryUtil.addStack(tag, this.getItemRaw(), "BATorch");
+    public void addAdditionalSaveData(ValueOutput tag) {
+        tag.store("BATorch", ItemStack.CODEC, this.getItemRaw());
         super.addAdditionalSaveData(tag);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        this.setTorch(tag);
+    public void readAdditionalSaveData(ValueInput tag) {
+        this.setItem(tag.read("BATorch", ItemStack.CODEC).orElse(Items.TORCH.getDefaultInstance()));
         super.readAdditionalSaveData(tag);
     }
 
@@ -122,15 +121,13 @@ public class TorchArrowEntity extends AbstractSpecialArrowEntity implements Item
         return this.entityData.get(DATA_ITEM_STACK);
     }
 
-    @Nonnull
-    @Override
+        @Override
     public ItemStack getItem() {
         ItemStack itemstack = this.getItemRaw();
         return itemstack.isEmpty() ? new ItemStack(Items.TORCH) : itemstack;
     }
 
-    @Nonnull
-    protected StandingAndWallBlockItem getTorch() {
+        protected StandingAndWallBlockItem getTorch() {
         if (this.getItem().getItem() instanceof StandingAndWallBlockItem torch && torch.getBlock() instanceof TorchBlock) return torch;
         else return (StandingAndWallBlockItem)Items.TORCH;
     }

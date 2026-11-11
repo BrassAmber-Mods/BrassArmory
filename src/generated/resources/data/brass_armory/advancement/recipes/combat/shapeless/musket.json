@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "c:gunpowders"
+            "items": "#c:gunpowders"
           }
         ]
       },
@@ -25,7 +25,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shapeless/musket"
+        "recipes": [
+          "brass_armory:shapeless/musket"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "item": "minecraft:chain"
-    },
-    "M": {
-      "item": "brass_armory:stone_spiky_ball"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "C": "minecraft:iron_chain",
+    "M": "brass_armory:stone_spiky_ball",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "  S",

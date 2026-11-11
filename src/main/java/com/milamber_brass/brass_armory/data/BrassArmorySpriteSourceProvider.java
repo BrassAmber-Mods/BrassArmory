@@ -7,18 +7,17 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.common.data.SpriteSourceProvider;
+import net.neoforged.neoforge.client.data.SpriteSourceProvider;
 
 public class BrassArmorySpriteSourceProvider extends SpriteSourceProvider {
-    public BrassArmorySpriteSourceProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, ExistingFileHelper fileHelper) {
-        super(output, registries, BrassArmory.MOD_ID, fileHelper);
+    public BrassArmorySpriteSourceProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries, BrassArmory.MOD_ID);
     }
 
     @Override
     protected void gather() {
-        atlas(SpriteSourceProvider.BLOCKS_ATLAS).addSource(new SingleFile(GunContainer.EMPTY_POWDER_SLOT, Optional.empty()));
-        atlas(SpriteSourceProvider.BLOCKS_ATLAS).addSource(new SingleFile(GunContainer.EMPTY_AMMO_SLOT, Optional.empty()));
-        atlas(SpriteSourceProvider.BLOCKS_ATLAS).addSource(new SingleFile(BrassArmoryBlockModelBuilder.ROPE_ARROW_TEXTURE, Optional.empty()));
+        atlas(net.minecraft.data.AtlasIds.BLOCKS).addSource(new SingleFile(GunContainer.EMPTY_POWDER_SLOT, Optional.empty()));
+        atlas(net.minecraft.data.AtlasIds.BLOCKS).addSource(new SingleFile(GunContainer.EMPTY_AMMO_SLOT, Optional.empty()));
+        atlas(net.minecraft.data.AtlasIds.BLOCKS).addSource(new SingleFile(BrassArmoryBlockModelBuilder.ROPE_ARROW_TEXTURE, Optional.empty()));
     }
 }

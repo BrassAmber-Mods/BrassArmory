@@ -15,7 +15,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:smithing/netherite_spiky_ball"
+        "recipes": [
+          "brass_armory:smithing/netherite_spiky_ball"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

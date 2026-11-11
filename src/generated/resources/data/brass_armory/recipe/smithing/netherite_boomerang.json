@@ -1,15 +1,9 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
-  "base": {
-    "item": "brass_armory:diamond_boomerang"
-  },
+  "addition": "minecraft:netherite_ingot",
+  "base": "brass_armory:diamond_boomerang",
   "result": {
     "id": "brass_armory:netherite_boomerang"
   },
-  "template": {
-    "item": "minecraft:netherite_upgrade_smithing_template"
-  }
+  "template": "minecraft:netherite_upgrade_smithing_template"
 }

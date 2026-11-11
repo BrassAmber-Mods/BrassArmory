@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:wither_skeleton_skull",
+    "count": 1
+  },
+  "gives": {
+    "id": "brass_armory:katana",
+    "count": 1
+  },
+  "max_uses": 32,
+  "xp": 1
+}

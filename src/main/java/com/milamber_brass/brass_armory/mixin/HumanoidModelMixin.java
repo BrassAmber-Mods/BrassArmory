@@ -3,14 +3,15 @@ package com.milamber_brass.brass_armory.mixin;
 import com.milamber_brass.brass_armory.inventory.GunContainer;
 import com.milamber_brass.brass_armory.item.FlintlockItem;
 import com.milamber_brass.brass_armory.item.MaceItem;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,57 +25,60 @@ public abstract class HumanoidModelMixin {
     @Shadow @Final public ModelPart leftArm;
     @Shadow @Final public ModelPart rightArm;
     @Shadow @Final public ModelPart head;
-    @Shadow public HumanoidModel.ArmPose rightArmPose;
-    @Shadow public HumanoidModel.ArmPose leftArmPose;
+    @Unique private HumanoidRenderState armoryState;
 
     @Unique float savedLeftRot;
     @Unique float savedRightRot;
 
-    @ParametersAreNonnullByDefault
-    @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/HumanoidArm;RIGHT:Lnet/minecraft/world/entity/HumanoidArm;", shift = At.Shift.AFTER, ordinal = 0), remap = true)
-    private void saveRotsMixin(LivingEntity living, float p_102867_, float p_102868_, float p_102869_, float p_102870_, float p_102871_, CallbackInfo ci) {
+    @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;isUsingItem:Z", ordinal = 0))
+    private void saveRotsMixin(HumanoidRenderState state, CallbackInfo ci) {
         this.savedLeftRot = this.leftArm.xRot;
         this.savedRightRot = this.rightArm.xRot;
     }
 
-    @ParametersAreNonnullByDefault
-    @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/HumanoidModel;setupAttackAnimation(Lnet/minecraft/world/entity/LivingEntity;F)V", shift = At.Shift.AFTER), remap = true)
-    private void gunRePose(LivingEntity living, float p_102867_, float p_102868_, float p_102869_, float p_102870_, float p_102871_, CallbackInfo ci) {
-        if (living.isUsingItem()) {
-            if (living.getMainHandItem().getItem() instanceof MaceItem && living.getOffhandItem().getItem() instanceof MaceItem) {
+    @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/HumanoidModel;setupAttackAnimation(Lnet/minecraft/client/renderer/entity/state/HumanoidRenderState;)V", shift = At.Shift.AFTER))
+    private void gunRePose(HumanoidRenderState state, CallbackInfo ci) {
+        this.armoryState = state;
+        ItemStack mainHand = state.getMainHandItemStack();
+        ItemStack offHand = state.getUseItemStackForArm(state.mainArm.getOpposite());
+        ItemStack useItem = state.getUseItemStackForArm(state.useItemHand.asArm(state.mainArm));
+        var player = Minecraft.getInstance().player;
+        boolean loadingMenu = state instanceof AvatarRenderState avatar && player != null && avatar.id == player.getId() && player.containerMenu instanceof GunContainer<?>;
+        if (state.isUsingItem) {
+            if (mainHand.getItem() instanceof MaceItem && offHand.getItem() instanceof MaceItem) {
                 this.rightArm.xRot = this.savedRightRot * 0.5F - (float) Math.PI;
                 this.rightArm.yRot = 0.0F;
                 this.leftArm.xRot = this.savedLeftRot * 0.5F - (float) Math.PI;
                 this.leftArm.yRot = 0.0F;
             } else {
-                if (living.getUseItem().getItem() instanceof FlintlockItem) {
-                    HumanoidArm mainArm = living.getMainArm();
-                    InteractionHand hand = living.getUsedItemHand();
+                if (useItem.getItem() instanceof FlintlockItem) {
+                    HumanoidArm mainArm = state.mainArm;
+                    InteractionHand hand = state.useItemHand;
                     boolean rightArm = (mainArm == HumanoidArm.RIGHT && hand == InteractionHand.MAIN_HAND) || (mainArm == HumanoidArm.LEFT && hand == InteractionHand.OFF_HAND);
-                    this.holdLoadingGun(rightArm, FlintlockItem.getLoadProgress(living.getUseItem()), true);
+                    this.holdLoadingGun(rightArm, FlintlockItem.getLoadProgress(useItem), true);
                 }
             }
         } else {
-            if (living.getMainHandItem().getItem() instanceof FlintlockItem gunItem) {
-                switch(FlintlockItem.getLoad(living.getMainHandItem())) {
+            if (mainHand.getItem() instanceof FlintlockItem gunItem) {
+                switch(FlintlockItem.getLoad(mainHand)) {
                     case 0:
-                        if (living instanceof Player player && player.containerMenu instanceof GunContainer<?>)
-                            this.holdLoadingGun(living.getMainArm() == HumanoidArm.RIGHT, FlintlockItem.getLoadProgress(living.getUseItem()), false);
+                        if (loadingMenu)
+                            this.holdLoadingGun(state.mainArm == HumanoidArm.RIGHT, FlintlockItem.getLoadProgress(useItem), false);
                         break;
                     case 2:
                         if (gunItem.isOneHanded())
-                            this.holdLoadedGun(living.getMainArm() != HumanoidArm.RIGHT, true, !living.getOffhandItem().isEmpty());
+                            this.holdLoadedGun(state.mainArm != HumanoidArm.RIGHT, true, !offHand.isEmpty());
                 }
             }
-            if (living.getOffhandItem().getItem() instanceof FlintlockItem gunItem) {
-                switch(FlintlockItem.getLoad(living.getOffhandItem())) {
+            if (offHand.getItem() instanceof FlintlockItem gunItem) {
+                switch(FlintlockItem.getLoad(offHand)) {
                     case 0:
-                        if (living instanceof Player player && player.containerMenu instanceof GunContainer<?>)
-                            this.holdLoadingGun(living.getMainArm() == HumanoidArm.LEFT, FlintlockItem.getLoadProgress(living.getUseItem()), false);
+                        if (loadingMenu)
+                            this.holdLoadingGun(state.mainArm == HumanoidArm.LEFT, FlintlockItem.getLoadProgress(useItem), false);
                         break;
                     case 2:
                         if (gunItem.isOneHanded())
-                            this.holdLoadedGun(living.getMainArm() != HumanoidArm.LEFT, false, !living.getMainHandItem().isEmpty());
+                            this.holdLoadedGun(state.mainArm != HumanoidArm.LEFT, false, !mainHand.isEmpty());
                 }
             }
         }
@@ -100,7 +104,7 @@ public abstract class HumanoidModelMixin {
     @Unique
     private void holdLoadedGun(boolean leftHand, boolean mainHand, boolean otherHandHasItem) {
         if (leftHand) {
-            if (!mainHand && this.rightArmPose.isTwoHanded()) return;
+            if (!mainHand && this.armoryState.rightArmPose.isTwoHanded()) return;
             this.leftArm.yRot = 0.1F + this.head.yRot;
             this.leftArm.xRot = (-(float)Math.PI / 2F) + this.head.xRot;
             if (mainHand) {
@@ -109,7 +113,7 @@ public abstract class HumanoidModelMixin {
                 this.rightArm.yRot = 0.0F;
             }
         } else {
-            if (!mainHand && this.leftArmPose.isTwoHanded()) return;
+            if (!mainHand && this.armoryState.leftArmPose.isTwoHanded()) return;
             this.rightArm.yRot = -0.1F + this.head.yRot;
             this.rightArm.xRot = (-(float)Math.PI / 2F) + this.head.xRot;
             if (mainHand) {

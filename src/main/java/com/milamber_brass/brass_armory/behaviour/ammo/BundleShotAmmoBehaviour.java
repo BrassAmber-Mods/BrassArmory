@@ -1,12 +1,11 @@
 package com.milamber_brass.brass_armory.behaviour.ammo;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import com.milamber_brass.brass_armory.entity.projectile.BulletEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class BundleShotAmmoBehaviour extends AbstractAmmoBehaviour {
     public BundleShotAmmoBehaviour() {
         super();
@@ -27,7 +25,7 @@ public class BundleShotAmmoBehaviour extends AbstractAmmoBehaviour {
         for (int i = 0; i < iMax; i++) {
             BulletEntity bullet = new BulletEntity(level, owner);
             if (powderBehaviour != null) powderBehaviour.applyEffect(bullet);
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 float speed = gun.speed();
                 bullet.setPos(shooter.getEyePosition());
                 bullet.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, speed, gun.accuracy());

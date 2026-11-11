@@ -4,14 +4,12 @@ import com.milamber_brass.brass_armory.entity.projectile.bomb.BombEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.util.ItemData;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.data.models.blockstates.PropertyDispatch.QuadFunction;
-import net.minecraft.data.models.blockstates.PropertyDispatch.TriFunction;
+import com.mojang.datafixers.util.Function4;
+import com.mojang.datafixers.util.Function3;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,27 +20,25 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
 public class BombItem extends Item {
-    public final TriFunction<Level, LivingEntity, @Nullable HumanoidArm, BombEntity> newBombFunction;
-    public final QuadFunction<Level, Double, Double, Double, BombEntity> newPosBombFunction;
+    public final Function3<Level, LivingEntity, @Nullable HumanoidArm, BombEntity> newBombFunction;
+    public final Function4<Level, Double, Double, Double, BombEntity> newPosBombFunction;
 
-    public BombItem(Properties properties, TriFunction<Level, LivingEntity, @Nullable HumanoidArm, BombEntity> newBombFunction, QuadFunction<Level, Double, Double, Double, BombEntity> newPosBombFunction) {
+    public BombItem(Properties properties, Function3<Level, LivingEntity, @Nullable HumanoidArm, BombEntity> newBombFunction, Function4<Level, Double, Double, Double, BombEntity> newPosBombFunction) {
         super(properties);
         this.newBombFunction = newBombFunction;
         this.newPosBombFunction = newPosBombFunction;
     }
 
-    @Nonnull
-    @Override //Light bomb if it's not lit, if it is, throw it
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+        @Override //Light bomb if it's not lit, if it is, throw it
+    public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack bombStack = player.getItemInHand(interactionHand);
         if (!getFuseLit(bombStack)) {
             if (!player.isUnderWater()) {
                 if (player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.THROW_BOMB.trigger(serverPlayer);
                 setFuseLit(bombStack, true);
                 setFuseLength(bombStack, 60);
-                player.getCooldowns().addCooldown(bombStack.getItem(), 5);
+                player.getCooldowns().addCooldown(bombStack, 5);
                 player.playSound(BrassArmorySounds.BOMB_LIT.get(), 0.9F, level.getRandom().nextFloat() * 0.4F + 0.7F);
                 player.gameEvent(GameEvent.PRIME_FUSE);
             }
@@ -50,11 +46,11 @@ public class BombItem extends Item {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), BrassArmorySounds.BOMB_THROW.get(), SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
             this.throwBomb(level, player, interactionHand, bombStack, 0.75F);
         }
-        return InteractionResultHolder.sidedSuccess(bombStack, level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
-    private void throwBomb(@Nonnull Level level, Player player, InteractionHand interactionHand, ItemStack bombStack, float power) {
-        if (!level.isClientSide) {
+    private void throwBomb(Level level, Player player, InteractionHand interactionHand, ItemStack bombStack, float power) {
+        if (!level.isClientSide()) {
             BombEntity bomb = this.newBombFunction.apply(level, player, interactionHand == InteractionHand.MAIN_HAND ? player.getMainArm() : player.getMainArm().getOpposite());
             bomb.setItem(bombStack);
             bomb.setFuse(getFuseLength(bombStack));
@@ -67,14 +63,14 @@ public class BombItem extends Item {
         }
         if (!player.getAbilities().instabuild) {
             bombStack.shrink(1);
-            player.getCooldowns().addCooldown(bombStack.getItem(), 20);
+            player.getCooldowns().addCooldown(bombStack, 20);
         }
     }
 
     @Override
-    public void inventoryTick(ItemStack bombStack, Level level, Entity entity, int slot, boolean selected) {
+    public void inventoryTick(ItemStack bombStack, net.minecraft.server.level.ServerLevel level, Entity entity, net.minecraft.world.entity.EquipmentSlot slot) {
         if (getFuseLit(bombStack)) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 int fuse = getFuseLength(bombStack) - 1;
                 setFuseLength(bombStack, fuse);
                 if (fuse <= 0) {
@@ -107,7 +103,7 @@ public class BombItem extends Item {
     }
 
     public static int getFuseLength(ItemStack bombStack) {
-        return ItemData.getTag(bombStack).getInt("BrassArmoryFuseLength");
+        return ItemData.getTag(bombStack).getIntOr("BrassArmoryFuseLength", 0);
     }
 
     public static void setFuseLit(ItemStack bombStack, boolean fuseLit) {
@@ -115,6 +111,6 @@ public class BombItem extends Item {
     }
 
     public static boolean getFuseLit(ItemStack bombStack) {
-        return ItemData.getTag(bombStack).getBoolean("BrassArmoryFuseLit");
+        return ItemData.getTag(bombStack).getBooleanOr("BrassArmoryFuseLit", false);
     }
 }

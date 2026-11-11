@@ -3,7 +3,6 @@ package com.milamber_brass.brass_armory.item;
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.util.ItemData;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -14,17 +13,16 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
-public class KatanaItem extends SwordItem {
+public class KatanaItem extends Item {
     private final boolean canWither;
 
-    public KatanaItem(Tier tier, int attackDamage, float attackSpeed, boolean canWither, Properties properties) {
-        super(tier, properties.attributes(SwordItem.createAttributes(tier, attackDamage, attackSpeed)));
+    public KatanaItem(ToolMaterial tier, int attackDamage, float attackSpeed, boolean canWither, Properties properties) {
+        super(tier.applySwordProperties(properties, attackDamage, attackSpeed));
         this.canWither = canWither;
     }
 
@@ -63,14 +61,12 @@ public class KatanaItem extends SwordItem {
         }
     }
 
-    @ParametersAreNonnullByDefault
-    public static void setWither(ItemStack stack, int wither) {
+        public static void setWither(ItemStack stack, int wither) {
         ItemData.update(stack, tag -> tag.putInt("BrassArmoryWithering", wither));
     }
 
-    @ParametersAreNonnullByDefault
-    public static int getWither(ItemStack stack) {
-        return ItemData.getTag(stack).getInt("BrassArmoryWithering");
+        public static int getWither(ItemStack stack) {
+        return ItemData.getTag(stack).getIntOr("BrassArmoryWithering", 0);
     }
 
     private static final MutableComponent wilted = Component.translatable("item.brass_armory.katana_wilted");

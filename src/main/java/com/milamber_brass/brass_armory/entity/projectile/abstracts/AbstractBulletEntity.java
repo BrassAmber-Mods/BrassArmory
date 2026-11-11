@@ -1,9 +1,10 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.util.ItemData;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,7 +14,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +26,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public abstract class AbstractBulletEntity extends AbstractArrow implements ItemSupplier {
     private static final EntityDataAccessor<ItemStack> DATA_ITEM_STACK = SynchedEntityData.defineId(AbstractBulletEntity.class, EntityDataSerializers.ITEM_STACK);
 
@@ -63,7 +63,7 @@ public abstract class AbstractBulletEntity extends AbstractArrow implements Item
         Vec3 vec31 = vec3.normalize().scale(0.05D);
         this.setPosRaw(this.getX() - vec31.x, this.getY() - vec31.y, this.getZ() - vec31.z);
         this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-        this.inGround = true;
+        this.setInGround(true);
         this.shakeTime = 40;
         this.setCritArrow(false);
         this.setPierceLevel((byte)0);
@@ -123,16 +123,16 @@ public abstract class AbstractBulletEntity extends AbstractArrow implements Item
     protected abstract Item getDefaultItem();
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         ItemStack stack = this.getItemRaw();
-        if (!stack.isEmpty()) tag.put("BulletStack", stack.save(ItemData.registries()));
+        if (!stack.isEmpty()) tag.store("BulletStack", ItemStack.CODEC, stack);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
-        this.setItem(ItemData.load(tag.getCompound("BulletStack")));
+        this.setItem(tag.read("BulletStack", ItemStack.CODEC).orElse(ItemStack.EMPTY));
     }
 
 

@@ -1,0 +1,15 @@
+{
+  "layers": {
+    "wings": [
+      {
+        "texture": "brass_armory:glider",
+        "dyeable": {
+          "color_when_undyed": 10511680
+        }
+      },
+      {
+        "texture": "brass_armory:glider_overlay"
+      }
+    ]
+  }
+}

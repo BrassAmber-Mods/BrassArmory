@@ -2,21 +2,17 @@ package com.milamber_brass.brass_armory.client.gui;
 
 import com.milamber_brass.brass_armory.inventory.QuiverTooltip;
 import com.milamber_brass.brass_armory.item.QuiverItem;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
 public class ClientQuiverTooltip implements ClientTooltipComponent {
-    public static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.parse("textures/gui/container/bundle.png");
+    public static final Identifier TEXTURE_LOCATION = Identifier.withDefaultNamespace("container/bundle/slot_background");
     private final NonNullList<ItemStack> items;
     private final int weight;
 
@@ -26,7 +22,7 @@ public class ClientQuiverTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Font font) {
         return this.gridSizeY() * 20 + 2 + 4;
     }
 
@@ -36,7 +32,7 @@ public class ClientQuiverTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, GuiGraphics graphics) {
+    public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor graphics) {
         int i = this.gridSizeX();
         int j = this.gridSizeY();
         boolean flag = this.weight >= QuiverItem.MAX_WEIGHT;
@@ -53,19 +49,19 @@ public class ClientQuiverTooltip implements ClientTooltipComponent {
         this.drawBorder(x, y, i, j, graphics);
     }
 
-    private void renderSlot(int x, int y, int i, boolean blocked, GuiGraphics graphics, Font font) {
+    private void renderSlot(int x, int y, int i, boolean blocked, GuiGraphicsExtractor graphics, Font font) {
         if (i >= this.items.size()) {
             this.blit(graphics, x, y, blocked ? ClientQuiverTooltip.Texture.BLOCKED_SLOT : ClientQuiverTooltip.Texture.SLOT);
         } else {
             ItemStack itemstack = this.items.get(i);
             this.blit(graphics, x, y, ClientQuiverTooltip.Texture.SLOT);
-            graphics.renderItem(itemstack, x + 1, y + 1, i);
-            graphics.renderItemDecorations(font, itemstack, x + 1, y + 1);
-            if (i == 0) AbstractContainerScreen.renderSlotHighlight(graphics, x + 1, y + 1, 0);
+            graphics.item(itemstack, x + 1, y + 1, i);
+            graphics.itemDecorations(font, itemstack, x + 1, y + 1);
+            if (i == 0) graphics.fill(x + 1, y + 1, x + 17, y + 17, 0x80FFFFFF);
         }
     }
 
-    private void drawBorder(int x, int y, int xSize, int ySize, GuiGraphics graphics) {
+    private void drawBorder(int x, int y, int xSize, int ySize, GuiGraphicsExtractor graphics) {
         this.blit(graphics, x, y, ClientQuiverTooltip.Texture.BORDER_CORNER_TOP);
         this.blit(graphics, x + xSize * 18 + 1, y, ClientQuiverTooltip.Texture.BORDER_CORNER_TOP);
 
@@ -83,8 +79,13 @@ public class ClientQuiverTooltip implements ClientTooltipComponent {
         this.blit(graphics, x + xSize * 18 + 1, y + ySize * 20, ClientQuiverTooltip.Texture.BORDER_CORNER_BOTTOM);
     }
 
-    private void blit(GuiGraphics graphics, int x, int y, ClientQuiverTooltip.Texture texture) {
-        graphics.blit(TEXTURE_LOCATION, x, y, 0, (float)texture.x, (float)texture.y, texture.w, texture.h, 128, 128);
+    private void blit(GuiGraphicsExtractor graphics, int x, int y, ClientQuiverTooltip.Texture texture) {
+        if (texture == Texture.SLOT || texture == Texture.BLOCKED_SLOT) {
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, TEXTURE_LOCATION, x, y, texture.w, texture.h);
+            if (texture == Texture.BLOCKED_SLOT) graphics.fill(x + 1, y + 1, x + texture.w - 1, y + texture.h - 1, 0x80000000);
+        } else {
+            graphics.fill(x, y, x + texture.w, y + texture.h, 0xFF373737);
+        }
     }
 
     private int gridSizeX() {

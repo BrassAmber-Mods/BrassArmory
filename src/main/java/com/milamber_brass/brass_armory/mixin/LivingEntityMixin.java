@@ -25,7 +25,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "tick", at = @At(value = "HEAD"), remap = true)
     private void tick(CallbackInfo ci) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             ItemStack stack = ItemStack.EMPTY;
             if (this.getMainHandItem().getItem() instanceof KatanaItem katanaItem && katanaItem.canWither()) stack = this.getMainHandItem();
             if (this.getOffhandItem().getItem() instanceof KatanaItem katanaItem && katanaItem.canWither()) stack = this.getOffhandItem();
@@ -33,7 +33,7 @@ public abstract class LivingEntityMixin extends Entity {
             if (!stack.isEmpty()) {
                 int wither = KatanaItem.getWither(stack);
                 for (int i = 0; i < wither / 10; i++) {
-                    if (this.level().random.nextInt(10) == 7)
+                    if (this.level().getRandom().nextInt(10) == 7)
                         this.level().addParticle(ParticleTypes.SMOKE, this.getRandomX(0.5D), this.getRandomY() - 0.25D, this.getRandomZ(0.5D), 0D, 0D, 0D);
                 }
             }

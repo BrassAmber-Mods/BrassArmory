@@ -1,0 +1,104 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "brass_armory:property",
+    "name": "minecraft:loaded",
+    "entries": [
+      {
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "brass_armory:item/flintlock_pistol_loaded"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "brass_armory:property",
+      "name": "minecraft:loading",
+      "entries": [
+        {
+          "threshold": 1,
+          "model": {
+            "type": "minecraft:range_dispatch",
+            "property": "brass_armory:property",
+            "name": "minecraft:status",
+            "entries": [
+              {
+                "threshold": 1,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "brass_armory:item/flintlock_pistol"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:range_dispatch",
+              "property": "brass_armory:property",
+              "name": "minecraft:loading",
+              "entries": [
+                {
+                  "threshold": 1,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "brass_armory:item/flintlock_pistol_loading_2"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:range_dispatch",
+                "property": "brass_armory:property",
+                "name": "minecraft:menu",
+                "entries": [
+                  {
+                    "threshold": 1,
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "brass_armory:item/flintlock_pistol_loading_1"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "brass_armory:item/flintlock_pistol"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:range_dispatch",
+        "property": "brass_armory:property",
+        "name": "minecraft:loading",
+        "entries": [
+          {
+            "threshold": 1,
+            "model": {
+              "type": "minecraft:model",
+              "model": "brass_armory:item/flintlock_pistol_loading_2"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:range_dispatch",
+          "property": "brass_armory:property",
+          "name": "minecraft:menu",
+          "entries": [
+            {
+              "threshold": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "brass_armory:item/flintlock_pistol_loading_1"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "brass_armory:item/flintlock_pistol"
+          }
+        }
+      }
+    }
+  }
+}

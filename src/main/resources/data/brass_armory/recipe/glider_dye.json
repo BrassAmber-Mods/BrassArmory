@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_dye",
+  "category": "equipment",
+  "target": "brass_armory:glider",
+  "dye": "#minecraft:dyes",
+  "result": {
+    "id": "brass_armory:glider"
+  }
+}

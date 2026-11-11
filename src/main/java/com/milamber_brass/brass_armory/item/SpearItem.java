@@ -7,7 +7,6 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrow
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -17,20 +16,19 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class SpearItem extends AbstractThrownWeaponItem {
     protected final float attackDamage;
     protected final float attackSpeed;
     protected final float attackReachBonus;
 
-    public SpearItem(Tier tier, int attackDamage, float attackSpeed, float attackReachBonus, Properties properties) {
+    public SpearItem(ToolMaterial tier, int attackDamage, float attackSpeed, float attackReachBonus, Properties properties) {
         super(tier, attackDamage, attackSpeed, 16F, 1.25F, properties);
-        this.attackDamage = (float)attackDamage + tier.getAttackDamageBonus();
+        this.attackDamage = (float)attackDamage + tier.attackDamageBonus();
         this.attackSpeed = attackSpeed;
         this.attackReachBonus = attackReachBonus;
     }
@@ -54,8 +52,8 @@ public class SpearItem extends AbstractThrownWeaponItem {
 
     @Override //Deal bonus damage when attacking
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
-        if (!entity.level().isClientSide && entity instanceof LivingEntity living) {
-            ArmoryUtil.impaleLivingEntity(living, (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE), player.level().random);
+        if (!entity.level().isClientSide() && entity instanceof LivingEntity living) {
+            ArmoryUtil.impaleLivingEntity(living, (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE), player.level().getRandom());
         }
         return false;
     }

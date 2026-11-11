@@ -28,7 +28,7 @@ public final class PotionData {
     public static List<MobEffectInstance> getCustomEffects(ItemStack stack) {
         return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).customEffects();
     }
-    public static void addPotionTooltip(ItemStack stack, List<Component> tooltip, float duration) {
-        stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).addPotionTooltip(tooltip::add, duration, 20.0F);
+    public static void addPotionTooltip(ItemStack stack, java.util.function.Consumer<Component> tooltip, float duration) {
+        PotionContents.addPotionTooltip(getMobEffects(stack), tooltip, duration, 20.0F);
     }
 }

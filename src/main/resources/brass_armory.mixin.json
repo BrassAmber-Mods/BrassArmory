@@ -2,7 +2,7 @@
 {
   "required": true,
   "package": "com.milamber_brass.brass_armory.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
   "mixins": [
     "LivingEntityMixin",
@@ -16,8 +16,7 @@
   },
   "client": [
     "AbstractSoundInstanceMixin",
-    "CapeLayerMixin",
-    "ClientRecipeBookMixin",
+    "AvatarRendererMixin",
     "GuiMixin",
     "HumanoidModelMixin",
     "ItemRendererMixin",

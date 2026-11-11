@@ -5,7 +5,6 @@ import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.util.ArmoryCooldownCache;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -14,17 +13,16 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class WarpCrystalItem extends Item {
     public static final int WARP_TICKS = 40;
     public final int maxDistance;
@@ -40,20 +38,20 @@ public class WarpCrystalItem extends Item {
     }
 
     @Override
-    public @NotNull UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.SPYGLASS;
+    public @NotNull ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ItemUseAnimation.SPYGLASS;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player player, InteractionHand hand) {
         player.startUsingItem(hand);
-        return InteractionResultHolder.consume(player.getItemInHand(hand));
+        return InteractionResult.CONSUME;
     }
 
     @Override
     public void onUseTick(Level level, LivingEntity living, ItemStack stack, int useDurationLeft) {
-        if (level.isClientSide) {
-            level.addParticle(ParticleTypes.PORTAL, living.getRandomX(0.5D), living.getRandomY() - 0.25D, living.getRandomZ(0.5D), (level.random.nextDouble() - 0.5D) * 2.0D, -level.random.nextDouble(), (level.random.nextDouble() - 0.5D) * 2.0D);
+        if (level.isClientSide()) {
+            level.addParticle(ParticleTypes.PORTAL, living.getRandomX(0.5D), living.getRandomY() - 0.25D, living.getRandomZ(0.5D), (level.getRandom().nextDouble() - 0.5D) * 2.0D, -level.getRandom().nextDouble(), (level.getRandom().nextDouble() - 0.5D) * 2.0D);
         }
 
         if (living instanceof Player player) {
@@ -61,7 +59,7 @@ public class WarpCrystalItem extends Item {
                 int usedTicks = this.getUseDuration(stack, living) - useDurationLeft;
                 float slow = iEffectCapability.getSlow();
 
-                if (level.isClientSide) {
+                if (level.isClientSide()) {
                     Minecraft mc = Minecraft.getInstance();
 
                     if (mc.getCameraEntity() == living) {
@@ -74,7 +72,7 @@ public class WarpCrystalItem extends Item {
                             level.playLocalSound(x, y, z, BrassArmorySounds.HEART_BEAT_2.get(), SoundSource.PLAYERS, 0.05F + slow, 0.8F / 3.0F * slow - slow, false);
                         }
 
-                        if (usedTicks >= WARP_TICKS && useDurationLeft % 20 == 0 && level.random.nextInt(2) == 0) {
+                        if (usedTicks >= WARP_TICKS && useDurationLeft % 20 == 0 && level.getRandom().nextInt(2) == 0) {
                             level.playLocalSound(x, y, z, BrassArmorySounds.CRYSTAL_WHISPER.get(), SoundSource.PLAYERS, 0.2F, living.getVoicePitch() * 0.02F, false);
                         }
                     }
@@ -86,7 +84,7 @@ public class WarpCrystalItem extends Item {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity living, int useDurationLeft) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity living, int useDurationLeft) {
         int usedTicks = this.getUseDuration(stack, living) - useDurationLeft;
 
         Vec3 farPoint = living.getLookAngle().scale(this.maxDistance).add(living.position());
@@ -95,12 +93,12 @@ public class WarpCrystalItem extends Item {
         if (usedTicks >= WARP_TICKS - 2) {
             for (int i = this.maxDistance; i > 0; i -= Mth.clamp(i / 25, 1, 3)) {
                 farPoint = living.getLookAngle().scale(i).add(living.position());
-                if ((farPoint.y < (double)level.getMaxBuildHeight() || farPoint.y < Math.sqrt(farY - (double)level.getMaxBuildHeight()) + (double)level.getMaxBuildHeight()) && farPoint.y > (double)level.getMinBuildHeight()) {
+                if ((farPoint.y < (double)level.getMaxY() || farPoint.y < Math.sqrt(farY - (double)level.getMaxY()) + (double)level.getMaxY()) && farPoint.y > (double)level.getMinY()) {
                     for (BlockPos blockpos : BlockPos.betweenClosed(BlockPos.containing(farPoint).offset(-1, 0, -1), BlockPos.containing(farPoint).offset(1, 0, 1))) {
-                        if (!level.getBlockState(blockpos).blocksMotion() && !level.getBlockState(blockpos.above()).blocksMotion()) {
+                        if (!level.getBlockState(blockpos).isSolid() && !level.getBlockState(blockpos.above()).isSolid()) {
                             Vec3 vec = living.getEyePosition().add(living.getLookAngle());
                             for (int l2 = 0; l2 < 8; ++l2) {
-                                level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, stack), vec.x, vec.y, vec.z, level.random.nextGaussian() * 0.15D, level.random.nextDouble() * 0.2D, level.random.nextGaussian() * 0.15D);
+                                level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(stack)), vec.x, vec.y, vec.z, level.getRandom().nextGaussian() * 0.15D, level.getRandom().nextDouble() * 0.2D, level.getRandom().nextGaussian() * 0.15D);
                             }
 
                             farPoint = Vec3.atBottomCenterOf(blockpos);
@@ -113,12 +111,13 @@ public class WarpCrystalItem extends Item {
                                 ArmoryUtil.addCooldownToList(player, ArmoryCooldownCache.BrassArmoryWarpCrystals, 1200);
                                 player.awardStat(Stats.ITEM_USED.get(this));
                             }
-                            return;
+                            return false;
                         }
                     }
                 }
             }
         }
+        return true;
     }
 
     public int getMaxDistance() {

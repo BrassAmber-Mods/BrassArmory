@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "L": {
-      "tag": "minecraft:logs"
-    },
-    "S": {
-      "tag": "c:strings"
-    }
+    "I": "#c:ingots/iron",
+    "L": "#minecraft:logs",
+    "S": "#c:strings"
   },
   "pattern": [
     "IIS",

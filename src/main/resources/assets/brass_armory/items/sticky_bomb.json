@@ -1,0 +1,454 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "brass_armory:property",
+    "name": "minecraft:defused",
+    "entries": [
+      {
+        "threshold": 1.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "brass_armory:item/bombs/sticky_bomb/defused"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "brass_armory:property",
+      "name": "minecraft:bomb_fuse",
+      "entries": [
+        {
+          "threshold": 1.0,
+          "model": {
+            "type": "minecraft:model",
+            "model": "brass_armory:item/bombs/sticky_bomb/0"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:range_dispatch",
+        "property": "brass_armory:property",
+        "name": "minecraft:bomb_fuse",
+        "entries": [
+          {
+            "threshold": 0.96,
+            "model": {
+              "type": "minecraft:model",
+              "model": "brass_armory:item/bombs/sticky_bomb/30"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:range_dispatch",
+          "property": "brass_armory:property",
+          "name": "minecraft:bomb_fuse",
+          "entries": [
+            {
+              "threshold": 0.93,
+              "model": {
+                "type": "minecraft:model",
+                "model": "brass_armory:item/bombs/sticky_bomb/29"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:range_dispatch",
+            "property": "brass_armory:property",
+            "name": "minecraft:bomb_fuse",
+            "entries": [
+              {
+                "threshold": 0.89,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "brass_armory:item/bombs/sticky_bomb/28"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:range_dispatch",
+              "property": "brass_armory:property",
+              "name": "minecraft:bomb_fuse",
+              "entries": [
+                {
+                  "threshold": 0.86,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "brass_armory:item/bombs/sticky_bomb/27"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:range_dispatch",
+                "property": "brass_armory:property",
+                "name": "minecraft:bomb_fuse",
+                "entries": [
+                  {
+                    "threshold": 0.83,
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "brass_armory:item/bombs/sticky_bomb/26"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:range_dispatch",
+                  "property": "brass_armory:property",
+                  "name": "minecraft:bomb_fuse",
+                  "entries": [
+                    {
+                      "threshold": 0.8,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "brass_armory:item/bombs/sticky_bomb/25"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:range_dispatch",
+                    "property": "brass_armory:property",
+                    "name": "minecraft:bomb_fuse",
+                    "entries": [
+                      {
+                        "threshold": 0.76,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "brass_armory:item/bombs/sticky_bomb/24"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:range_dispatch",
+                      "property": "brass_armory:property",
+                      "name": "minecraft:bomb_fuse",
+                      "entries": [
+                        {
+                          "threshold": 0.73,
+                          "model": {
+                            "type": "minecraft:model",
+                            "model": "brass_armory:item/bombs/sticky_bomb/23"
+                          }
+                        }
+                      ],
+                      "fallback": {
+                        "type": "minecraft:range_dispatch",
+                        "property": "brass_armory:property",
+                        "name": "minecraft:bomb_fuse",
+                        "entries": [
+                          {
+                            "threshold": 0.69,
+                            "model": {
+                              "type": "minecraft:model",
+                              "model": "brass_armory:item/bombs/sticky_bomb/22"
+                            }
+                          }
+                        ],
+                        "fallback": {
+                          "type": "minecraft:range_dispatch",
+                          "property": "brass_armory:property",
+                          "name": "minecraft:bomb_fuse",
+                          "entries": [
+                            {
+                              "threshold": 0.66,
+                              "model": {
+                                "type": "minecraft:model",
+                                "model": "brass_armory:item/bombs/sticky_bomb/21"
+                              }
+                            }
+                          ],
+                          "fallback": {
+                            "type": "minecraft:range_dispatch",
+                            "property": "brass_armory:property",
+                            "name": "minecraft:bomb_fuse",
+                            "entries": [
+                              {
+                                "threshold": 0.63,
+                                "model": {
+                                  "type": "minecraft:model",
+                                  "model": "brass_armory:item/bombs/sticky_bomb/20"
+                                }
+                              }
+                            ],
+                            "fallback": {
+                              "type": "minecraft:range_dispatch",
+                              "property": "brass_armory:property",
+                              "name": "minecraft:bomb_fuse",
+                              "entries": [
+                                {
+                                  "threshold": 0.6,
+                                  "model": {
+                                    "type": "minecraft:model",
+                                    "model": "brass_armory:item/bombs/sticky_bomb/19"
+                                  }
+                                }
+                              ],
+                              "fallback": {
+                                "type": "minecraft:range_dispatch",
+                                "property": "brass_armory:property",
+                                "name": "minecraft:bomb_fuse",
+                                "entries": [
+                                  {
+                                    "threshold": 0.56,
+                                    "model": {
+                                      "type": "minecraft:model",
+                                      "model": "brass_armory:item/bombs/sticky_bomb/18"
+                                    }
+                                  }
+                                ],
+                                "fallback": {
+                                  "type": "minecraft:range_dispatch",
+                                  "property": "brass_armory:property",
+                                  "name": "minecraft:bomb_fuse",
+                                  "entries": [
+                                    {
+                                      "threshold": 0.53,
+                                      "model": {
+                                        "type": "minecraft:model",
+                                        "model": "brass_armory:item/bombs/sticky_bomb/17"
+                                      }
+                                    }
+                                  ],
+                                  "fallback": {
+                                    "type": "minecraft:range_dispatch",
+                                    "property": "brass_armory:property",
+                                    "name": "minecraft:bomb_fuse",
+                                    "entries": [
+                                      {
+                                        "threshold": 0.5,
+                                        "model": {
+                                          "type": "minecraft:model",
+                                          "model": "brass_armory:item/bombs/sticky_bomb/16"
+                                        }
+                                      }
+                                    ],
+                                    "fallback": {
+                                      "type": "minecraft:range_dispatch",
+                                      "property": "brass_armory:property",
+                                      "name": "minecraft:bomb_fuse",
+                                      "entries": [
+                                        {
+                                          "threshold": 0.46,
+                                          "model": {
+                                            "type": "minecraft:model",
+                                            "model": "brass_armory:item/bombs/sticky_bomb/15"
+                                          }
+                                        }
+                                      ],
+                                      "fallback": {
+                                        "type": "minecraft:range_dispatch",
+                                        "property": "brass_armory:property",
+                                        "name": "minecraft:bomb_fuse",
+                                        "entries": [
+                                          {
+                                            "threshold": 0.43,
+                                            "model": {
+                                              "type": "minecraft:model",
+                                              "model": "brass_armory:item/bombs/sticky_bomb/14"
+                                            }
+                                          }
+                                        ],
+                                        "fallback": {
+                                          "type": "minecraft:range_dispatch",
+                                          "property": "brass_armory:property",
+                                          "name": "minecraft:bomb_fuse",
+                                          "entries": [
+                                            {
+                                              "threshold": 0.4,
+                                              "model": {
+                                                "type": "minecraft:model",
+                                                "model": "brass_armory:item/bombs/sticky_bomb/13"
+                                              }
+                                            }
+                                          ],
+                                          "fallback": {
+                                            "type": "minecraft:range_dispatch",
+                                            "property": "brass_armory:property",
+                                            "name": "minecraft:bomb_fuse",
+                                            "entries": [
+                                              {
+                                                "threshold": 0.36,
+                                                "model": {
+                                                  "type": "minecraft:model",
+                                                  "model": "brass_armory:item/bombs/sticky_bomb/12"
+                                                }
+                                              }
+                                            ],
+                                            "fallback": {
+                                              "type": "minecraft:range_dispatch",
+                                              "property": "brass_armory:property",
+                                              "name": "minecraft:bomb_fuse",
+                                              "entries": [
+                                                {
+                                                  "threshold": 0.33,
+                                                  "model": {
+                                                    "type": "minecraft:model",
+                                                    "model": "brass_armory:item/bombs/sticky_bomb/11"
+                                                  }
+                                                }
+                                              ],
+                                              "fallback": {
+                                                "type": "minecraft:range_dispatch",
+                                                "property": "brass_armory:property",
+                                                "name": "minecraft:bomb_fuse",
+                                                "entries": [
+                                                  {
+                                                    "threshold": 0.3,
+                                                    "model": {
+                                                      "type": "minecraft:model",
+                                                      "model": "brass_armory:item/bombs/sticky_bomb/10"
+                                                    }
+                                                  }
+                                                ],
+                                                "fallback": {
+                                                  "type": "minecraft:range_dispatch",
+                                                  "property": "brass_armory:property",
+                                                  "name": "minecraft:bomb_fuse",
+                                                  "entries": [
+                                                    {
+                                                      "threshold": 0.26,
+                                                      "model": {
+                                                        "type": "minecraft:model",
+                                                        "model": "brass_armory:item/bombs/sticky_bomb/9"
+                                                      }
+                                                    }
+                                                  ],
+                                                  "fallback": {
+                                                    "type": "minecraft:range_dispatch",
+                                                    "property": "brass_armory:property",
+                                                    "name": "minecraft:bomb_fuse",
+                                                    "entries": [
+                                                      {
+                                                        "threshold": 0.23,
+                                                        "model": {
+                                                          "type": "minecraft:model",
+                                                          "model": "brass_armory:item/bombs/sticky_bomb/8"
+                                                        }
+                                                      }
+                                                    ],
+                                                    "fallback": {
+                                                      "type": "minecraft:range_dispatch",
+                                                      "property": "brass_armory:property",
+                                                      "name": "minecraft:bomb_fuse",
+                                                      "entries": [
+                                                        {
+                                                          "threshold": 0.2,
+                                                          "model": {
+                                                            "type": "minecraft:model",
+                                                            "model": "brass_armory:item/bombs/sticky_bomb/7"
+                                                          }
+                                                        }
+                                                      ],
+                                                      "fallback": {
+                                                        "type": "minecraft:range_dispatch",
+                                                        "property": "brass_armory:property",
+                                                        "name": "minecraft:bomb_fuse",
+                                                        "entries": [
+                                                          {
+                                                            "threshold": 0.16,
+                                                            "model": {
+                                                              "type": "minecraft:model",
+                                                              "model": "brass_armory:item/bombs/sticky_bomb/6"
+                                                            }
+                                                          }
+                                                        ],
+                                                        "fallback": {
+                                                          "type": "minecraft:range_dispatch",
+                                                          "property": "brass_armory:property",
+                                                          "name": "minecraft:bomb_fuse",
+                                                          "entries": [
+                                                            {
+                                                              "threshold": 0.13,
+                                                              "model": {
+                                                                "type": "minecraft:model",
+                                                                "model": "brass_armory:item/bombs/sticky_bomb/5"
+                                                              }
+                                                            }
+                                                          ],
+                                                          "fallback": {
+                                                            "type": "minecraft:range_dispatch",
+                                                            "property": "brass_armory:property",
+                                                            "name": "minecraft:bomb_fuse",
+                                                            "entries": [
+                                                              {
+                                                                "threshold": 0.1,
+                                                                "model": {
+                                                                  "type": "minecraft:model",
+                                                                  "model": "brass_armory:item/bombs/sticky_bomb/4"
+                                                                }
+                                                              }
+                                                            ],
+                                                            "fallback": {
+                                                              "type": "minecraft:range_dispatch",
+                                                              "property": "brass_armory:property",
+                                                              "name": "minecraft:bomb_fuse",
+                                                              "entries": [
+                                                                {
+                                                                  "threshold": 0.06,
+                                                                  "model": {
+                                                                    "type": "minecraft:model",
+                                                                    "model": "brass_armory:item/bombs/sticky_bomb/3"
+                                                                  }
+                                                                }
+                                                              ],
+                                                              "fallback": {
+                                                                "type": "minecraft:range_dispatch",
+                                                                "property": "brass_armory:property",
+                                                                "name": "minecraft:bomb_fuse",
+                                                                "entries": [
+                                                                  {
+                                                                    "threshold": 0.03,
+                                                                    "model": {
+                                                                      "type": "minecraft:model",
+                                                                      "model": "brass_armory:item/bombs/sticky_bomb/2"
+                                                                    }
+                                                                  }
+                                                                ],
+                                                                "fallback": {
+                                                                  "type": "minecraft:range_dispatch",
+                                                                  "property": "brass_armory:property",
+                                                                  "name": "minecraft:bomb_fuse",
+                                                                  "entries": [
+                                                                    {
+                                                                      "threshold": 0.0,
+                                                                      "model": {
+                                                                        "type": "minecraft:model",
+                                                                        "model": "brass_armory:item/bombs/sticky_bomb/1"
+                                                                      }
+                                                                    }
+                                                                  ],
+                                                                  "fallback": {
+                                                                    "type": "minecraft:model",
+                                                                    "model": "brass_armory:item/sticky_bomb"
+                                                                  }
+                                                                }
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

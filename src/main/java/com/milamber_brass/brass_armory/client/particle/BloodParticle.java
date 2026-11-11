@@ -1,27 +1,22 @@
 package com.milamber_brass.brass_armory.client.particle;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryParticles;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-@OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
-public class BloodParticle extends TextureSheetParticle {
-    BloodParticle(ClientLevel level, double x, double y, double z) {
-        super(level, x, y, z);
+public class BloodParticle extends SingleQuadParticle {
+    BloodParticle(ClientLevel level, double x, double y, double z, net.minecraft.client.renderer.texture.TextureAtlasSprite sprite) {
+        super(level, x, y, z, sprite);
         this.setSize(0.01F, 0.01F);
         this.gravity = 0.08F;
     }
 
     @NotNull
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     public void tick() {
@@ -50,8 +45,8 @@ public class BloodParticle extends TextureSheetParticle {
     static class FallParticle extends BloodParticle {
         protected final ParticleOptions landParticle;
 
-        FallParticle(ClientLevel level, double x, double y, double z, ParticleOptions particleOptions) {
-            super(level, x, y, z);
+        FallParticle(ClientLevel level, double x, double y, double z, ParticleOptions particleOptions, net.minecraft.client.renderer.texture.TextureAtlasSprite sprite) {
+            super(level, x, y, z, sprite);
             this.lifetime = (int)(64.0D / (Math.random() * 0.8D + 0.1D));
             this.landParticle = particleOptions;
         }
@@ -65,39 +60,37 @@ public class BloodParticle extends TextureSheetParticle {
     }
 
     static class LandParticle extends BloodParticle {
-        LandParticle(ClientLevel level, double x, double y, double z) {
-            super(level, x, y, z);
+        LandParticle(ClientLevel level, double x, double y, double z, net.minecraft.client.renderer.texture.TextureAtlasSprite sprite) {
+            super(level, x, y, z, sprite);
             this.lifetime = (int)(16.0D / (Math.random() * 0.8D + 0.2D));
         }
     }
 
-    public static class BloodFallProvider implements ParticleProvider<SimpleParticleType> {
+    public static class BloodFallProvider implements ParticleProvider.Sprite<SimpleParticleType> {
         protected final SpriteSet sprite;
 
         public BloodFallProvider(SpriteSet spriteSet) {
             this.sprite = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double x1, double y1, double z1) {
-            BloodParticle particle = new FallParticle(level, x, y, z, BrassArmoryParticles.BLOOD_LAND_PARTICLE.get());
+        public SingleQuadParticle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double x1, double y1, double z1, net.minecraft.util.RandomSource random) {
+            BloodParticle particle = new FallParticle(level, x, y, z, BrassArmoryParticles.BLOOD_LAND_PARTICLE.get(), this.sprite.get(random));
             particle.setColor(0.54F, 0.01F, 0.01F);
-            particle.pickSprite(this.sprite);
             return particle;
         }
     }
 
-    public static class BloodLandProvider implements ParticleProvider<SimpleParticleType> {
+    public static class BloodLandProvider implements ParticleProvider.Sprite<SimpleParticleType> {
         protected final SpriteSet sprite;
 
         public BloodLandProvider(SpriteSet spriteSet) {
             this.sprite = spriteSet;
         }
 
-        public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double x1, double y1, double z1) {
-            BloodParticle particle = new LandParticle(level, x, y, z);
+        public SingleQuadParticle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double x1, double y1, double z1, net.minecraft.util.RandomSource random) {
+            BloodParticle particle = new LandParticle(level, x, y, z, this.sprite.get(random));
             particle.lifetime = (int)(28.0D / (Math.random() * 0.8D + 0.2D));
             particle.setColor(0.54F, 0.01F, 0.01F);
-            particle.pickSprite(this.sprite);
             return particle;
         }
     }

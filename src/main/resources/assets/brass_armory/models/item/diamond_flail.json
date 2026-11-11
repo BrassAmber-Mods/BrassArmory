@@ -1,42 +1,94 @@
 {
-	"credit": "Made with Blockbench",
-	"parent": "item/handheld",
-	"textures": {
-		"layer0": "brass_armory:item/diamond/diamond_flail"
-	},
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [0, 90, 52],
-			"translation": [0.25, 4.75, 2.25],
-			"scale": [0.9, 0.9, 0.85]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [0, -90, -52],
-			"translation": [-0.25, 4.75, 2.25],
-			"scale": [0.9, 0.9, 0.85]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, 80, 29],
-			"translation": [-0.25, 5.5, 2.25],
-			"scale": [0.68, 0.68, 0.68]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, -100, -29],
-			"translation": [-0.75, 5.5, 2.25],
-			"scale": [0.68, 0.68, 0.68]
-		},
-		"fixed": {
-			"rotation": [0, 0, 6],
-			"translation": [-0.25, 0.5, 0],
-			"scale": [1.06, 1.06, 1]
-		}
-	},
-	"overrides": [
-		{
-			"predicate": { "throwing": 1 }, "model": "brass_armory:item/alts/diamond_flail_throwing"
-		},
-		{
-			"predicate": { "no_head": 1 }, "model": "brass_armory:item/alts/diamond_flail_no_head"
-		}
-	]
+  "credit": "Made with Blockbench",
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "brass_armory:item/diamond/diamond_flail"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        52
+      ],
+      "translation": [
+        0.25,
+        4.75,
+        2.25
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        0.85
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        -52
+      ],
+      "translation": [
+        -0.25,
+        4.75,
+        2.25
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        0.85
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        80,
+        29
+      ],
+      "translation": [
+        -0.25,
+        5.5,
+        2.25
+      ],
+      "scale": [
+        0.68,
+        0.68,
+        0.68
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -100,
+        -29
+      ],
+      "translation": [
+        -0.75,
+        5.5,
+        2.25
+      ],
+      "scale": [
+        0.68,
+        0.68,
+        0.68
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        0,
+        6
+      ],
+      "translation": [
+        -0.25,
+        0.5,
+        0
+      ],
+      "scale": [
+        1.06,
+        1.06,
+        1
+      ]
+    }
+  }
 }

@@ -2,13 +2,12 @@ package com.milamber_brass.brass_armory.entity.projectile.bomb;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -18,7 +17,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
 public class StickyBombEntity extends BombEntity {
 
     public StickyBombEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level) {
@@ -64,10 +62,10 @@ public class StickyBombEntity extends BombEntity {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             Entity mount = entityHitResult.getEntity();
             if (this.getOwner() != mount || this.tickCount > 2) {
-                if (mount.canBeCollidedWith() || mount instanceof LivingEntity) {
+                if (mount.canBeCollidedWith(this) || mount instanceof LivingEntity) {
                     this.setDeltaMovement(0, 0, 0);
                     this.startRiding(entityHitResult.getEntity());
                 }
@@ -78,7 +76,7 @@ public class StickyBombEntity extends BombEntity {
     @Override
     protected void explode(Level level) {
         if (!this.isRemoved()) this.discard();
-        if (!level.isClientSide) explode(level, this.getVehicle() == null ? this : this.getVehicle());
+        if (!level.isClientSide()) explode(level, this.getVehicle() == null ? this : this.getVehicle());
     }
 
     @Override
@@ -87,7 +85,7 @@ public class StickyBombEntity extends BombEntity {
         for (double d = 0D; true; d += 0.025D) {
             Vec3 newMovement = movement.multiply(d, d, d);
             if (this.isStuck(newMovement)) {
-                this.moveTo(this.position().add(newMovement));
+                this.snapTo(this.position().add(newMovement));
                 break;
             }
         }

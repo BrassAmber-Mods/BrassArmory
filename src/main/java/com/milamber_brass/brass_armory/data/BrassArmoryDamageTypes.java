@@ -3,8 +3,7 @@ package com.milamber_brass.brass_armory.data;
 import com.milamber_brass.brass_armory.BrassArmory;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -14,11 +13,9 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class BrassArmoryDamageTypes extends DatapackBuiltinEntriesProvider {
+
+public class BrassArmoryDamageTypes  {
     public static final ResourceKey<DamageType> BATTLE_AXE = ResourceKey.create(Registries.DAMAGE_TYPE, BrassArmory.locate("battleaxe"));
     public static final ResourceKey<DamageType> BOOMERANG = ResourceKey.create(Registries.DAMAGE_TYPE, BrassArmory.locate("boomerang"));
     public static final ResourceKey<DamageType> DAGGER = ResourceKey.create(Registries.DAMAGE_TYPE, BrassArmory.locate("dagger"));
@@ -31,17 +28,6 @@ public class BrassArmoryDamageTypes extends DatapackBuiltinEntriesProvider {
     public static final ResourceKey<DamageType> MACE_SMASH = ResourceKey.create(Registries.DAMAGE_TYPE, BrassArmory.locate("mace_smash"));
 
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder().add(Registries.DAMAGE_TYPE, BrassArmoryDamageTypes::bootstrap);
-
-    private BrassArmoryDamageTypes(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
-        super(output, provider, BUILDER, Set.of("minecraft", BrassArmory.MOD_ID));
-    }
-
-    public static void addProviders(boolean isServer, DataGenerator generator, PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        var entries = new BrassArmoryDamageTypes(output, provider);
-        generator.addProvider(isServer, entries);
-        generator.addProvider(isServer, new BrassArmoryTags.DamageTypes(output, entries.getRegistryProvider(), helper));
-    }
-
 
     public static void bootstrap(BootstrapContext<DamageType> context) {
         context.register(BATTLE_AXE, new DamageType("brass_armory.battleaxe", 0.0F));

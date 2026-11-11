@@ -1,10 +1,8 @@
 {
   "type": "brass_armory:warp_crystal_loot_modifier",
-  "conditions": [
-    {
-      "chance": 1.0,
-      "condition": "minecraft:random_chance"
-    }
-  ],
-  "loot_generator": "minecraft:ender_eye"
+  "loot_generator": "minecraft:ender_eye",
+  "condition": {
+    "chance": 1.0,
+    "condition": "minecraft:random_chance"
+  }
 }

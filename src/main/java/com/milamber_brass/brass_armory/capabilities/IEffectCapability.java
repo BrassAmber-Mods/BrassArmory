@@ -2,13 +2,13 @@ package com.milamber_brass.brass_armory.capabilities;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import com.milamber_brass.brass_armory.util.ArmoryNBTSerializable;
 
-public interface IEffectCapability extends INBTSerializable<CompoundTag> {
+public interface IEffectCapability extends ArmoryNBTSerializable {
 
-    ResourceLocation ID = BrassArmory.locate("effect_capability");
+    Identifier ID = BrassArmory.locate("effect_capability");
 
     void setEntity(Player player);
 

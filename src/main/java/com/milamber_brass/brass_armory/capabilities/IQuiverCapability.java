@@ -2,15 +2,15 @@ package com.milamber_brass.brass_armory.capabilities;
 
 import com.milamber_brass.brass_armory.BrassArmory;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import com.milamber_brass.brass_armory.util.ArmoryNBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
-public interface IQuiverCapability extends INBTSerializable<CompoundTag> {
+public interface IQuiverCapability extends ArmoryNBTSerializable {
 
-    ResourceLocation ID = BrassArmory.locate("quiver_capability");
+    Identifier ID = BrassArmory.locate("quiver_capability");
 
     void setEntity(Player player);
 

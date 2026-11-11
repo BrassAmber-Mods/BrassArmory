@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "c:ingots/iron"
+            "items": "#c:ingots/iron"
           }
         ]
       },
@@ -13,7 +13,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/iron_spiky_ball"
+        "recipes": [
+          "brass_armory:shaped/iron_spiky_ball"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -1,6 +1,5 @@
 package com.milamber_brass.brass_armory.item.abstracts;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,8 +13,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.ToolMaterial;
+import com.milamber_brass.brass_armory.item.abstracts.ArmoryTieredItem;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -23,15 +22,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
-@ParametersAreNonnullByDefault
-public abstract class AbstractTieredWeaponItem extends TieredItem {
+public abstract class AbstractTieredWeaponItem extends ArmoryTieredItem {
     protected ItemAttributeModifiers defaultModifiers;
     protected final float attackDamage;
 
-    public AbstractTieredWeaponItem(Tier tier, float attackDamage, float attackSpeed, Properties properties) {
+    public AbstractTieredWeaponItem(ToolMaterial tier, float attackDamage, float attackSpeed, Properties properties) {
         super(tier, properties);
         this.attackDamage = attackDamage;
-        ItemAttributeModifiers.Builder builder = this.setDefaultModifiers(attackDamage + tier.getAttackDamageBonus(), attackSpeed);
+        ItemAttributeModifiers.Builder builder = this.setDefaultModifiers(attackDamage + tier.attackDamageBonus(), attackSpeed);
         this.defaultModifiers = builder == null ? null : builder.build();
     }
 
@@ -57,8 +55,8 @@ public abstract class AbstractTieredWeaponItem extends TieredItem {
     }
 
     @Override
-    public boolean canAttackBlock(BlockState blockState, Level level, BlockPos blockPos, Player player) {
-        return !player.isCreative();
+    public boolean canDestroyBlock(ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, LivingEntity player) {
+        return !(player instanceof Player p && p.isCreative());
     }
 
     @Override
@@ -71,9 +69,9 @@ public abstract class AbstractTieredWeaponItem extends TieredItem {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
-        return true;
+        return;
     }
 
     @Override

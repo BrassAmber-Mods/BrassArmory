@@ -15,7 +15,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/sticky_bomb"
+        "recipes": [
+          "brass_armory:shaped/sticky_bomb"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

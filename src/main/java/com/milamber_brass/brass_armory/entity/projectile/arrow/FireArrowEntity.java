@@ -5,9 +5,8 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpeci
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +14,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class FireArrowEntity extends AbstractSpecialArrowEntity {
     public FireArrowEntity(EntityType<? extends FireArrowEntity> entityType, Level level) {
         super(entityType, level);
@@ -60,7 +58,7 @@ public class FireArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.FIRE_ARROW_TEXTURE;
     }
 }

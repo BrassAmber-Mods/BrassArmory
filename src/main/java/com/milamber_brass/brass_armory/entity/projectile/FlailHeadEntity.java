@@ -1,5 +1,7 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectileEntity;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
@@ -8,7 +10,6 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.FlailItem;
 import com.milamber_brass.brass_armory.util.TierUtil;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -26,12 +27,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Tiers;
+import com.milamber_brass.brass_armory.item.abstracts.ArmoryTieredItem;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.IronBarsBlock;
@@ -45,7 +46,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import static net.minecraft.core.Direction.UP;
 
-@ParametersAreNonnullByDefault
 public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     protected static final EntityDataAccessor<Integer> DATA_OWNER = SynchedEntityData.defineId(FlailHeadEntity.class, EntityDataSerializers.INT);
     protected int hitPerTick;
@@ -78,14 +78,14 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     @Override
     public void tick() {
         if (this.tickCount > 200) {
-            this.kill();
+            if (this.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) this.kill(serverLevel);
             return;
         }
         this.hitPerTick = 0;
         if (this.entityData.get(DATA_OWNER) == Integer.MAX_VALUE && this.getOwner() != null) this.entityData.set(DATA_OWNER, this.getOwner().getId());
         super.tick();
         if (this.onGround()) this.onGroundTick();
-        if (!this.level().isClientSide && ((this.hitTick != Long.MAX_VALUE && this.level().getGameTime() - this.hitTick > 5L) || (this.getOwner() instanceof LivingEntity living && living.distanceTo(this) > 8D))) {
+        if (!this.level().isClientSide() && ((this.hitTick != Long.MAX_VALUE && this.level().getGameTime() - this.hitTick > 5L) || (this.getOwner() instanceof LivingEntity living && living.distanceTo(this) > 8D))) {
             this.entityData.set(DATA_LOYALTY_LEVEL, 21);
             this.setNoPhysics(true);
         }
@@ -115,7 +115,7 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         if (!this.onGround() && entityHitResult.getEntity() instanceof LivingEntity living && this.getOwner() != null && this.getOwner().getUUID() != living.getUUID()) {
             super.onHitEntity(entityHitResult);
-            living.knockback(this.getDeltaMovement().length() * 0.25D, this.getX() - living.getX(), this.getZ() - living.getZ());
+            living.knockback(this.getDeltaMovement().length() * 0.25D, this.getX() - living.getX(), this.getZ() - living.getZ(), this.damageSources().thrown(this, this.getOwner()), 0F);
         }
     }
 
@@ -139,7 +139,7 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
 
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState blockState = this.level().getBlockState(pos);
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierUtil.isCorrectTierForDrops(this.getItem().getItem() instanceof TieredItem tieredItem ? tieredItem.getTier() : Tiers.IRON, blockState)) {
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.BlockItems.GLASS_PANES.block()) && TierUtil.isCorrectTierForDrops(this.getItem().getItem() instanceof ArmoryTieredItem tieredItem ? tieredItem.getTier() : ToolMaterial.IRON, blockState)) {
             this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
             return;
@@ -183,22 +183,22 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     @Override
     protected boolean tryPickup(Player player) {
         if (this.isNoPhysics() && this.ownedBy(player)) {
-            player.getCooldowns().addCooldown(this.getItem().getItem(), 5);
+            player.getCooldowns().addCooldown(this.getItem(), 5);
             return true;
         }
         return false;
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         compoundTag.putLong("BAHitTick", this.hitTick);
         super.addAdditionalSaveData(compoundTag);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.hitTick  = compoundTag.getLong("BAHitTick");
+        this.hitTick  = compoundTag.getLongOr("BAHitTick", 0L);
     }
 
     @Override

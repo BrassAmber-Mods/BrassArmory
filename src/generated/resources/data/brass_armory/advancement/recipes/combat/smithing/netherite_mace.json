@@ -15,7 +15,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:smithing/netherite_mace"
+        "recipes": [
+          "brass_armory:smithing/netherite_mace"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

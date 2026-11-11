@@ -1,0 +1,26 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "brass_armory:property",
+    "name": "minecraft:dragon",
+    "entries": [
+      {
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "brass_armory:item/alts/dragon_round"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "brass_armory:item/carcass_round",
+      "tints": [
+        {
+          "type": "minecraft:potion",
+          "default": -1
+        }
+      ]
+    }
+  }
+}

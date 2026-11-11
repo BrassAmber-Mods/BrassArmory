@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.GunBehaviours;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
@@ -11,21 +12,20 @@ import com.milamber_brass.brass_armory.util.ItemData;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.component.TooltipDisplay;
+import java.util.function.Consumer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -39,7 +39,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-@ParametersAreNonnullByDefault
 public class FlintlockItem extends ProjectileWeaponItem implements iGun {
     protected final boolean oneHanded;
     public final double damageMultiplier;
@@ -60,10 +59,9 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
         return this.damageMultiplier;
     }
 
-    @Nonnull
-    @Override
-    public UseAnim getUseAnimation(ItemStack gunStack) {
-        return UseAnim.NONE;
+        @Override
+    public ItemUseAnimation getUseAnimation(ItemStack gunStack) {
+        return ItemUseAnimation.NONE;
     }
 
     @Override
@@ -71,9 +69,8 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
         return 72000;
     }
 
-    @Nonnull
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+        @Override
+    public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack stack = player.getItemInHand(interactionHand);
 
         int load = getLoad(stack);
@@ -84,7 +81,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
 
         switch (load) {
             case 0 -> {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     ArmoryUtil.addStack(stack, this.getDefaultInstance(), GunContainer.gunIcon);
                     MenuProvider container = new SimpleMenuProvider(GunContainer.getServerContainer(this, stack), Component.empty());
                     player.openMenu(container);
@@ -100,22 +97,22 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
                 ItemStack ammo = ArmoryUtil.loadStack(ItemData.getTag(stack), GunContainer.gunAmmo, ItemStack.EMPTY);
                 GunBehaviours.getAmmoBehavior(ammo).ifPresent(ammoBehaviour -> {
                     if (ammoBehaviour.onShoot(level, player, player, ammo, powderBehaviour, this)) {
-                        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+                        stack.hurtAndBreak(1, player, player.getUsedItemHand());
                     }
                 });
 
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     level.playSound(null, player, this.getGunShootSound(), SoundSource.PLAYERS, 1.0F, 1.0F);
                     setLoad(stack, 0);
                     ArmoryUtil.clearStack(stack, GunContainer.gunAmmo);
                     ArmoryUtil.clearStack(stack, GunContainer.gunPowder);
                     setLoadProgress(stack, 0F);
-                    player.getCooldowns().addCooldown(stack.getItem(), 10);
+                    player.getCooldowns().addCooldown(stack, 10);
                     player.awardStat(Stats.ITEM_USED.get(this));
                 }
             });
         }
-        return InteractionResultHolder.consume(player.getItemInHand(interactionHand));
+        return InteractionResult.CONSUME;
     }
 
     protected SoundEvent getGunShootSound() {
@@ -128,17 +125,18 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
     }
 
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof Player player) {
             if (getLoadProgress(stack) < 20F) {
                 setLoadProgress(stack, 0F);
             } else {
                 setLoad(stack, 2);
-                player.getCooldowns().addCooldown(stack.getItem(), 5);
+                player.getCooldowns().addCooldown(stack, 5);
                 player.level().playSound(player, player, this.getGunLoadSound(), SoundSource.PLAYERS, 1.0F, level.getRandom().nextFloat() * 0.25F + 0.75F);
                 if (player instanceof ServerPlayer serverPlayer) BrassArmoryAdvancements.LOAD_GUN.trigger(serverPlayer);
             }
         }
+        return true;
     }
 
     public SoundEvent getGunLoadSound() {
@@ -154,15 +152,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
         return !oldStack.getItem().equals(newStack.getItem()) || slotChanged;
     }
 
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return false;
-    }
 
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return false;
-    }
 
     @Override
     public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
@@ -175,7 +165,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
     }
 
     public static float getLoadProgress(ItemStack gunStack) {
-        if (!ItemData.getTag(gunStack).isEmpty() && ItemData.getTag(gunStack) != null) return ItemData.getTag(gunStack).getFloat("LoadProgress");
+        if (!ItemData.getTag(gunStack).isEmpty() && ItemData.getTag(gunStack) != null) return ItemData.getTag(gunStack).getFloatOr("LoadProgress", 0F);
         else {
             ItemData.setTag(gunStack, Util.make(new CompoundTag(), tag -> tag.putFloat("LoadProgress", 0F)));
             return 0F;
@@ -190,7 +180,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
 
     public static int getLoad(ItemStack gunStack) {
         if (!ItemData.getTag(gunStack).isEmpty() && ItemData.getTag(gunStack) != null) {
-            return ItemData.getTag(gunStack).getInt("BAGunLoaded");
+            return ItemData.getTag(gunStack).getIntOr("BAGunLoaded", 0);
         } else {
             CompoundTag compoundtag = new CompoundTag();
             compoundtag.putInt("BAGunLoaded", 0);
@@ -200,9 +190,9 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
     }
 
     @Override
-    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
-        return true;
+        return;
     }
 
     @Override
@@ -213,8 +203,7 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
         return true;
     }
 
-    @Nonnull
-    @Override
+        @Override
     public Predicate<ItemStack> getAllSupportedProjectiles() {
         return Optional.ofNullable(this.getAmmoType()).<Predicate<ItemStack>>map(itemTag -> (stack -> stack.is(itemTag))).orElseGet(() -> stack -> false);
     }
@@ -230,10 +219,10 @@ public class FlintlockItem extends ProjectileWeaponItem implements iGun {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> components, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> components, TooltipFlag tooltipFlag) {
         if (getLoad(stack) == 2) {
             for (ItemStack ammoStack : ArmoryUtil.loadStackList(ItemData.getTag(stack), GunContainer.gunAmmo)) {
-                components.add((Component.translatable("item.minecraft.crossbow.projectile")).append(" ").append(ammoStack.getDisplayName()));
+                components.accept((Component.translatable("item.minecraft.crossbow.projectile")).append(" ").append(ammoStack.getDisplayName()));
             }
         }
     }

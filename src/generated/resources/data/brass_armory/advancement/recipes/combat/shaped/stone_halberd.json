@@ -15,7 +15,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/stone_halberd"
+        "recipes": [
+          "brass_armory:shaped/stone_halberd"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

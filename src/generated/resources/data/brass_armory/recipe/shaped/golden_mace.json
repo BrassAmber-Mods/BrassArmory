@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "M": {
-      "item": "brass_armory:golden_spiky_ball"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "M": "brass_armory:golden_spiky_ball",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "M",

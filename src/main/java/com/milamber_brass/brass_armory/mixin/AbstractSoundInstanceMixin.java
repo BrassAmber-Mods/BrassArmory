@@ -15,7 +15,7 @@ public abstract class AbstractSoundInstanceMixin {
 
     @Inject(method = "getVolume", at = @At(value = "RETURN"), cancellable = true, remap = true)
     private void setVolume(CallbackInfoReturnable<Float> cir) {
-        if (Minecraft.getInstance().cameraEntity instanceof Player player) {
+        if (Minecraft.getInstance().getCameraEntity() instanceof Player player) {
             Optional.of(player.getData(BrassArmoryCapabilities.EFFECT_CAPABILITY)).ifPresent(iEffectCapability ->
                     cir.setReturnValue(cir.getReturnValue() * Math.max(0.01F, 1.0F - iEffectCapability.getSlow())));
         }
@@ -23,7 +23,7 @@ public abstract class AbstractSoundInstanceMixin {
 
     @Inject(method = "getPitch", at = @At(value = "RETURN"), cancellable = true, remap = true)
     private void setPitch(CallbackInfoReturnable<Float> cir) {
-        if (Minecraft.getInstance().cameraEntity instanceof Player player) {
+        if (Minecraft.getInstance().getCameraEntity() instanceof Player player) {
             Optional.of(player.getData(BrassArmoryCapabilities.EFFECT_CAPABILITY)).ifPresent(iEffectCapability ->
                     cir.setReturnValue(cir.getReturnValue() * Math.max(0.01F, 1.0F - (iEffectCapability.getSlow() * 3.0F))));
         }

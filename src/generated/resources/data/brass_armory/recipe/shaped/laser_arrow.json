@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "tag": "c:feathers"
-    },
-    "M": {
-      "tag": "c:storage_blocks/redstone"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "F": "#c:feathers",
+    "M": "#c:storage_blocks/redstone",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "M",

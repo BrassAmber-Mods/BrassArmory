@@ -1,93 +1,69 @@
 package com.milamber_brass.brass_armory.util;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
-import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-public class Impact extends Explosion {
-    public Impact(Level level, @Nullable Entity entity, Vec3 pos, float range, boolean fire, BlockInteraction blockInteraction) {
-        super(level, entity, pos.x, pos.y, pos.z, range, fire, blockInteraction);
+public class Impact extends ServerExplosion {
+    private final Map<BlockPos, BlockState> affectedBlocks;
+    public final Set<BlockPos> toBlow;
+
+    public Impact(ServerLevel level, @Nullable Entity entity, Vec3 pos, float range, boolean fire, BlockInteraction interaction) {
+        this(level, entity, pos, range, fire, interaction, new LinkedHashMap<>());
     }
 
-    @Override
-    public @NotNull ExplosionDamageCalculator makeDamageCalculator(@Nullable Entity entity) {
-        return entity == null ? new ImpactDamageCalculator() : new EntityBasedImpactDamageCalculator(entity);
+    private Impact(ServerLevel level, @Nullable Entity entity, Vec3 pos, float range, boolean fire, BlockInteraction interaction, Map<BlockPos, BlockState> blocks) {
+        super(level, entity, null, new ImpactDamageCalculator(entity, blocks), pos, range, fire, interaction);
+        this.affectedBlocks = blocks;
+        this.toBlow = blocks.keySet();
     }
 
-    @Override
     public void finalizeExplosion(boolean emitter) {
-        if (this.level instanceof ServerLevel serverLevel) {
-            Vec3 vec3 = this.center();
-            this.level.playSound(null, vec3.x, vec3.y, vec3.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (this.level.random.nextFloat() - this.level.random.nextFloat()) * 0.2F) * 3.7F);
-
-            if (this.blockInteraction != BlockInteraction.KEEP) {
-                ObjectArrayList<Pair<ItemStack, BlockPos>> list = new ObjectArrayList<>();
-                Collections.shuffle(this.toBlow);
-
-                for (BlockPos blockpos : this.toBlow) {
-                    BlockState blockstate = this.level.getBlockState(blockpos);
-                    if (!blockstate.isAir()) {
-                        BlockPos blockpos1 = blockpos.immutable();
-                        this.level.getProfiler().push("explosion_blocks");
-                        if (blockstate.canDropFromExplosion(this.level, blockpos, this)) {
-                            BlockEntity blockentity = blockstate.hasBlockEntity() ? this.level.getBlockEntity(blockpos) : null;
-                            LootParams.Builder builder = (new LootParams.Builder(serverLevel)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockpos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockentity).withOptionalParameter(LootContextParams.THIS_ENTITY, this.source);
-                            if (this.blockInteraction == BlockInteraction.DESTROY) {
-                                builder.withParameter(LootContextParams.EXPLOSION_RADIUS, this.radius);
-                            }
-
-                            blockstate.getDrops(builder).forEach((itemStack) -> addOrAppendStack(list, itemStack, blockpos1));
-                        }
-                        if (emitter) this.level.levelEvent(2001, blockpos, Block.getId(blockstate));
-                        blockstate.onBlockExploded(this.level, blockpos, this);
-                        this.level.getProfiler().pop();
-                    }
-                }
-
-                for (Pair<ItemStack, BlockPos> pair : list) {
-                    Block.popResource(this.level, pair.getSecond(), pair.getFirst());
-                }
-            }
-
-            if (this.fire) {
-                for (BlockPos blockpos2 : this.toBlow) {
-                    if (this.random.nextInt(3) == 0 && this.level.getBlockState(blockpos2).isAir() && this.level.getBlockState(blockpos2.below()).isSolidRender(this.level, blockpos2.below())) {
-                        this.level.setBlockAndUpdate(blockpos2, BaseFireBlock.getState(this.level, blockpos2));
-                    }
-                }
-            }
+        Vec3 pos = center();
+        level().playSound(null, pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 4.0F, (1.0F + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.2F) * 3.7F);
+        if (emitter && getBlockInteraction() != BlockInteraction.KEEP) {
+            affectedBlocks.forEach((blockPos, state) -> {
+                if (!state.isAir()) level().levelEvent(2001, blockPos, Block.getId(state));
+            });
         }
     }
 
-
     public static class ImpactDamageCalculator extends ExplosionDamageCalculator {
+        private final Entity source;
+        private final Map<BlockPos, BlockState> blocks;
+
         public ImpactDamageCalculator() {
-            super();
+            this(null, new LinkedHashMap<>());
+        }
+
+        private ImpactDamageCalculator(Entity source, Map<BlockPos, BlockState> blocks) {
+            this.source = source;
+            this.blocks = blocks;
+        }
+
+        @Override
+        public boolean shouldBlockExplode(Explosion explosion, BlockGetter level, BlockPos pos, BlockState state, float power) {
+            boolean explode = source == null || source.shouldBlockExplode(explosion, level, pos, state, power);
+            if (explode) blocks.put(pos.immutable(), state);
+            return explode;
         }
 
         @Override
         public @NotNull Optional<Float> getBlockExplosionResistance(Explosion explosion, BlockGetter blockGetter, BlockPos blockPos, BlockState blockState, FluidState fluidState) {
-            return super.getBlockExplosionResistance(explosion, blockGetter, blockPos, blockState, fluidState).map(f -> f * 0.2F);
+            return super.getBlockExplosionResistance(explosion, blockGetter, blockPos, blockState, fluidState).map(f -> (source == null ? f : source.getBlockExplosionResistance(explosion, blockGetter, blockPos, blockState, fluidState, f)) * 0.2F);
         }
     }
 

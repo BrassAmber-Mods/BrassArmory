@@ -1,7 +1,7 @@
 package com.milamber_brass.brass_armory.behaviour;
 
+import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

@@ -2,27 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "tag": "c:nuggets/iron"
-    },
-    {
-      "tag": "c:nuggets/iron"
-    },
-    {
-      "tag": "c:nuggets/iron"
-    },
-    {
-      "tag": "c:nuggets/iron"
-    },
-    {
-      "tag": "c:nuggets/iron"
-    },
-    {
-      "tag": "c:nuggets/iron"
-    },
-    {
-      "item": "minecraft:paper"
-    }
+    "#c:nuggets/iron",
+    "#c:nuggets/iron",
+    "#c:nuggets/iron",
+    "#c:nuggets/iron",
+    "#c:nuggets/iron",
+    "#c:nuggets/iron",
+    "minecraft:paper"
   ],
   "result": {
     "count": 4,

@@ -2,15 +2,13 @@ package com.milamber_brass.brass_armory.capabilities;
 
 import com.milamber_brass.brass_armory.behaviour.GunBehaviours;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 
-@ParametersAreNonnullByDefault
 public class PowderCapabilityHandler implements IPowderCapability {
     private Projectile projectile;
     private AbstractPowderBehaviour powderBehaviour;
@@ -32,7 +30,7 @@ public class PowderCapabilityHandler implements IPowderCapability {
     @Override
     public void tick() {
         if (this.projectile.level() instanceof ServerLevel serverLevel && this.powderBehaviour != null) {
-            if (this.projectile instanceof AbstractArrow abstractArrow && abstractArrow.inGround && abstractArrow.shakeTime <= 0) return;
+            if (this.projectile instanceof AbstractArrow abstractArrow && abstractArrow.isInGround() && abstractArrow.shakeTime <= 0) return;
             this.powderBehaviour.sendParticles(serverLevel, this.projectile.getEyePosition());
         }
     }
@@ -46,7 +44,7 @@ public class PowderCapabilityHandler implements IPowderCapability {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
-        ResourceLocation resourceLocation = ResourceLocation.tryParse(tag.getString("BAPowderBehaviour"));
+        Identifier resourceLocation = Identifier.tryParse(tag.getStringOr("BAPowderBehaviour", ""));
         if (resourceLocation != null) this.powderBehaviour = GunBehaviours.getPowderBehaviours().get(resourceLocation);
     }
 }

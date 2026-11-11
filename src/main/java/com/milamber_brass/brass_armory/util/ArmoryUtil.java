@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.util;
 
+import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.Lists;
 import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
@@ -7,13 +8,11 @@ import com.milamber_brass.brass_armory.effect.BleedEffect;
 import com.milamber_brass.brass_armory.item.KatanaItem;
 import com.milamber_brass.brass_armory.util.ItemData;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -45,15 +43,16 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
+
 public class ArmoryUtil {
     public static void impaleLivingEntity(LivingEntity living, float damage, RandomSource random) {
         float damageAfterAbsorb = CombatRules.getDamageAfterAbsorb(living, damage, ArmoryUtil.getDamageSource(living.level(), BrassArmoryDamageTypes.IMPALE), living.getArmorValue(), (float)living.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
         float finalDamage = damage - damageAfterAbsorb;
         finalDamage = Math.min(finalDamage, (float)Math.sqrt(finalDamage * 10F) / 10F);
 
-        living.hurt(ArmoryUtil.getDamageSource(living.level(), BrassArmoryDamageTypes.IMPALE), finalDamage);
+        if (living.level() instanceof ServerLevel serverLevel) {
+            living.hurtServer(serverLevel, ArmoryUtil.getDamageSource(serverLevel, BrassArmoryDamageTypes.IMPALE), finalDamage);
+        }
 
         for (EquipmentSlot slot : new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET }) {
             if (random.nextBoolean()) break;
@@ -77,7 +76,7 @@ public class ArmoryUtil {
     public static void getWitherFromLivingEntity(LivingEntity livingTarget, LivingEntity thisLiving) {
         ItemStack stack = thisLiving.getMainHandItem();
         if (thisLiving.level() instanceof ServerLevel serverLevel && stack.getItem() instanceof KatanaItem katanaItem && katanaItem.canWither() && KatanaItem.getWither(stack) < 100) {
-            if (livingTarget.isDeadOrDying() && livingTarget.getType().is(BrassArmoryTags.Entities.WITHER)) {
+            if (livingTarget.isDeadOrDying() && BuiltInRegistries.ENTITY_TYPE.wrapAsHolder(livingTarget.getType()).is(BrassArmoryTags.Entities.WITHER)) {
                 KatanaItem.addWither(stack, thisLiving, serverLevel, livingTarget instanceof WitherBoss ? 50 : 2);
             }
         }
@@ -99,21 +98,19 @@ public class ArmoryUtil {
         }
     }
 
-    @Nonnull
-    public static List<ItemStack> loadStackList(CompoundTag compoundtag, String name) {
+        public static List<ItemStack> loadStackList(CompoundTag compoundtag, String name) {
         List<ItemStack> list = Lists.newArrayList();
-        if (compoundtag.contains(name, 9)) {
-            ListTag listtag = compoundtag.getList(name, 10);
+        if (compoundtag.contains(name)) {
+            ListTag listtag = compoundtag.getListOrEmpty(name);
             for(int i = 0; i < listtag.size(); ++i) {
-                CompoundTag ammoCompoundTag = listtag.getCompound(i);
+                CompoundTag ammoCompoundTag = listtag.getCompoundOrEmpty(i);
                 list.add(ItemData.load(ammoCompoundTag));
             }
         }
         return list;
     }
 
-    @Nonnull
-    public static ItemStack loadStack(CompoundTag compoundtag, String name, ItemStack ifEmpty) {
+        public static ItemStack loadStack(CompoundTag compoundtag, String name, ItemStack ifEmpty) {
         List<ItemStack> list = loadStackList(compoundtag, name);
         if (list.isEmpty()) return ifEmpty;
         else return list.get(0);
@@ -129,7 +126,7 @@ public class ArmoryUtil {
 
     public static void addStack(CompoundTag compoundTag, ItemStack itemStack, String name) {
         ListTag listtag;
-        if (compoundTag.contains(name, 9)) listtag = compoundTag.getList(name, 10);
+        if (compoundTag.contains(name)) listtag = compoundTag.getListOrEmpty(name);
         else listtag = new ListTag();
 
         CompoundTag ammoCompoundTag = new CompoundTag();
@@ -143,26 +140,26 @@ public class ArmoryUtil {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static @NotNull Explosion explode(Level level, Entity entity, float power, boolean burn, Level.ExplosionInteraction interaction) {
-        return explode(level, entity, entity.position().add(0.0D, entity.getBbHeight() * 0.5F, 0.0D), power, burn, interaction);
+    public static void explode(Level level, Entity entity, float power, boolean burn, Level.ExplosionInteraction interaction) {
+        explode(level, entity, entity.position().add(0.0D, entity.getBbHeight() * 0.5F, 0.0D), power, burn, interaction);
     }
 
-    public static @NotNull Explosion explode(Level level, @Nullable Entity entity, Vec3 position, float power, boolean burn, Level.ExplosionInteraction interaction) {
-        return level.explode(entity, position.x, position.y, position.z, power, burn, interaction);
+    public static void explode(Level level, @Nullable Entity entity, Vec3 position, float power, boolean burn, Level.ExplosionInteraction interaction) {
+        level.explode(entity, position.x, position.y, position.z, power, burn, interaction);
     }
 
     public static boolean isFuseLighter(ItemStack stack) {
-        return stack.is(BrassArmoryTags.Items.FUSE_LIGHTER) || (stack.isEnchanted() && (EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FIRE_ASPECT), stack) > 0 || EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FLAME), stack) > 0));
+        return stack.is(BrassArmoryTags.Items.FUSE_LIGHTER) || (stack.isEnchanted() && (stack.getEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FIRE_ASPECT)) > 0 || stack.getEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FLAME)) > 0));
     }
 
     public static void addCooldownToList(Player player, List<Item> items, int ticks) {
         if (!player.getAbilities().instabuild) {
-            for (Item item : items) player.getCooldowns().addCooldown(item, ticks);
+            for (Item item : items) player.getCooldowns().addCooldown(item.getDefaultInstance(), ticks);
         }
     }
 
     public static float frameTime(Level level) {
-        return !level.isClientSide ? 1.0F : Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        return !level.isClientSide() ? 1.0F : Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true);
     }
 
     public static DamageSource getDamageSource(Level level, ResourceKey<DamageType> type) {
@@ -174,6 +171,6 @@ public class ArmoryUtil {
     }
 
     public static DamageSource getIndirectEntityDamageSource(Level level, ResourceKey<DamageType> type, @org.jetbrains.annotations.Nullable Entity attacker, @org.jetbrains.annotations.Nullable Entity indirectAttacker) {
-        return new DamageSource(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(type), attacker, indirectAttacker);
+        return new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(type), attacker, indirectAttacker);
     }
 }

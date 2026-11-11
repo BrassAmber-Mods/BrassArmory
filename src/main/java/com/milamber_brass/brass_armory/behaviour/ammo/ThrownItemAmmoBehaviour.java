@@ -1,19 +1,17 @@
 package com.milamber_brass.brass_armory.behaviour.ammo;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class ThrownItemAmmoBehaviour extends AbstractAmmoBehaviour {
     protected final BiFunction<Level, LivingEntity, ThrowableItemProjectile> newProjectileFunction;
     protected final Predicate<ItemStack> ammoItems;
@@ -29,7 +27,7 @@ public class ThrownItemAmmoBehaviour extends AbstractAmmoBehaviour {
         super.onShoot(level, owner, shooter, ammoStack, powderBehaviour, gun);
         ThrowableItemProjectile thrownItem = this.newProjectileFunction.apply(level, owner);
         if (powderBehaviour != null) powderBehaviour.applyEffect(thrownItem);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             thrownItem.setItem(ammoStack);
             float speed = gun.speed();
             thrownItem.setPos(shooter.getEyePosition());

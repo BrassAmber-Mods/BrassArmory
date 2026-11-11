@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "minecraft:stone_tool_materials"
+            "items": "#minecraft:stone_tool_materials"
           }
         ]
       },
@@ -13,7 +13,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/stone_battleaxe"
+        "recipes": [
+          "brass_armory:shaped/stone_battleaxe"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

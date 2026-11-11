@@ -15,7 +15,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/diamond_spear"
+        "recipes": [
+          "brass_armory:shaped/diamond_spear"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

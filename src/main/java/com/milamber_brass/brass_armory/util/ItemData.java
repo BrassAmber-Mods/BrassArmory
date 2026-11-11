@@ -7,6 +7,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.api.distmarker.Dist;
@@ -27,16 +28,16 @@ public final class ItemData {
     public static HolderLookup.Provider registries() {
         var server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) return server.registryAccess();
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             var level = Minecraft.getInstance().level;
             if (level != null) return level.registryAccess();
         }
         return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     }
     public static ItemStack load(CompoundTag tag) {
-        return ItemStack.parseOptional(registries(), tag);
+        return ItemStack.OPTIONAL_CODEC.parse(registries().createSerializationContext(NbtOps.INSTANCE), tag).result().orElse(ItemStack.EMPTY);
     }
     public static void save(ItemStack stack, CompoundTag tag) {
-        tag.merge((CompoundTag) stack.saveOptional(registries()));
+        tag.merge((CompoundTag) ItemStack.OPTIONAL_CODEC.encodeStart(registries().createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow());
     }
 }

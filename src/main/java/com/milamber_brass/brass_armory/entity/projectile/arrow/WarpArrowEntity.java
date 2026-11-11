@@ -5,16 +5,15 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpeci
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -23,7 +22,6 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class WarpArrowEntity extends AbstractSpecialArrowEntity {
     public WarpArrowEntity(EntityType<? extends WarpArrowEntity> entityType, Level level) {
         super(entityType, level);
@@ -46,18 +44,18 @@ public class WarpArrowEntity extends AbstractSpecialArrowEntity {
     @SuppressWarnings("UnstableApiUsage")
     private void teleportShooter(Vec3 pos, HitResult result) {
         Entity entity = this.getOwner();
-        if (!this.level().isClientSide && this.isAlive()) {
+        if (!this.level().isClientSide() && this.isAlive()) {
             // Check if the shooter is a Player.
             if (entity instanceof ServerPlayer serverPlayer) {
                 if (serverPlayer.connection.isAcceptingMessages() && serverPlayer.level() == this.level() && !serverPlayer.isSleeping()) {
-                    EntityTeleportEvent.EnderPearl event = EventHooks.onEnderPearlLand(serverPlayer, pos.x, pos.y, pos.z, EntityType.ENDER_PEARL.create(this.level()), 5.0F, result);
+                    EntityTeleportEvent.EnderPearl event = EventHooks.onEnderPearlLand(serverPlayer, pos.x, pos.y, pos.z, net.minecraft.world.entity.EntityTypes.ENDER_PEARL.create(this.level(), net.minecraft.world.entity.EntitySpawnReason.TRIGGERED), 5.0F, result);
                     if (!event.isCanceled()) {
                         // Small chance to spawn an Endermite.
-                        if (this.random.nextFloat() < 0.05F && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-                            Endermite endermite = EntityType.ENDERMITE.create(this.level());
+                        if (this.random.nextFloat() < 0.05F && ((net.minecraft.server.level.ServerLevel)this.level()).getGameRules().get(GameRules.SPAWN_MOBS)) {
+                            Endermite endermite = net.minecraft.world.entity.EntityTypes.ENDERMITE.create(this.level(), net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
 
                             if (endermite != null) {
-                                endermite.moveTo(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), serverPlayer.getYRot(), serverPlayer.getXRot());
+                                endermite.snapTo(serverPlayer.getX(), serverPlayer.getY(), serverPlayer.getZ(), serverPlayer.getYRot(), serverPlayer.getXRot());
                                 this.level().addFreshEntity(endermite);
                             }
                         }
@@ -96,7 +94,7 @@ public class WarpArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.WARP_ARROW_TEXTURE;
     }
 }

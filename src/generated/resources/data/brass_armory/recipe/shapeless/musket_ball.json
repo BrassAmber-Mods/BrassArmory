@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "tag": "c:ingots/iron"
-    },
-    {
-      "item": "minecraft:paper"
-    }
+    "#c:ingots/iron",
+    "minecraft:paper"
   ],
   "result": {
     "count": 8,

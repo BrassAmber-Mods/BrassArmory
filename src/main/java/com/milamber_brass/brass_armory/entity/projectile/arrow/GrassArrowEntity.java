@@ -4,11 +4,10 @@ import com.milamber_brass.brass_armory.client.render.SpecialArrowRenderer;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpecialArrowEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EntityType;
@@ -22,7 +21,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class GrassArrowEntity extends AbstractSpecialArrowEntity {
     public GrassArrowEntity(EntityType<? extends GrassArrowEntity> entityType, Level level) {
         super(entityType, level);
@@ -67,7 +65,7 @@ public class GrassArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.GRASS_ARROW_TEXTURE;
     }
 }

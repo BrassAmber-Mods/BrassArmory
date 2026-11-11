@@ -5,21 +5,19 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRolla
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpecialArrowEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.cubemob.Slime;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class SlimeArrowEntity extends AbstractSpecialArrowEntity {
     public SlimeArrowEntity(EntityType<? extends SlimeArrowEntity> entityType, Level level) {
         super(entityType, level);
@@ -39,7 +37,7 @@ public class SlimeArrowEntity extends AbstractSpecialArrowEntity {
     protected void doPostHurtEffects(LivingEntity living) {
         super.doPostHurtEffects(living);
         if (!this.dealtDamage) {
-            living.knockback(this.getDeltaMovement().length() * 0.75D, this.getX() - living.getX(), this.getZ() - living.getZ());
+            living.knockback(this.getDeltaMovement().length() * 0.75D, this.getX() - living.getX(), this.getZ() - living.getZ(), this.damageSources().thrown(this, this.getOwner()), 0F);
         }
     }
 
@@ -54,13 +52,13 @@ public class SlimeArrowEntity extends AbstractSpecialArrowEntity {
 
     private void spawnSmallSlime() {
         if (this.isAlive()) {
-            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
-                Slime slimeEntity = EntityType.SLIME.create(this.level());
+            if (((net.minecraft.server.level.ServerLevel)this.level()).getGameRules().get(GameRules.SPAWN_MOBS)) {
+                Slime slimeEntity = net.minecraft.world.entity.EntityTypes.SLIME.create(this.level(), net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
                 if (slimeEntity == null) return;
                 slimeEntity.addTag("no_loot");
                 slimeEntity.refreshDimensions();
                 slimeEntity.setHealth(1);
-                slimeEntity.moveTo(this.blockPosition().getX() + .5f, this.blockPosition().getY() + 0.05f, this.blockPosition().getZ() + .5f, this.getYRot(), this.getXRot());
+                slimeEntity.snapTo(this.blockPosition().getX() + .5f, this.blockPosition().getY() + 0.05f, this.blockPosition().getZ() + .5f, this.getYRot(), this.getXRot());
                 this.level().addFreshEntity(slimeEntity);
                 this.discard();
             }
@@ -81,7 +79,7 @@ public class SlimeArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.SLIME_ARROW_TEXTURE;
     }
 }

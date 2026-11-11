@@ -3,13 +3,13 @@ package com.milamber_brass.brass_armory.capabilities;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import com.milamber_brass.brass_armory.util.ArmoryNBTSerializable;
 
-public interface IPowderCapability extends INBTSerializable<CompoundTag> {
+public interface IPowderCapability extends ArmoryNBTSerializable {
 
-    ResourceLocation ID = BrassArmory.locate("powder_capability");
+    Identifier ID = BrassArmory.locate("powder_capability");
 
     void setEntity(Projectile projectile);
 

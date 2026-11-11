@@ -1,0 +1,160 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "brass_armory:property",
+    "name": "minecraft:withering",
+    "entries": [
+      {
+        "threshold": 1.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "brass_armory:item/katanas/9"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "brass_armory:property",
+      "name": "minecraft:withering",
+      "entries": [
+        {
+          "threshold": 0.9,
+          "model": {
+            "type": "minecraft:model",
+            "model": "brass_armory:item/katanas/8"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:range_dispatch",
+        "property": "brass_armory:property",
+        "name": "minecraft:withering",
+        "entries": [
+          {
+            "threshold": 0.8,
+            "model": {
+              "type": "minecraft:model",
+              "model": "brass_armory:item/katanas/7"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:range_dispatch",
+          "property": "brass_armory:property",
+          "name": "minecraft:withering",
+          "entries": [
+            {
+              "threshold": 0.7,
+              "model": {
+                "type": "minecraft:model",
+                "model": "brass_armory:item/katanas/6"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:range_dispatch",
+            "property": "brass_armory:property",
+            "name": "minecraft:withering",
+            "entries": [
+              {
+                "threshold": 0.6,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "brass_armory:item/katanas/5"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:range_dispatch",
+              "property": "brass_armory:property",
+              "name": "minecraft:withering",
+              "entries": [
+                {
+                  "threshold": 0.5,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "brass_armory:item/katanas/4"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:range_dispatch",
+                "property": "brass_armory:property",
+                "name": "minecraft:withering",
+                "entries": [
+                  {
+                    "threshold": 0.4,
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "brass_armory:item/katanas/3"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:range_dispatch",
+                  "property": "brass_armory:property",
+                  "name": "minecraft:withering",
+                  "entries": [
+                    {
+                      "threshold": 0.3,
+                      "model": {
+                        "type": "minecraft:model",
+                        "model": "brass_armory:item/katanas/2"
+                      }
+                    }
+                  ],
+                  "fallback": {
+                    "type": "minecraft:range_dispatch",
+                    "property": "brass_armory:property",
+                    "name": "minecraft:withering",
+                    "entries": [
+                      {
+                        "threshold": 0.2,
+                        "model": {
+                          "type": "minecraft:model",
+                          "model": "brass_armory:item/katanas/1"
+                        }
+                      }
+                    ],
+                    "fallback": {
+                      "type": "minecraft:range_dispatch",
+                      "property": "brass_armory:property",
+                      "name": "minecraft:withering",
+                      "entries": [
+                        {
+                          "threshold": 0.1,
+                          "model": {
+                            "type": "minecraft:model",
+                            "model": "brass_armory:item/katanas/0"
+                          }
+                        }
+                      ],
+                      "fallback": {
+                        "type": "minecraft:range_dispatch",
+                        "property": "brass_armory:property",
+                        "name": "minecraft:withering",
+                        "entries": [
+                          {
+                            "threshold": 0.0,
+                            "model": {
+                              "type": "minecraft:model",
+                              "model": "brass_armory:item/katana"
+                            }
+                          }
+                        ],
+                        "fallback": {
+                          "type": "minecraft:model",
+                          "model": "brass_armory:item/katana"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

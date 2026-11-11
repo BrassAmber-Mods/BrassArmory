@@ -1,21 +1,19 @@
 package com.milamber_brass.brass_armory.behaviour.ammo;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class ArrowAmmoBehaviour extends AbstractAmmoBehaviour {
     public ArrowAmmoBehaviour() {
         super();
@@ -26,7 +24,7 @@ public class ArrowAmmoBehaviour extends AbstractAmmoBehaviour {
         super.onShoot(level, owner, shooter, ammoStack, powderBehaviour, gun);
         AbstractArrow abstractarrow = ((ArrowItem)(ammoStack.getItem() instanceof ArrowItem ? ammoStack.getItem() : Items.ARROW)).createArrow(level, ammoStack, owner, null);
         if (powderBehaviour != null) powderBehaviour.applyEffect(abstractarrow);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             float speed = gun.speed();
             abstractarrow.setPos(shooter.getEyePosition());
             abstractarrow.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, speed * 3.0F, gun.accuracy());

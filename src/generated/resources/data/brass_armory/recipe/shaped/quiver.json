@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "L": {
-      "tag": "c:leathers"
-    },
-    "S": {
-      "tag": "c:strings"
-    }
+    "L": "#c:leathers",
+    "S": "#c:strings"
   },
   "pattern": [
     "LS ",

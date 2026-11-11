@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.function.Supplier;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,7 +20,6 @@ import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class WarpCrystalLootModifier extends LootModifier {
     public static final Supplier<MapCodec<WarpCrystalLootModifier>> CODEC = Suppliers.memoize(()
             -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).and(
@@ -30,15 +28,15 @@ public class WarpCrystalLootModifier extends LootModifier {
 
     private final Item loot_generator;
 
-    public WarpCrystalLootModifier(LootItemCondition[] conditionsIn, Item loot_generator) {
-        super(conditionsIn);
+    public WarpCrystalLootModifier(java.util.Optional<net.minecraft.core.Holder<LootItemCondition>> conditionsIn, int priority, Item loot_generator) {
+        super(conditionsIn, priority);
         this.loot_generator = loot_generator;
     }
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         ObjectArrayList<ItemStack> extraDrops = new ObjectArrayList<>();
-        var attacker = context.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
+        var attacker = context.getOptional(LootContextParams.ATTACKING_ENTITY);
         int looting = attacker instanceof LivingEntity living
                 ? EnchantmentHelper.getEnchantmentLevel(context.getLevel().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOOTING), living)
                 : 0;

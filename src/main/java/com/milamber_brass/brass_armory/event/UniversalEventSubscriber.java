@@ -15,34 +15,30 @@ import com.milamber_brass.brass_armory.item.QuiverItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.AbstractGolem;
-import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.animal.golem.AbstractGolem;
+import net.minecraft.world.entity.monster.cubemob.Slime;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.BasicItemListing;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.event.village.WandererTradesEvent;
 
-@ParametersAreNonnullByDefault
 @EventBusSubscriber(modid = BrassArmory.MOD_ID)
 public class UniversalEventSubscriber {
     @SubscribeEvent //Drop any lit bombs if opening a container, to prevent storing lit bombs
     public static void onPlayerContainerEventOpen(PlayerContainerEvent.Open event) {
         Player player = event.getEntity();
-        for (ItemStack stack : player.getInventory().items) {
+        for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             if (stack.getItem() instanceof BombItem bombItem && BombItem.getFuseLit(stack)) {
                 BombEntity bomb = bombItem.newBombFunction.apply(player.level(), player, player.getMainArm());
                 bomb.setFuse(BombItem.getFuseLength(stack));
@@ -56,13 +52,6 @@ public class UniversalEventSubscriber {
     }
 
     @SubscribeEvent
-    public static void onWandererTradesEvent(WandererTradesEvent event) {
-        event.getRareTrades().add(new BasicItemListing(8, BrassArmoryItems.BOMB.get().getDefaultInstance(), 8, 4, 4));
-        event.getRareTrades().add(new BasicItemListing(10, BrassArmoryItems.LONGBOW.get().getDefaultInstance(), 3, 6, 1));
-        event.getRareTrades().add(new BasicItemListing(Items.WITHER_SKELETON_SKULL.getDefaultInstance(), BrassArmoryItems.KATANA.get().getDefaultInstance(), 1, 32, 1));
-    }
-
-    @SubscribeEvent
     public static void onLivingHurtEvent(LivingIncomingDamageEvent event) {
         if (event.getSource().getDirectEntity() instanceof ItemSupplier itemSupplier && itemSupplier.getItem().is(BrassArmoryTags.Items.BLEEDING_EDGE)) {
             BleedEffect.bleedHarder(event.getEntity(), 50, 0);
@@ -72,7 +61,7 @@ public class UniversalEventSubscriber {
     @SubscribeEvent
     public static void onPotionApplicableEvent(MobEffectEvent.Applicable event) {
         LivingEntity living = event.getEntity();
-        if (event.getEffectInstance().getEffect().equals(BrassArmoryEffects.BLEEDING) && living != null && (living.getType().is(EntityTypeTags.UNDEAD) || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
+        if (event.getEffectInstance().getEffect().equals(BrassArmoryEffects.BLEEDING) && living != null && (living.is(EntityTypeTags.UNDEAD) || living.isSensitiveToWater() || living instanceof AbstractGolem || living instanceof Slime)) {
             event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
             return;
         }
@@ -82,10 +71,10 @@ public class UniversalEventSubscriber {
     public static void onPotionAddedEvent(MobEffectEvent.Added event) {
         LivingEntity living = event.getEntity();
 
-        if (!living.level().isClientSide) {
+        if (!living.level().isClientSide()) {
             var effect = event.getEffectInstance().getEffect();
             if (effect.equals(BrassArmoryEffects.BLEEDING) || effect.equals(BrassArmoryEffects.CONFUSION)) {
-                ((ServerLevel)living.level()).getChunkSource().chunkMap.broadcast(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getEffectInstance(), false));
+                ((ServerLevel) living.level()).getChunkSource().sendToTrackingPlayersAndSelf(living, new ClientboundUpdateMobEffectPacket(living.getId(), event.getEffectInstance(), false));
             }
         }
     }
@@ -93,7 +82,7 @@ public class UniversalEventSubscriber {
     @SubscribeEvent
     public static void onLivingDropsEvent(LivingDropsEvent event) {
         LivingEntity living = event.getEntity();
-        Set<String> tags = living.getTags();
+        Set<String> tags = living.entityTags();
         if (!tags.isEmpty() && tags.contains("no_loot")) event.setCanceled(true);
     }
 
@@ -108,7 +97,7 @@ public class UniversalEventSubscriber {
     @SubscribeEvent
     public static void onLivingGetProjectileEvent(LivingGetProjectileEvent event) {
         if (event.getEntity() instanceof Player player) {
-            for (ItemStack quiverStack : player.getInventory().items) {
+            for (ItemStack quiverStack : player.getInventory().getNonEquipmentItems()) {
                 if (quiverStack.getItem() instanceof QuiverItem) {
                     Optional<ItemStack> optionalInQuiverStack = QuiverItem.getContents(quiverStack).findFirst();
                     if (optionalInQuiverStack.isPresent()) {
@@ -131,7 +120,7 @@ public class UniversalEventSubscriber {
         Player player = event.getEntity();
         if (player.isPassenger() && player.getVehicle() instanceof CannonEntity cannon && cannon.getFuse() == 0 && ArmoryUtil.isFuseLighter(event.getItemStack()) && event.getHand().equals(InteractionHand.MAIN_HAND)) {
             event.setCanceled(true);
-            event.setCancellationResult(cannon.interact(player, event.getHand()));
+            event.setCancellationResult(cannon.interact(player, event.getHand(), net.minecraft.world.phys.Vec3.ZERO));
         }
     }
 }

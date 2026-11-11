@@ -1,0 +1,20 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "brass_armory:property",
+    "name": "minecraft:throwing",
+    "entries": [
+      {
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "brass_armory:item/wooden_spear_throwing"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "brass_armory:item/wooden_spear"
+    }
+  }
+}

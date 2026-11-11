@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractRollableItemProjectileEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
@@ -7,9 +8,6 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.SpikyBallItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -21,13 +19,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
     public static final long INTERVAL = 600L;
 
@@ -52,14 +49,14 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
         super.tick();
         if (this.tickCount > 10 && this.getItem().getItem() instanceof SpikyBallItem spikyBallItem) {
             for (Entity entity : this.level().getEntities(this, this.getBoundingBox(), Entity::isAlive)) {
-                if (entity instanceof LivingEntity living && living.hurt(ArmoryUtil.getDamageSource(this.level(), BrassArmoryDamageTypes.SPIKY_BALL), spikyBallItem.getTier().getAttackDamageBonus() + 1F) && this.hurt()) return;
+                if (entity instanceof LivingEntity living && living.hurtOrSimulate(ArmoryUtil.getDamageSource(this.level(), BrassArmoryDamageTypes.SPIKY_BALL), spikyBallItem.getTier().attackDamageBonus() + 1F) && this.hurt()) return;
             }
         }
     }
 
     @Override
     protected void onGroundTick() {
-        if (!this.level().isClientSide && this.level().getGameTime() % INTERVAL == 0L && this.hurt()) return;
+        if (!this.level().isClientSide() && this.level().getGameTime() % INTERVAL == 0L && this.hurt()) return;
         super.onGroundTick();
     }
 
@@ -76,7 +73,7 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
 
     @NotNull
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand, net.minecraft.world.phys.Vec3 location) {
         ItemStack handStack = player.getItemInHand(hand);
         if (handStack.isEmpty()) {
             player.setItemInHand(hand, this.getItem());
@@ -105,8 +102,7 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
         return 0.2D;
     }
 
-    @Nonnull
-    @Override
+        @Override
     protected Item getDefaultItem() {
         return BrassArmoryItems.IRON_SPIKY_BALL.get();
     }

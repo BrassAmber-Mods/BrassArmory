@@ -21,8 +21,8 @@ public abstract class MobMixin extends LivingEntity {
     }
 
     @Inject(method = "doHurtTarget", at = @At("RETURN"))
-    private void mainHit(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if (cir.getReturnValue() && !this.level().isClientSide && entity instanceof LivingEntity living) {
+    private void mainHit(net.minecraft.server.level.ServerLevel level, Entity entity, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValue() && !this.level().isClientSide() && entity instanceof LivingEntity living) {
             ArmoryUtil.getWitherFromLivingEntity(living, this);
             ArmoryUtil.bleedLivingEntity(living, this);
         }
@@ -30,14 +30,14 @@ public abstract class MobMixin extends LivingEntity {
 
     @Inject(method = "setZza", at = @At(value = "TAIL"), remap = true)
     private void setZza(CallbackInfo ci) {
-        if (!this.getType().is(BrassArmoryTags.Entities.FOCUSED) && this.hasEffect(BrassArmoryEffects.CONFUSION)) {
+        if (!this.is(BrassArmoryTags.Entities.FOCUSED) && this.hasEffect(BrassArmoryEffects.CONFUSION)) {
             this.zza *= this.tickCount % 40 <= 20 ? 0.8F : -0.5F;
         }
     }
 
     @Inject(method = "setXxa", at = @At(value = "TAIL"), remap = true)
     private void setXxa(CallbackInfo ci) {
-        if (!this.getType().is(BrassArmoryTags.Entities.FOCUSED) && this.hasEffect(BrassArmoryEffects.CONFUSION)) {
+        if (!this.is(BrassArmoryTags.Entities.FOCUSED) && this.hasEffect(BrassArmoryEffects.CONFUSION)) {
             this.xxa *= this.tickCount % 30 <= 15 ? 0.8F : -0.8F;
         }
     }

@@ -1,12 +1,10 @@
-modLoader="javafml"
-loaderVersion="[4,)"
 license="All rights reserved."
 
 [[mods]]
     modId="brass_armory"
     version="1.0.3"
     displayName="Brass's Armory"
-    logoFile="assets/brass_armory/textures/item/diamond/diamond_spear.png"
+    iconFile="assets/brass_armory/textures/item/diamond/diamond_spear.png"
     credits="Inspired by Balkon's Weapons Mod, AdventureItems and Ropes+"
     authors="Brass_McCrafty, Milamber, DerToaster98, Xrated_junior, jodlodi and FireControl1847"
     description='''
@@ -15,14 +13,14 @@ A revamp of Balkon's Weapons Mod from YogBox/Tekkit days which slims down the it
 [[dependencies.brass_armory]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21.1,1.21.2)"
+    versionRange="[26.3,26.4)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.brass_armory]]
     modId="neoforge"
     type="required"
-    versionRange="[21.1.265,)"
+    versionRange="[26.3.0.101,)"
     ordering="NONE"
     side="BOTH"
 

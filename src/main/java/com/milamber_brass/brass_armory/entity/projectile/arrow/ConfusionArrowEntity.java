@@ -5,8 +5,7 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpeci
 import com.milamber_brass.brass_armory.init.BrassArmoryEffects;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class ConfusionArrowEntity extends AbstractSpecialArrowEntity {
     public ConfusionArrowEntity(EntityType<? extends ConfusionArrowEntity> entityType, Level level) {
         super(entityType, level);
@@ -50,7 +48,7 @@ public class ConfusionArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.CONFUSION_ARROW_TEXTURE;
     }
 }

@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 10
+  },
+  "gives": {
+    "id": "brass_armory:longbow",
+    "count": 3
+  },
+  "max_uses": 6,
+  "xp": 1
+}

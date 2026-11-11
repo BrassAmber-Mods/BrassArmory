@@ -1,5 +1,9 @@
 package com.milamber_brass.brass_armory.entity;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.GunBehaviours;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.capabilities.EffectCapabilityHandler;
@@ -11,9 +15,7 @@ import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.inventory.GunContainer;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +38,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -47,9 +49,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class CannonEntity extends Entity implements iGun {
-    protected static final EntityDataAccessor<CompoundTag> DATA_TAG = SynchedEntityData.defineId(CannonEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    protected static final EntityDataAccessor<CompoundTag> DATA_TAG = SynchedEntityData.defineId(CannonEntity.class, com.milamber_brass.brass_armory.init.BrassArmoryDataSerializers.CANNON_DATA.get());
     protected static final EntityDataAccessor<Integer> DATA_FUSE = SynchedEntityData.defineId(CannonEntity.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Float> DATA_DAMAGE = SynchedEntityData.defineId(CannonEntity.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Integer> DATA_HURTDIR = SynchedEntityData.defineId(CannonEntity.class, EntityDataSerializers.INT);
@@ -200,13 +201,9 @@ public class CannonEntity extends Entity implements iGun {
         }
     }
 
-    @Override
-    public @NotNull AABB getBoundingBoxForCulling() {
-        return super.getBoundingBoxForCulling().inflate(1.2D);
-    }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(Entity other) {
         return true;
     }
 
@@ -218,7 +215,7 @@ public class CannonEntity extends Entity implements iGun {
     @Override
     public void tick() {
         if (!this.level().getBlockState(this.blockPosition().below()).isFaceSturdy(this.level(), this.blockPosition().below(), Direction.UP)) {
-            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+            if (this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.ENTITY_DROPS)) {
                 this.dropItems();
             }
             this.discard();
@@ -262,7 +259,7 @@ public class CannonEntity extends Entity implements iGun {
         if (fuse > 0) {
             CompoundTag compoundTag = this.entityData.get(DATA_TAG);
             if (compoundTag.contains(uuid)) {
-                Player player = this.level().getPlayerByUUID(compoundTag.getUUID(uuid));
+                Player player = this.level().getPlayerByUUID(compoundTag.read(uuid, net.minecraft.core.UUIDUtil.CODEC).orElse(new java.util.UUID(0L, 0L)));
                 if (player == null) {
                     this.entityData.set(DATA_FUSE, 0);
                     return;
@@ -273,7 +270,7 @@ public class CannonEntity extends Entity implements iGun {
                         GunBehaviours.getPowderBehaviour(this.getPowder()).ifPresent(powderBehaviour -> {
                             ItemStack ammo = this.getAmmo();
                             GunBehaviours.getAmmoBehavior(ammo).ifPresent(ammoBehaviour -> {
-                                if (ammoBehaviour.onShoot(this.level(), player, this, ammo, powderBehaviour, this) && !this.level().isClientSide) {
+                                if (ammoBehaviour.onShoot(this.level(), player, this, ammo, powderBehaviour, this) && !this.level().isClientSide()) {
                                     this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> {
                                         ArmoryUtil.clearStack(tag, GunContainer.gunAmmo);
                                         ArmoryUtil.clearStack(tag, GunContainer.gunPowder);
@@ -341,14 +338,14 @@ public class CannonEntity extends Entity implements iGun {
     }
 
     @Override
-    public @NotNull InteractionResult interact(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (player.isSecondaryUseActive()) {
-            if (this.entityData.get(DATA_FUSE) == 0 && !this.level().isClientSide) this.openInventory((ServerPlayer) player);
+            if (this.entityData.get(DATA_FUSE) == 0 && !this.level().isClientSide()) this.openInventory((ServerPlayer) player);
             return InteractionResult.SUCCESS;
         } else if (ArmoryUtil.isFuseLighter(player.getItemInHand(hand))) {
             if (this.entityData.get(DATA_FUSE) == 0) {
-                if (!this.level().isClientSide) {
-                    this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.putUUID(uuid, player.getUUID())));
+                if (!this.level().isClientSide()) {
+                    this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.store(uuid, net.minecraft.core.UUIDUtil.CODEC, player.getUUID())));
                     this.getEntityData().set(DATA_FUSE, 1);
 
                     player.getItemInHand(hand).hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
@@ -370,13 +367,13 @@ public class CannonEntity extends Entity implements iGun {
     }
 
     @Override
-    public boolean hurt(DamageSource source, float damage) {
-        if (this.isInvulnerableTo(source)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float damage) {
+        if (source.is(DamageTypeTags.IS_FIRE) || this.isInvulnerableToBase(source)) {
             return false;
-        } else if (!this.level().isClientSide && !this.isRemoved()) {
+        } else if (!this.level().isClientSide() && !this.isRemoved()) {
 
             if (source.getDirectEntity() instanceof Player p && ArmoryUtil.isFuseLighter(p.getMainHandItem()) && this.getFuse() == 0) {
-                this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.putUUID(uuid, p.getUUID())));
+                this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.store(uuid, net.minecraft.core.UUIDUtil.CODEC, p.getUUID())));
                 this.getEntityData().set(DATA_FUSE, 1);
 
                 return true;
@@ -394,7 +391,7 @@ public class CannonEntity extends Entity implements iGun {
 
             boolean flag = culprit instanceof Player player && player.getAbilities().instabuild && !source.is(DamageTypeTags.IS_EXPLOSION) && !player.isSecondaryUseActive();
             if (flag || this.getDamage() + damage > this.getMaxHealth()) {
-                if (!flag && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+                if (!flag && serverLevel.getGameRules().get(GameRules.ENTITY_DROPS)) {
                     this.dropItems();
                 }
                 this.discard();
@@ -422,19 +419,15 @@ public class CannonEntity extends Entity implements iGun {
         }
     }
 
-    @Override
-    public boolean isInvulnerableTo(DamageSource damageSource) {
-        return damageSource.is(DamageTypeTags.IS_FIRE) || super.isInvulnerableTo(damageSource);
-    }
 
     protected float getMaxHealth() {
         return 200.0F;
     }
 
     protected void dropItems() {
-        this.spawnAtLocation(this.getDropItem());
-        if (!this.getAmmo().isEmpty()) this.spawnAtLocation(this.getAmmo());
-        if (!this.getPowder().isEmpty()) this.spawnAtLocation(this.getPowder());
+        this.spawnAtLocation((ServerLevel)this.level(), this.getDropItem());
+        if (!this.getAmmo().isEmpty()) this.spawnAtLocation((ServerLevel)this.level(), this.getAmmo());
+        if (!this.getPowder().isEmpty()) this.spawnAtLocation((ServerLevel)this.level(), this.getPowder());
     }
 
     public @NotNull Item getDropItem() {
@@ -448,14 +441,14 @@ public class CannonEntity extends Entity implements iGun {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.contains("DataTag", 10)) this.getEntityData().set(DATA_TAG, tag.getCompound("DataTag"));
-        this.getEntityData().set(DATA_FUSE, tag.getInt("DataFuse"));
+    protected void readAdditionalSaveData(ValueInput tag) {
+        tag.read("DataTag", CompoundTag.CODEC).ifPresent(data -> this.getEntityData().set(DATA_TAG, data));
+        this.getEntityData().set(DATA_FUSE, tag.getIntOr("DataFuse", 0));
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        if (!this.getEntityData().get(DATA_TAG).isEmpty()) tag.put("DataTag", this.getEntityData().get(DATA_TAG));
+    protected void addAdditionalSaveData(ValueOutput tag) {
+        if (!this.getEntityData().get(DATA_TAG).isEmpty()) tag.store("DataTag", CompoundTag.CODEC, this.getEntityData().get(DATA_TAG));
         tag.putInt("DataFuse", this.entityData.get(DATA_FUSE));
     }
 
@@ -463,6 +456,6 @@ public class CannonEntity extends Entity implements iGun {
 
     @Override
     protected @NotNull Component getTypeName() {
-        return this.getDropItem().getDescription();
+        return this.getDropItem().getDefaultInstance().getHoverName();
     }
 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "B": {
-      "item": "minecraft:stone_axe"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    },
-    "T": {
-      "item": "brass_armory:stone_dagger"
-    }
+    "B": "minecraft:stone_axe",
+    "S": "#c:rods/wooden",
+    "T": "brass_armory:stone_dagger"
   },
   "pattern": [
     "T  ",

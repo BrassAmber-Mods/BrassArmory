@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "c:rods/wooden"
+            "items": "#c:rods/wooden"
           }
         ]
       },
@@ -13,7 +13,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/wooden_dagger"
+        "recipes": [
+          "brass_armory:shaped/wooden_dagger"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

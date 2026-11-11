@@ -15,7 +15,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/ex_arrow"
+        "recipes": [
+          "brass_armory:shaped/ex_arrow"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

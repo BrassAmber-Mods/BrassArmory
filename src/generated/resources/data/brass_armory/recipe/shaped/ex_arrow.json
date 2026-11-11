@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "tag": "c:feathers"
-    },
-    "M": {
-      "item": "brass_armory:bomb"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "F": "#c:feathers",
+    "M": "brass_armory:bomb",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "M",

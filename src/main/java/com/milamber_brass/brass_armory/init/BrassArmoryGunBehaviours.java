@@ -16,9 +16,9 @@ import com.milamber_brass.brass_armory.entity.projectile.cannon_balls.SiegeRound
 import com.milamber_brass.brass_armory.item.SpikyBallItem;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.entity.projectile.Snowball;
-import net.minecraft.world.entity.projectile.ThrownEgg;
-import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEgg;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
 import net.minecraft.world.item.Items;
 import org.joml.Vector3f;
 
@@ -32,15 +32,15 @@ public class BrassArmoryGunBehaviours {
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("bundle_shot"), new BundleShotAmmoBehaviour());
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("arrow"), new ArrowAmmoBehaviour());
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("firework"), new FireworkAmmoBehaviour());
-        GunBehaviours.registerAmmoBehavior(BrassArmory.locate("ender_pearl"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(Items.ENDER_PEARL), ThrownEnderpearl::new));
-        GunBehaviours.registerAmmoBehavior(BrassArmory.locate("snow_ball"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(Items.SNOWBALL), Snowball::new));
-        GunBehaviours.registerAmmoBehavior(BrassArmory.locate("egg"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(Items.EGG), ThrownEgg::new));
+        GunBehaviours.registerAmmoBehavior(BrassArmory.locate("ender_pearl"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(Items.ENDER_PEARL), (level, owner) -> new ThrownEnderpearl(level, owner, new net.minecraft.world.item.ItemStack(Items.ENDER_PEARL))));
+        GunBehaviours.registerAmmoBehavior(BrassArmory.locate("snow_ball"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(Items.SNOWBALL), (level, owner) -> new Snowball(level, owner, new net.minecraft.world.item.ItemStack(Items.SNOWBALL))));
+        GunBehaviours.registerAmmoBehavior(BrassArmory.locate("egg"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(Items.EGG), (level, owner) -> new ThrownEgg(level, owner, new net.minecraft.world.item.ItemStack(Items.EGG))));
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("spiky_ball"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.getItem() instanceof SpikyBallItem, SpikyBallEntity::new));
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("bomb"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(BrassArmoryItems.BOMB.get()), BombEntity::new));
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("bouncy_bomb"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(BrassArmoryItems.BOUNCY_BOMB.get()), BouncyBombEntity::new));
         GunBehaviours.registerAmmoBehavior(BrassArmory.locate("sticky_bomb"), new ThrownItemAmmoBehaviour(itemStack -> itemStack.is(BrassArmoryItems.STICKY_BOMB.get()), StickyBombEntity::new));
 
-        GunBehaviours.registerPowderBehaviour(BrassArmory.locate("gunpowder"), new GunpowderBehaviour(new DustParticleOptions(new Vector3f(0.98F, 0.94F, 0.9F), 0.8F), itemStack -> itemStack.is(Items.GUNPOWDER)));
+        GunBehaviours.registerPowderBehaviour(BrassArmory.locate("gunpowder"), new GunpowderBehaviour(new DustParticleOptions(0xFAEFE5, 0.8F), itemStack -> itemStack.is(Items.GUNPOWDER)));
         GunBehaviours.registerPowderBehaviour(BrassArmory.locate("blaze_powder"), new BlazePowderBehaviour(ParticleTypes.SMOKE, itemStack -> itemStack.is(Items.BLAZE_POWDER)));
     }
 }

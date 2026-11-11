@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "brass_armory:blunderbuss_parts"
-    },
-    {
-      "item": "brass_armory:gun_stock"
-    }
+    "brass_armory:blunderbuss_parts",
+    "brass_armory:gun_stock"
   ],
   "result": {
     "id": "brass_armory:blunderbuss"

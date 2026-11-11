@@ -27,7 +27,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/fire_rod"
+        "recipes": [
+          "brass_armory:shaped/fire_rod"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

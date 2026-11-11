@@ -5,7 +5,6 @@ import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -17,7 +16,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class SiegeRoundEntity extends AbstractBulletEntity {
     public SiegeRoundEntity(EntityType<? extends AbstractBulletEntity> entityType, Level level) {
         super(entityType, level);
@@ -38,7 +36,7 @@ public class SiegeRoundEntity extends AbstractBulletEntity {
 
     @Override
     protected void onHitBlock(BlockHitResult hitResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             ArmoryUtil.explode(this.level(), this, 4.0F, this.isOnFire(), Level.ExplosionInteraction.TNT);
             this.discard();
         }
@@ -46,7 +44,7 @@ public class SiegeRoundEntity extends AbstractBulletEntity {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             ArmoryUtil.explode(this.level(), this, 4.0F, this.isOnFire(), Level.ExplosionInteraction.TNT);
             if (entityHitResult.getEntity() instanceof Creeper && this.getOwner() instanceof ServerPlayer serverPlayer) {
                 BrassArmoryAdvancements.SIEGE.trigger(serverPlayer);

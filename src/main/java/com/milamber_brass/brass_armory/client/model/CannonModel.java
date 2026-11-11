@@ -2,9 +2,10 @@
 package com.milamber_brass.brass_armory.client.model;
 
 import com.milamber_brass.brass_armory.entity.CannonEntity;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.model.HierarchicalModel;
+
+import net.minecraft.client.model.Model;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import com.milamber_brass.brass_armory.client.render.CannonEntityRenderer.State;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -12,15 +13,11 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
+
 @SuppressWarnings({"FieldCanBeLocal", "unused"})
-public class CannonModel<T extends CannonEntity> extends HierarchicalModel<T> {
-	private final ModelPart root;
+public class CannonModel extends Model<State> {
+	
 	private final ModelPart cannon_whole;
 	private final ModelPart pedestal;
 	private final ModelPart cannon;
@@ -29,7 +26,7 @@ public class CannonModel<T extends CannonEntity> extends HierarchicalModel<T> {
 	public final ModelPart cannon_end;
 
 	public CannonModel(ModelPart root) {
-		this.root = root;
+		super(root, RenderTypes::entityCutout);
 		this.cannon_whole = this.root.getChild("cannon_whole");
 		this.cannon = this.cannon_whole.getChild("cannon");
 		this.pedestal = this.cannon_whole.getChild("pedestal");
@@ -74,14 +71,11 @@ public class CannonModel<T extends CannonEntity> extends HierarchicalModel<T> {
 		return LayerDefinition.create(mesh, 128, 128);
 	}
 
-	@Override
-	public ModelPart root() {
-		return this.root;
-	}
-
-	@Override
-	public void setupAnim(T cannon, float limbSwing, float fuse, float partialTick, float yRot, float xRot) {
-		this.cannon_barrel.xRot = xRot * -Mth.DEG_TO_RAD;
-		this.cannon.yRot = yRot * Mth.DEG_TO_RAD;
-	}
+    @Override
+    public void setupAnim(State state) {
+        super.setupAnim(state);
+        cannon_barrel.xRot = state.xRot * -Mth.DEG_TO_RAD;
+        cannon.yRot = state.yRot * Mth.DEG_TO_RAD;
+        cannon_end.z -= state.recoil;
+    }
 }

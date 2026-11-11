@@ -10,8 +10,7 @@ import com.milamber_brass.brass_armory.item.SpecialArrowItem;
 import com.milamber_brass.brass_armory.item.SpikyBallItem;
 import com.milamber_brass.brass_armory.util.ArmoryProjectileDispenseBehavior;
 import com.milamber_brass.brass_armory.util.ItemData;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public interface BrassArmoryDispenseBehaviors extends DispenseItemBehavior {
 
     static void init() {

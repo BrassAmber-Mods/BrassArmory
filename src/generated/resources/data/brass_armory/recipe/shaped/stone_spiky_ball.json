@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "L": {
-      "tag": "minecraft:planks"
-    },
-    "M": {
-      "tag": "minecraft:stone_tool_materials"
-    }
+    "L": "#minecraft:planks",
+    "M": "#minecraft:stone_tool_materials"
   },
   "pattern": [
     " M ",

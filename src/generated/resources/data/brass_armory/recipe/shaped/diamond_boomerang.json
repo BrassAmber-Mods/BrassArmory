@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "L": {
-      "tag": "c:ingots/gold"
-    },
-    "M": {
-      "tag": "c:gems/diamond"
-    }
+    "L": "#c:ingots/gold",
+    "M": "#c:gems/diamond"
   },
   "pattern": [
     "MLM",

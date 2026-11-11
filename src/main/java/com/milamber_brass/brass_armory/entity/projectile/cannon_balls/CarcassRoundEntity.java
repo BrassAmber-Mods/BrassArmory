@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.entity.projectile.cannon_balls;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractBulletEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
@@ -10,9 +11,8 @@ import com.milamber_brass.brass_armory.util.ItemData;
 import com.milamber_brass.brass_armory.util.PotionData;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.Util;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,7 +39,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class CarcassRoundEntity extends AbstractBulletEntity {
     public static final int LEVEL_EVENT_CONSTANT = 801682224;
 
@@ -70,16 +69,16 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
     public void tick() {
         super.tick();
         if (CarcassRoundItem.isADragonRound(this.getItem())) {
-            this.level().addParticle(ParticleTypes.DRAGON_BREATH, this.getX(), this.getEyeY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+            this.level().addParticle(net.minecraft.core.particles.PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1F), this.getX(), this.getEyeY(), this.getZ(), 0.0D, 0.0D, 0.0D);
         }
     }
 
     @Override
     protected void onHit(HitResult onHit) {
         Vec3 pos = onHit.getLocation();
-        Impact impact = new Impact(this.level(), this, pos, 1.0F, this.isOnFire(), Explosion.BlockInteraction.DESTROY);
 
-        if (!this.level().isClientSide) {
+        if (this.level() instanceof ServerLevel serverLevel) {
+            Impact impact = new Impact(serverLevel, this, pos, 1.0F, this.isOnFire(), Explosion.BlockInteraction.DESTROY);
             impact.explode();
             impact.finalizeExplosion(true);
             ItemStack stack = this.getItem();
@@ -109,7 +108,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
         if (!livingEntities.isEmpty()) {
             for(LivingEntity livingentity : livingEntities) {
                 if (this.distanceToSqr(livingentity) < 16.0D && livingentity.isSensitiveToWater()) {
-                    livingentity.hurt(this.damageSources().indirectMagic(this, this.getOwner()), 1.0F);
+                    livingentity.hurtOrSimulate(this.damageSources().indirectMagic(this, this.getOwner()), 1.0F);
                 }
             }
         }
@@ -132,8 +131,8 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
 
                         for(MobEffectInstance mobeffectinstance : mobEffectInstances) {
                             var mobeffect = mobeffectinstance.getEffect();
-                            if (mobeffect.value().isInstantenous()) {
-                                mobeffect.value().applyInstantenousEffect(this, this.getOwner(), livingentity, mobeffectinstance.getAmplifier(), durationMultiplier);
+                            if (mobeffect.value().isInstantaneous()) {
+                                mobeffect.value().applyInstantaneousEffect((net.minecraft.server.level.ServerLevel)this.level(), this, this.getOwner(), livingentity, mobeffectinstance.getAmplifier(), durationMultiplier);
                             } else {
                                 int duration = (int)(durationMultiplier * (double)mobeffectinstance.getDuration() + 0.5D);
                                 if (duration > 20) {
@@ -155,10 +154,10 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
         areaeffectcloud.setRadius(3.0F);
 
         if (CarcassRoundItem.isADragonRound(itemStack)) {
-            areaeffectcloud.setParticle(ParticleTypes.DRAGON_BREATH);
+            areaeffectcloud.setCustomParticle(net.minecraft.core.particles.PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1F));
             areaeffectcloud.setDuration(600);
             areaeffectcloud.setRadiusPerTick((7.0F - areaeffectcloud.getRadius()) / (float)areaeffectcloud.getDuration());
-            areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.HARM, 1, 1));
+            areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.INSTANT_DAMAGE, 1, 1));
         } else {
             areaeffectcloud.setRadiusOnUse(-0.5F);
             areaeffectcloud.setWaitTime(10);
@@ -170,8 +169,8 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
             }
 
             CompoundTag compoundtag = ItemData.getTag(itemStack);
-            if (compoundtag != null && compoundtag.contains("CustomPotionColor", 99)) {
-                areaeffectcloud.setPotionContents(new PotionContents(Optional.of(potion), Optional.of(compoundtag.getInt("CustomPotionColor")), PotionData.getCustomEffects(itemStack)));
+            if (compoundtag != null && compoundtag.contains("CustomPotionColor")) {
+                areaeffectcloud.setPotionContents(new PotionContents(Optional.of(potion), Optional.of(compoundtag.getIntOr("CustomPotionColor", 0)), PotionData.getCustomEffects(itemStack), Optional.empty()));
             }
         }
 

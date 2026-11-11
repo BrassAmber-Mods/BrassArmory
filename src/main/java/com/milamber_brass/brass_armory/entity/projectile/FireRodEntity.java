@@ -7,7 +7,6 @@ import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.FireRodItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class FireRodEntity extends AbstractThrownWeaponEntity {
     public FireRodEntity(EntityType<FireRodEntity> entityType, Level level) {
         super(entityType, level);
@@ -35,7 +33,7 @@ public class FireRodEntity extends AbstractThrownWeaponEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide && this.getSharedFlag(0) && (this.inGround || level().getRandom().nextInt(2) == 1)) {
+        if (this.level().isClientSide() && this.getSharedFlag(0) && (this.isInGround() || level().getRandom().nextInt(2) == 1)) {
             Vec3 smokeVec = this.position();
             this.level().addParticle(ParticleTypes.SMOKE, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
             this.level().addParticle(this.getItem().getItem() instanceof FireRodItem fireRod ? fireRod.flameParticle : ParticleTypes.FLAME, smokeVec.x, smokeVec.y, smokeVec.z, 0.0D, 0.0D, 0.0D);
@@ -55,7 +53,7 @@ public class FireRodEntity extends AbstractThrownWeaponEntity {
 
     @Override
     public boolean isOnFire() {
-        return !this.level().isClientSide && super.isOnFire();
+        return !this.level().isClientSide() && super.isOnFire();
     }
 
     public boolean hasBeenExtinguished() {

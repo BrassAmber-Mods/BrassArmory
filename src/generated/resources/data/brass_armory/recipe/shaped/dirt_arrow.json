@@ -2,20 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "tag": "c:feathers"
-    },
+    "F": "#c:feathers",
     "M": [
-      {
-        "item": "minecraft:dirt"
-      },
-      {
-        "item": "minecraft:coarse_dirt"
-      }
+      "minecraft:dirt",
+      "minecraft:coarse_dirt"
     ],
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "M",

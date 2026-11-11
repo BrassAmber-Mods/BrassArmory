@@ -3,14 +3,12 @@ package com.milamber_brass.brass_armory.capabilities;
 import com.milamber_brass.brass_armory.item.QuiverItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class QuiverCapabilityHandler implements IQuiverCapability {
     private Player player;
     private ItemStack ammoStack;
@@ -24,7 +22,7 @@ public class QuiverCapabilityHandler implements IQuiverCapability {
     @Override
     public void tick() {
         if (!this.getQuiverStack().isEmpty()) {
-            if (this.player.getInventory().items.contains(this.quiverStack)) {
+            if (this.player.getInventory().contains(this.quiverStack)) {
                 Optional<ItemStack> inQuiverAmmoStack = QuiverItem.getContents(this.quiverStack).findFirst();
                 if (inQuiverAmmoStack.isPresent() && (!ItemStack.isSameItemSameComponents(inQuiverAmmoStack.get(), this.getAmmoStack()) || inQuiverAmmoStack.get().getCount() != this.getAmmoStack().getCount())) {
                     QuiverItem.removeOne(this.quiverStack);

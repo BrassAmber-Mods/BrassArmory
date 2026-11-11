@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "tag": "c:feathers"
-    },
-    "M": {
-      "item": "minecraft:ender_pearl"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "F": "#c:feathers",
+    "M": "minecraft:ender_pearl",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "M",

@@ -15,7 +15,9 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "brass_armory:shaped/diamond_flail"
+        "recipes": [
+          "brass_armory:shaped/diamond_flail"
+        ]
       },
       "trigger": "minecraft:recipe_unlocked"
     }

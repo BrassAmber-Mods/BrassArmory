@@ -3,15 +3,13 @@ package com.milamber_brass.brass_armory.capabilities;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
 import com.milamber_brass.brass_armory.packets.EffectPacket;
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@ParametersAreNonnullByDefault
 public class EffectCapabilityHandler implements IEffectCapability {
     private Player player;
     private double shake;
@@ -44,7 +42,7 @@ public class EffectCapabilityHandler implements IEffectCapability {
     @Override
     public void setSlow(float slow) {
         this.slow = slow;
-        if (!this.player.level().isClientSide) this.sendUpdatePacket();
+        if (!this.player.level().isClientSide()) this.sendUpdatePacket();
     }
 
     @Override
@@ -54,7 +52,7 @@ public class EffectCapabilityHandler implements IEffectCapability {
 
     @Override
     public void tick() {
-        if (!this.player.level().isClientSide) {
+        if (!this.player.level().isClientSide()) {
             if (this.shake > 0.0F) this.reduceShake(this.shake * 0.1D);
             if (this.slow > 0.0F) this.setSlow(Math.max(this.slow - 0.005F, 0.0F));
         }
@@ -74,8 +72,8 @@ public class EffectCapabilityHandler implements IEffectCapability {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
-        this.setShake(tag.getDouble("BAShakeValue"));
-        this.setSlow(tag.getFloat("BASlowValue"));
+        this.setShake(tag.getDoubleOr("BAShakeValue", 0D));
+        this.setSlow(tag.getFloatOr("BASlowValue", 0F));
     }
 
     public static void setShakePower(Player player, double shake) {

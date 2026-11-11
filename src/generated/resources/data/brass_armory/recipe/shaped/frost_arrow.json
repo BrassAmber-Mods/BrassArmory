@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "tag": "c:feathers"
-    },
-    "M": {
-      "item": "minecraft:ice"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "F": "#c:feathers",
+    "M": "minecraft:ice",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "M",

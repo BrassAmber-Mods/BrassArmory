@@ -6,6 +6,7 @@ import com.milamber_brass.brass_armory.data.BrassArmoryTags;
 import com.milamber_brass.brass_armory.effect.BleedEffect;
 import com.milamber_brass.brass_armory.item.KatanaItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -22,10 +23,10 @@ public abstract class PlayerMixin extends LivingEntity {
         super(entityType, level);
     }
 
-    @WrapOperation(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+    @WrapOperation(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;hurtOrSimulate(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
     private boolean postDamageSpecialEffects(Entity target, DamageSource source, float damage, Operation<Boolean> original) {
         boolean hurt = original.call(target, source, damage);
-        if (hurt && !this.level().isClientSide && target instanceof LivingEntity living) {
+        if (hurt && !this.level().isClientSide() && target instanceof LivingEntity living) {
             ArmoryUtil.getWitherFromLivingEntity(living, this);
             if (((Player) (Object) this).getAttackStrengthScale(0.5F) > 0.9F) {
                 ArmoryUtil.bleedLivingEntity(living, this);
@@ -34,12 +35,12 @@ public abstract class PlayerMixin extends LivingEntity {
         return hurt;
     }
 
-    @WrapOperation(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean sweepHit(LivingEntity living, DamageSource source, float damage, Operation<Boolean> original) {
-        boolean hurt = original.call(living, source, damage);
+    @WrapOperation(method = "doSweepAttack(Lnet/minecraft/world/entity/Entity;FLnet/minecraft/world/damagesource/DamageSource;FLnet/minecraft/world/phys/AABB;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+    private boolean sweepHit(LivingEntity living, ServerLevel level, DamageSource source, float damage, Operation<Boolean> original) {
+        boolean hurt = original.call(living, level, source, damage);
         ItemStack stack = this.getMainHandItem();
-        if (hurt && !this.level().isClientSide && stack.getItem() instanceof KatanaItem katanaItem) {
-            // Vanilla 1.21.1 already applies enchantment effects to sweep targets.
+        if (hurt && !this.level().isClientSide() && stack.getItem() instanceof KatanaItem katanaItem) {
+            // Vanilla already applies enchantment effects to sweep targets.
             if (stack.is(BrassArmoryTags.Items.BLEEDING_EDGE)) BleedEffect.bleedHarder(living, 50, 0);
             if (katanaItem.canWither() && KatanaItem.getWither(stack) >= 100) BleedEffect.witherHarder(living, 50);
         }

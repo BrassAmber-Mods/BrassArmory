@@ -1,14 +1,10 @@
 package com.milamber_brass.brass_armory.data;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.AdvancementProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.data.worldgen.BootstrapContext;
 
-public class BrassAdvancementProvider extends AdvancementProvider {
-    public BrassAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, ExistingFileHelper existingFileHelper) {
-        super(output, registries, existingFileHelper, List.of(new BrassAdvancementGenerator()));
+public final class BrassAdvancementProvider {
+    public static void bootstrap(BootstrapContext<Advancement> output) {
+        new BrassAdvancementGenerator().generate(output);
     }
 }

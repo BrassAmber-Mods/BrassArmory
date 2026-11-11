@@ -11,7 +11,7 @@
   },
   "display": {
     "announce_to_chat": false,
-    "background": "brass_armory:textures/gui/advancements.png",
+    "background": "brass_armory:gui/advancements",
     "description": {
       "translate": "advancement.brass_armory.root.desc"
     },

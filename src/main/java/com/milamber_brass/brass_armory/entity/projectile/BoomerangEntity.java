@@ -1,5 +1,7 @@
 package com.milamber_brass.brass_armory.entity.projectile;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrownWeaponEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
@@ -8,7 +10,6 @@ import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import com.milamber_brass.brass_armory.item.BoomerangItem;
 import com.milamber_brass.brass_armory.util.ItemData;
 import java.util.List;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -34,7 +35,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class BoomerangEntity extends AbstractThrownWeaponEntity {
     protected static final EntityDataAccessor<Float> DATA_PLAYER_X = SynchedEntityData.defineId(BoomerangEntity.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Float> DATA_PLAYER_Y = SynchedEntityData.defineId(BoomerangEntity.class, EntityDataSerializers.FLOAT);
@@ -75,12 +75,12 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
 
         if (!this.isNoGravity()) return;
         double loyaltyLevel = (double)this.entityData.get(DATA_LOYALTY_LEVEL);
-        if (!this.inGround || loyaltyLevel > 0D) {
+        if (!this.isInGround() || loyaltyLevel > 0D) {
             if (this.deltaFirstMovement == null) this.deltaFirstMovement = this.getDeltaMovement();
             Vec3 newMovement = this.deltaFirstMovement.scale(Math.max(1D - ((double)this.tickCount / 30D), -1D));
 
             if (this.inGroundTime > 4) this.setNoPhysics(true);
-            if (loyaltyLevel > 0D && this.tickCount >= (this.level().isClientSide ? 31 : 30)) {
+            if (loyaltyLevel > 0D && this.tickCount >= (this.level().isClientSide() ? 31 : 30)) {
                 Entity entity = this.getOwner();
                 if (entity != null && entity.isAlive() && (!(entity instanceof ServerPlayer) || !entity.isSpectator())) {
                     Vec3 deltaDifference = entity.getEyePosition().subtract(this.position());
@@ -135,7 +135,7 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     public void playerTouch(Player player) {
         if (this.ownedBy(player) || this.getOwner() == null) {
             boolean flag = this.tickCount > 40 && this.entityData.get(DATA_LOYALTY_LEVEL) > 0;
-            if (!this.level().isClientSide && ((this.inGround && this.shakeTime <= 0) || flag)) {
+            if (!this.level().isClientSide() && ((this.isInGround() && this.shakeTime <= 0) || flag)) {
                 if (flag) {
                     List<BoomerangEntity> entitiesInRange = level().getEntitiesOfClass(BoomerangEntity.class, player.getBoundingBox().inflate(0.2D), Entity -> true);
                     if (!entitiesInRange.contains(this)) return;
@@ -165,7 +165,7 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         compoundTag.putDouble("BAX", this.deltaFirstMovement.x);
         compoundTag.putDouble("BAY", this.deltaFirstMovement.y);
@@ -173,11 +173,11 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        double x = compoundTag.getDouble("BAX");
-        double y = compoundTag.getDouble("BAY");
-        double z = compoundTag.getDouble("BAZ");
+        double x = compoundTag.getDoubleOr("BAX", 0D);
+        double y = compoundTag.getDoubleOr("BAY", 0D);
+        double z = compoundTag.getDoubleOr("BAZ", 0D);
         this.deltaFirstMovement = new Vec3(x, y, z);
     }
 }

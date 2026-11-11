@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "tag": "c:feathers"
-    },
-    "M": {
-      "tag": "c:slimeballs"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "F": "#c:feathers",
+    "M": "#c:slime_balls",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     "M",

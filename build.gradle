@@ -4,13 +4,13 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.148'
 }
 
-version = '1.21.1-1.0.3'
+version = '26.3-1.0.3'
 group = 'com.milamber_brass.brass_armory'
 base.archivesName = 'brass_armory'
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
-    version = '21.1.265'
+    version = '26.3.0.101'
     runs {
         client {
             client()
@@ -22,7 +22,7 @@ neoForge {
             gameDirectory = file('run/server')
         }
         data {
-            data()
+            clientData()
             gameDirectory = file('run/data')
             programArguments.addAll '--mod', 'brass_armory', '--all', '--output', file('src/generated/resources/').absolutePath, '--existing', file('src/main/resources/').absolutePath
         }
@@ -40,7 +40,7 @@ repositories {
     maven { url = 'https://maven.blamejared.com/' }
 }
 dependencies {
-    compileOnly 'mezz.jei:jei-1.21.1-neoforge:19.21.0.247'
+    compileOnly 'mezz.jei:jei-26.3-neoforge:31.17.0.109'
 }
 
 tasks.withType(JavaCompile).configureEach {

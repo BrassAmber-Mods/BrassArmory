@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.capabilities.EffectCapabilityHandler;
 import com.milamber_brass.brass_armory.data.BrassArmoryDamageTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
@@ -10,9 +11,6 @@ import com.milamber_brass.brass_armory.packets.ParticlePacket;
 import com.milamber_brass.brass_armory.util.ArmoryCooldownCache;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -24,7 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -33,8 +31,8 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Explosion;
@@ -48,25 +46,23 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
-@ParametersAreNonnullByDefault
 public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimationItem {
-    public static final DustParticleOptions DUST = new DustParticleOptions(new Vector3f(0.98F,0.94F,0.9F), 0.8F);
+    public static final DustParticleOptions DUST = new DustParticleOptions(0xFAF0E6, 0.8F);
     protected float DAMAGE_MULTIPLIER = 0.12F; //Make this smaller to nerf, make bigger to buff
 
-    public MaceItem(Tier tier, float attackDamage, float attackSpeed, Properties builderIn) {
+    public MaceItem(ToolMaterial tier, float attackDamage, float attackSpeed, Properties builderIn) {
         super(tier, attackDamage, attackSpeed, builderIn);
     }
 
     @Override
-    @Nonnull
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack maceStack = player.getItemInHand(hand);
         player.startUsingItem(hand);
-        return InteractionResultHolder.consume(maceStack);
+        return InteractionResult.CONSUME;
     }
 
     @Override
-    public void releaseUsing(ItemStack maceStack, Level level, LivingEntity livingEntity, int useDurationLeft) {
+    public boolean releaseUsing(ItemStack maceStack, Level level, LivingEntity livingEntity, int useDurationLeft) {
         if (livingEntity instanceof Player player) {
             if (this.getUseDuration(maceStack, livingEntity) - livingEntity.getUseItemRemainingTicks() >= this.getChargeDuration(maceStack)) {
                 double pRange = player.blockInteractionRange() * 1.1D;
@@ -83,11 +79,11 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 Vec3 vec = blockHitResult.getLocation();
 
-                if (blockHitResult.getType() == HitResult.Type.MISS) return;
+                if (blockHitResult.getType() == HitResult.Type.MISS) return false;
                 boolean mainHand = player.getUsedItemHand() == InteractionHand.MAIN_HAND;
                 ItemStack otherItemStack = player.getItemInHand(mainHand ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
 
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     if (otherItemStack.getItem() instanceof MaceItem otherMace) {
                         power *= 1.2D;
                         otherMace.smash((ServerPlayer) player, level, vec, maceStack, otherItemStack, power);
@@ -95,7 +91,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                         otherItemStack.hurtAndBreak(10, player, EquipmentSlot.OFFHAND);
                     } else {
                         smash((ServerPlayer) player, level, vec, maceStack, null, power);
-                        maceStack.hurtAndBreak(10, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+                        maceStack.hurtAndBreak(10, player, player.getUsedItemHand());
                     }
                     smashParticles(livingEntity, vec, level, blockPos, power, blockHitResult.getDirection());
                     level.playSound(null, vec.x, vec.y, vec.z, BrassArmorySounds.MACE_SMASH.get(), SoundSource.PLAYERS, (float) power * 0.2F, 0.5F - (float) power * 0.1F);
@@ -103,6 +99,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                 }
             }
         }
+        return true;
     }
 
     private void smash(ServerPlayer player, Level level, Vec3 vec, ItemStack maceStack, @Nullable ItemStack otherMaceStack, double power) {
@@ -121,7 +118,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
             if (entity != player && !(entity instanceof ItemEntity) && !(entity instanceof TamableAnimal pet && pet.getOwner() == player)) {
                 double entityDistance = entity.position().distanceTo(vec) * 0.8D;
                 if (entityDistance <= power) {
-                    float seenPercent = Explosion.getSeenPercent(vec, entity);
+                    float seenPercent = net.minecraft.world.level.ServerExplosion.getSeenPercent(vec, entity);
 
                     float maceEnchantment;
                     float otherMaceEnchantment;
@@ -135,14 +132,14 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
 
                     if (finalDMG > 0) {
                         if (entity instanceof Player p) EffectCapabilityHandler.setShakePower(p, power);
-                        if (entity.hurt(ArmoryUtil.getEntityDamageSource(level, BrassArmoryDamageTypes.MACE_SMASH, player), entity instanceof LivingEntity ? finalDMG : finalDMG * 0.25F)) {
+                        if (entity.hurtOrSimulate(ArmoryUtil.getEntityDamageSource(level, BrassArmoryDamageTypes.MACE_SMASH, player), entity instanceof LivingEntity ? finalDMG : finalDMG * 0.25F)) {
                             if (entity instanceof LivingEntity) player.crit(entity);
                             hitAtLeastOne = true;
                         }
                     }
                 }
                 if (entityDistance <= power * 1.2D && entity instanceof LivingEntity living) {
-                    living.knockback(0.1F * Math.abs(entityDistance - 5) + entityDistance > 4 ? 0.4F : 0, vec.x - entity.getX(), vec.z - entity.getZ());
+                    living.knockback(0.1F * Math.abs(entityDistance - 5) + entityDistance > 4 ? 0.4F : 0, vec.x - entity.getX(), vec.z - entity.getZ(), ArmoryUtil.getEntityDamageSource(level, BrassArmoryDamageTypes.MACE_SMASH, player), 0F);
                 }
             }
         }
@@ -153,7 +150,7 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
     }
 
     private void smashParticles(LivingEntity player, Vec3 vec, Level level, BlockPos blockPos, double power, Direction direction) {
-        Vec3i dirNormal = direction.getNormal();
+        Vec3i dirNormal = direction.getUnitVec3i();
 
         for (BlockPos pos : BlockPos.betweenClosed(blockPos.offset(-6, -6, -6), blockPos.offset(6, 6, 6))) {
             BlockState state = level.getBlockState(pos);
@@ -165,15 +162,15 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
                     for (int i = 0; i < Math.max((int)power, 1); i++) {
                         Vec3 offset = new Vec3(dirNormal.getX() * i, dirNormal.getY() * i, dirNormal.getZ() * i);
                         Vec3 particlePos = Vec3.atLowerCornerOf(relativePos).add(offset);
-                        for (int j = 0; j < level.random.nextInt((int)Math.max(power - Math.sqrt(pos.distSqr(blockPos)), 8.0D)) * 2; j++) {
-                            Vec3 finalPos = particlePos.add(level.random.nextGaussian(), level.random.nextGaussian(), level.random.nextGaussian());
+                        for (int j = 0; j < level.getRandom().nextInt((int)Math.max(power - Math.sqrt(pos.distSqr(blockPos)), 8.0D)) * 2; j++) {
+                            Vec3 finalPos = particlePos.add(level.getRandom().nextGaussian(), level.getRandom().nextGaussian(), level.getRandom().nextGaussian());
                             if (finalPos.distanceTo(vec) < power * 1.5D) particlePacket.queueParticle(DUST, false, finalPos.x, finalPos.y, finalPos.z, 0.0D, 0.0D, 0.0D);
                         }
                     }
                     Vec3 off = new Vec3(dirNormal.getX() == 0 ? 1 : 0, dirNormal.getY() == 0 ? 1 : 0, dirNormal.getZ() == 0 ? 1 : 0);
 
                     for (int i = 0; i < Math.max((int)power, 1) * 5; i++) {
-                        Vec3 finalPos = Vec3.atCenterOf(pos).add((double)dirNormal.getX() * 0.5D, (double)dirNormal.getY() * 0.5D, (double)dirNormal.getZ() * 0.5D).add(level.random.nextGaussian() * off.x, level.random.nextGaussian() * off.y, level.random.nextGaussian() * off.z);
+                        Vec3 finalPos = Vec3.atCenterOf(pos).add((double)dirNormal.getX() * 0.5D, (double)dirNormal.getY() * 0.5D, (double)dirNormal.getZ() * 0.5D).add(level.getRandom().nextGaussian() * off.x, level.getRandom().nextGaussian() * off.y, level.getRandom().nextGaussian() * off.z);
                         if (finalPos.distanceTo(vec) < power * 1.5D) particlePacket.queueParticle(new BlockParticleOption(ParticleTypes.BLOCK, state), false, finalPos.x, finalPos.y, finalPos.z, 0.0D, 0.0D, 0.0D);
                     }
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, particlePacket);
@@ -182,14 +179,13 @@ public class MaceItem extends AbstractTieredWeaponItem implements ICustomAnimati
         }
     }
 
-    @Nonnull
-    @Override
-    public UseAnim getUseAnimation(ItemStack maceStack) {
-        return UseAnim.SPEAR;
+        @Override
+    public ItemUseAnimation getUseAnimation(ItemStack maceStack) {
+        return ItemUseAnimation.SPEAR;
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility toolAction) {
+    public boolean canPerformAction(net.minecraft.world.item.ItemInstance stack, ItemAbility toolAction) {
         return false;
     }
 

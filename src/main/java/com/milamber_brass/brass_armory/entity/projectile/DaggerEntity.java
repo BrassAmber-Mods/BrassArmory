@@ -5,7 +5,6 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrow
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
@@ -16,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class DaggerEntity extends AbstractThrownWeaponEntity {
     public DaggerEntity(EntityType<DaggerEntity> entityType, Level level) {
         super(entityType, level);

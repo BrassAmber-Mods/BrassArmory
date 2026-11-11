@@ -1,17 +1,14 @@
 package com.milamber_brass.brass_armory.behaviour.ammo;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-@ParametersAreNonnullByDefault
 public abstract class AbstractAmmoBehaviour {
 
     public AbstractAmmoBehaviour() {
@@ -23,6 +20,5 @@ public abstract class AbstractAmmoBehaviour {
         return true;
     }
 
-    @Nonnull
-    public abstract Predicate<ItemStack> getAmmoItems();
+        public abstract Predicate<ItemStack> getAmmoItems();
 }

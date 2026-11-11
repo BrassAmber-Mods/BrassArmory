@@ -5,23 +5,19 @@ import com.milamber_brass.brass_armory.behaviour.ammo.AbstractAmmoBehaviour;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-@ParametersAreNonnullByDefault
 public class GunBehaviours {
 
-    private static final Map<ResourceLocation, AbstractAmmoBehaviour> AMMO_BEHAVIOURS = Maps.newLinkedHashMap();
+    private static final Map<Identifier, AbstractAmmoBehaviour> AMMO_BEHAVIOURS = Maps.newLinkedHashMap();
 
-    public static void registerAmmoBehavior(ResourceLocation resourceLocation, AbstractAmmoBehaviour ammoBehaviour) {
+    public static void registerAmmoBehavior(Identifier resourceLocation, AbstractAmmoBehaviour ammoBehaviour) {
         AMMO_BEHAVIOURS.put(resourceLocation, ammoBehaviour);
     }
 
-    @Nonnull
-    public static Optional<AbstractAmmoBehaviour> getAmmoBehavior(ItemStack stack) {
+        public static Optional<AbstractAmmoBehaviour> getAmmoBehavior(ItemStack stack) {
         return AMMO_BEHAVIOURS.values().stream().filter(b -> b.getAmmoItems().test(stack)).findFirst();
     }
 
@@ -29,18 +25,17 @@ public class GunBehaviours {
         return AMMO_BEHAVIOURS.values().stream().anyMatch(b -> b.getAmmoItems().test(item.getDefaultInstance()));
     }
 
-    public static Map<ResourceLocation, AbstractAmmoBehaviour> getAmmoBehaviours() {
+    public static Map<Identifier, AbstractAmmoBehaviour> getAmmoBehaviours() {
         return AMMO_BEHAVIOURS;
     }
 
-    private static final Map<ResourceLocation, AbstractPowderBehaviour> POWDER_BEHAVIOURS = Maps.newLinkedHashMap();
+    private static final Map<Identifier, AbstractPowderBehaviour> POWDER_BEHAVIOURS = Maps.newLinkedHashMap();
 
-    public static void registerPowderBehaviour(ResourceLocation resourceLocation, AbstractPowderBehaviour powderBehaviour) {
+    public static void registerPowderBehaviour(Identifier resourceLocation, AbstractPowderBehaviour powderBehaviour) {
         POWDER_BEHAVIOURS.put(resourceLocation, powderBehaviour);
     }
 
-    @Nonnull
-    public static Optional<AbstractPowderBehaviour> getPowderBehaviour(ItemStack stack) {
+        public static Optional<AbstractPowderBehaviour> getPowderBehaviour(ItemStack stack) {
         return POWDER_BEHAVIOURS.values().stream().filter(b -> b.getPowderItems().test(stack)).findFirst();
     }
 
@@ -48,12 +43,12 @@ public class GunBehaviours {
         return POWDER_BEHAVIOURS.values().stream().anyMatch(b -> b.getPowderItems().test(item.getDefaultInstance()));
     }
 
-    public static Map<ResourceLocation, AbstractPowderBehaviour> getPowderBehaviours() {
+    public static Map<Identifier, AbstractPowderBehaviour> getPowderBehaviours() {
         return POWDER_BEHAVIOURS;
     }
 
-    public static Optional<ResourceLocation> resourceLocationByPowderBehaviour(AbstractPowderBehaviour powderBehaviour) {
-        for (Map.Entry<ResourceLocation, AbstractPowderBehaviour> entry : POWDER_BEHAVIOURS.entrySet()) {
+    public static Optional<Identifier> resourceLocationByPowderBehaviour(AbstractPowderBehaviour powderBehaviour) {
+        for (Map.Entry<Identifier, AbstractPowderBehaviour> entry : POWDER_BEHAVIOURS.entrySet()) {
             if (entry.getValue().equals(powderBehaviour)) {
                 return Optional.of(entry.getKey());
             }

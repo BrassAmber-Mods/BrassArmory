@@ -1,13 +1,11 @@
 package com.milamber_brass.brass_armory.behaviour.powder;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
 import com.milamber_brass.brass_armory.packets.ParticlePacket;
 import java.util.Optional;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -19,7 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@ParametersAreNonnullByDefault
 public abstract class AbstractPowderBehaviour {
     protected final ParticleOptions particle;
 
@@ -28,7 +25,7 @@ public abstract class AbstractPowderBehaviour {
     }
 
     public void onShoot(Level level, LivingEntity owner, Entity shooter, ItemStack ammoStack, iGun gun) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             Vec3 eyePosition = shooter.getEyePosition();
             Vec3 viewVector = shooter.getViewVector(1.0F);
             ParticlePacket particlePacket = new ParticlePacket();
@@ -37,9 +34,9 @@ public abstract class AbstractPowderBehaviour {
                     for (double o = 0; o < 1; o += 0.1) {
                         Vec3 vec32 = eyePosition
                                 .add(
-                                        viewVector.x * d + level.random.nextGaussian() * o,
-                                        viewVector.y * d + level.random.nextGaussian() * o,
-                                        viewVector.z * d + level.random.nextGaussian() * o)
+                                        viewVector.x * d + level.getRandom().nextGaussian() * o,
+                                        viewVector.y * d + level.getRandom().nextGaussian() * o,
+                                        viewVector.z * d + level.getRandom().nextGaussian() * o)
                                 .add(viewVector.scale(gun.particleOffset()));
 
                         Vec3 particlePos = level.clip(new ClipContext(eyePosition, vec32, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, shooter)).getLocation();
@@ -68,6 +65,5 @@ public abstract class AbstractPowderBehaviour {
         }
     }
 
-    @Nonnull
-    public abstract Predicate<ItemStack> getPowderItems();
+        public abstract Predicate<ItemStack> getPowderItems();
 }

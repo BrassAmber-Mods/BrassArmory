@@ -3,7 +3,6 @@ package com.milamber_brass.brass_armory.packets;
 import com.milamber_brass.brass_armory.BrassArmory;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleOptions;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 *Special thanks to Tamaized for helping me write this class, which was originally made for the Twilight Forest mod
 */
 
-@ParametersAreNonnullByDefault
 public class ParticlePacket implements CustomPacketPayload {
     public static final Type<ParticlePacket> TYPE = new Type<>(BrassArmory.locate("particlepacket"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ParticlePacket> STREAM_CODEC = StreamCodec.of((buf, packet) -> packet.encode(buf), ParticlePacket::new);
@@ -85,7 +83,7 @@ public class ParticlePacket implements CustomPacketPayload {
 				ClientLevel level = Minecraft.getInstance().level;
 				if (level == null) return;
 				for (QueuedParticle queuedParticle : message.queuedParticles) {
-					level.addParticle(queuedParticle.particleOptions, queuedParticle.b, queuedParticle.x, queuedParticle.y, queuedParticle.z, queuedParticle.x2, queuedParticle.y2, queuedParticle.z2);
+					level.addParticle(queuedParticle.particleOptions, queuedParticle.b, false, queuedParticle.x, queuedParticle.y, queuedParticle.z, queuedParticle.x2, queuedParticle.y2, queuedParticle.z2);
 				}
 			});
 

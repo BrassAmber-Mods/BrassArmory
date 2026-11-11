@@ -21,21 +21,17 @@ import com.milamber_brass.brass_armory.util.ItemData;
 import com.milamber_brass.brass_armory.util.PotionData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.client.model.ElytraModel;
+import net.minecraft.client.model.object.equipment.ElytraModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.entity.layers.ElytraLayer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
+import com.milamber_brass.brass_armory.client.ArmoryItemProperties;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -45,9 +41,8 @@ import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber.Bus;
+
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -57,9 +52,7 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.jetbrains.annotations.NotNull;
 
-@OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
-@EventBusSubscriber(modid = BrassArmory.MOD_ID, bus = Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
 public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void registerScreens(RegisterMenuScreensEvent event) {
@@ -104,8 +97,8 @@ public class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void registerParticles(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(BrassArmoryParticles.BLOOD_FALL_PARTICLE.get(), BloodParticle.BloodFallProvider::new);
-        event.registerSpriteSet(BrassArmoryParticles.BLOOD_LAND_PARTICLE.get(), BloodParticle.BloodLandProvider::new);
+        event.registerSpriteSet(BrassArmoryParticles.BLOOD_FALL_PARTICLE.get(), sprites -> new BloodParticle.BloodFallProvider(sprites)::createParticle);
+        event.registerSpriteSet(BrassArmoryParticles.BLOOD_LAND_PARTICLE.get(), sprites -> new BloodParticle.BloodLandProvider(sprites)::createParticle);
     }
 
     @SubscribeEvent
@@ -118,9 +111,9 @@ public class ClientEventBusSubscriber {
             //BOMBS
             for (BombItem bombItem : new BombItem[] { BrassArmoryItems.BOMB.get(), BrassArmoryItems.STICKY_BOMB.get(), BrassArmoryItems.BOUNCY_BOMB.get() }) {
                 //Sets up alternative item models for all possible fuse states
-                ItemProperties.register(bombItem, ResourceLocation.parse("bomb_fuse"), (bombStack, clientLevel, living, k) -> {
-                    Entity entity = living != null ? living : bombStack.getEntityRepresentation();
-                    if (ItemData.getTag(bombStack).getBoolean("GuiDisplay")) return 0.8F;
+                ArmoryItemProperties.register(bombItem, Identifier.parse("bomb_fuse"), (bombStack, clientLevel, living, k) -> {
+                    Entity entity = living != null ? living : ArmoryItemProperties.ownerEntity();
+                    if (ItemData.getTag(bombStack).getBooleanOr("GuiDisplay", false)) return 0.8F;
                     if (!BombItem.getFuseLit(bombStack) || entity == null) return 1.0F;
                     else {
                         if (clientLevel == null && entity.level() instanceof ClientLevel clientLevel1) clientLevel = clientLevel1;
@@ -129,8 +122,8 @@ public class ClientEventBusSubscriber {
                     }
                 });
 
-                ItemProperties.register(bombItem, ResourceLocation.parse("defused"), (bombStack, clientLevel, living, k) -> {
-                    Entity entity = living != null ? living : bombStack.getEntityRepresentation();
+                ArmoryItemProperties.register(bombItem, Identifier.parse("defused"), (bombStack, clientLevel, living, k) -> {
+                    Entity entity = living != null ? living : ArmoryItemProperties.ownerEntity();
                     return (entity instanceof BombEntity bomb && bomb.getDefused()) ? 1.0F : 0.0F;
                 });
             }
@@ -140,7 +133,7 @@ public class ClientEventBusSubscriber {
                     BrassArmoryItems.WOODEN_HALBERD.get(), BrassArmoryItems.STONE_HALBERD.get(),
                     BrassArmoryItems.IRON_HALBERD.get(), BrassArmoryItems.GOLDEN_HALBERD.get(),
                     BrassArmoryItems.DIAMOND_HALBERD.get(), BrassArmoryItems.NETHERITE_HALBERD.get()}) {
-                ItemProperties.register(halberdItem, ResourceLocation.parse("stance"), (halberdStack, clientLevel, living, k) ->
+                ArmoryItemProperties.register(halberdItem, Identifier.parse("stance"), (halberdStack, clientLevel, living, k) ->
                         HalberdItem.getStance(halberdStack) ? 1.0F : 0.0F);
             }
 
@@ -153,15 +146,15 @@ public class ClientEventBusSubscriber {
                     BrassArmoryItems.WOODEN_FLAIL.get(), BrassArmoryItems.STONE_FLAIL.get(),
                     BrassArmoryItems.IRON_FLAIL.get(), BrassArmoryItems.GOLDEN_FLAIL.get(),
                     BrassArmoryItems.DIAMOND_FLAIL.get(), BrassArmoryItems.NETHERITE_FLAIL.get()}) {
-                ItemProperties.register(thrownWeaponItem, ResourceLocation.parse("throwing"), (spearStack, clientLevel, living, k) ->
+                ArmoryItemProperties.register(thrownWeaponItem, Identifier.parse("throwing"), (spearStack, clientLevel, living, k) ->
                         living != null && living.isUsingItem() && living.getUseItem() == spearStack ? 1.0F : 0.0F);
             }
 
             //FIRE RODS
-            ItemProperties.register(BrassArmoryItems.FIRE_ROD.get(), ResourceLocation.parse("extinguished"), (fireRodStack, clientLevel, living, k) ->
-                    fireRodStack.getEntityRepresentation() instanceof FireRodEntity fireRodEntity && fireRodEntity.hasBeenExtinguished() ? 1.0F : 0.0F);
+            ArmoryItemProperties.register(BrassArmoryItems.FIRE_ROD.get(), Identifier.parse("extinguished"), (fireRodStack, clientLevel, living, k) ->
+                    ArmoryItemProperties.ownerEntity() instanceof FireRodEntity fireRodEntity && fireRodEntity.hasBeenExtinguished() ? 1.0F : 0.0F);
 
-            ItemProperties.register(BrassArmoryItems.FIRE_ROD.get(), ResourceLocation.parse("gui"), (fireRodStack, clientLevel, living, k) ->
+            ArmoryItemProperties.register(BrassArmoryItems.FIRE_ROD.get(), Identifier.parse("gui"), (fireRodStack, clientLevel, living, k) ->
                     living == null || living.isHolding(BrassArmoryItems.FIRE_ROD.get()) ? 0.0F : 1.0F);
 
             //FLAILS
@@ -169,39 +162,39 @@ public class ClientEventBusSubscriber {
                     BrassArmoryItems.WOODEN_FLAIL.get(), BrassArmoryItems.STONE_FLAIL.get(),
                     BrassArmoryItems.IRON_FLAIL.get(), BrassArmoryItems.GOLDEN_FLAIL.get(),
                     BrassArmoryItems.DIAMOND_FLAIL.get(), BrassArmoryItems.NETHERITE_FLAIL.get()}) {
-                ItemProperties.register(flailItem, ResourceLocation.parse("no_head"), (stack, clientLevel, living, k) ->
+                ArmoryItemProperties.register(flailItem, Identifier.parse("no_head"), (stack, clientLevel, living, k) ->
                         living != null && flailItem.isExtended(living, stack) ? 1.0F : 0.0F);
             }
 
             //GUNS
             for (FlintlockItem gunItem : new FlintlockItem[] {
                     BrassArmoryItems.FLINTLOCK_PISTOL.get(), BrassArmoryItems.MUSKET.get(), BrassArmoryItems.BLUNDERBUSS.get()}) {
-                ItemProperties.register(gunItem, ResourceLocation.parse("loading"), (stack, clientLevel, living, k) ->
+                ArmoryItemProperties.register(gunItem, Identifier.parse("loading"), (stack, clientLevel, living, k) ->
                         living != null && living.isUsingItem() && FlintlockItem.getLoad(stack) == 1 ? 1.0F : 0.0F);
 
-                ItemProperties.register(gunItem, ResourceLocation.parse("status"), (stack, clientLevel, living, k) ->
+                ArmoryItemProperties.register(gunItem, Identifier.parse("status"), (stack, clientLevel, living, k) ->
                         living != null && living.isUsingItem() ? FlintlockItem.getLoadProgress(stack) / 20F : 0.0F);
 
-                ItemProperties.register(gunItem, ResourceLocation.parse("loaded"), (stack, clientLevel, living, k) ->
+                ArmoryItemProperties.register(gunItem, Identifier.parse("loaded"), (stack, clientLevel, living, k) ->
                         FlintlockItem.getLoad(stack) == 2 ? 1.0F : 0.0F);
 
-                ItemProperties.register(gunItem, ResourceLocation.parse("menu"), (stack, clientLevel, living, k) ->
+                ArmoryItemProperties.register(gunItem, Identifier.parse("menu"), (stack, clientLevel, living, k) ->
                         living instanceof Player player && player.containerMenu instanceof GunContainer<?> && !ItemData.getTag(stack).isEmpty() && ItemData.getTag(stack).contains(GunContainer.gunIcon) ? 1.0F : 0.0F);
             }
 
             //LONGBOW
-            ItemProperties.register(BrassArmoryItems.LONGBOW.get(), ResourceLocation.parse("pull"), (stack, clientLevel, living, k) ->
+            ArmoryItemProperties.register(BrassArmoryItems.LONGBOW.get(), Identifier.parse("pull"), (stack, clientLevel, living, k) ->
                     living == null ? 0F : (living.getUseItem() != stack ? 0.0F : (float) (stack.getUseDuration(living) - living.getUseItemRemainingTicks()) / 30.0F));
 
-            ItemProperties.register(BrassArmoryItems.LONGBOW.get(), ResourceLocation.parse("pulling"), (stack, clientLevel, living, k) ->
+            ArmoryItemProperties.register(BrassArmoryItems.LONGBOW.get(), Identifier.parse("pulling"), (stack, clientLevel, living, k) ->
                     living != null && living.isUsingItem() && living.getUseItem() == stack ? 1.0F : 0.0F);
 
             //KATANA
-            ItemProperties.register(BrassArmoryItems.KATANA.get(), ResourceLocation.parse("withering"), (stack, clientLevel, living, k) ->
+            ArmoryItemProperties.register(BrassArmoryItems.KATANA.get(), Identifier.parse("withering"), (stack, clientLevel, living, k) ->
                     (float)KatanaItem.getWither(stack) / 100F);
 
             //CARCASS ROUNDS
-            ItemProperties.register(BrassArmoryItems.CARCASS_ROUND.get(), ResourceLocation.parse("dragon"), (stack, clientLevel, living, k) ->
+            ArmoryItemProperties.register(BrassArmoryItems.CARCASS_ROUND.get(), Identifier.parse("dragon"), (stack, clientLevel, living, k) ->
                     CarcassRoundItem.isADragonRound(stack) ? 1.0F : 0.0F);
         });
     }
@@ -217,77 +210,7 @@ public class ClientEventBusSubscriber {
     }
 
     @SubscribeEvent
-    public static void colorHandlerEvent(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, i) -> i > 0 ? -1 : DyedItemColor.getOrDefault(stack, 0xA06540), BrassArmoryItems.GLIDER.get());
-        event.register((stack, i) -> i > 0 ? -1 : PotionData.getColor(stack), BrassArmoryItems.CARCASS_ROUND.get());
-    }
-
-
-    @SubscribeEvent
-    public static void addLayers(EntityRenderersEvent.AddLayers event) {
-        EntityModelSet entityModels = event.getEntityModels();
-
-        event.getSkins().forEach(skin -> {
-            if(event.getSkin(skin) instanceof PlayerRenderer playerRenderer) {
-                playerRenderer.addLayer(new GliderLayer<>(playerRenderer, entityModels));
-            }
-        });
-
-        if(event.getRenderer(EntityType.ARMOR_STAND) instanceof ArmorStandRenderer armorStandRenderer) {
-            armorStandRenderer.addLayer(new GliderLayer<>(armorStandRenderer, entityModels));
-        }
-    }
-
-    private static final ResourceLocation GLIDER_TEXTURE = ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/glider.png");
-    private static final ResourceLocation GLIDER_OVERLAY_TEXTURE = ResourceLocation.fromNamespaceAndPath(BrassArmory.MOD_ID,"textures/entity/glider_overlay.png");
-
-    private static class GliderLayer<T extends LivingEntity, M extends EntityModel<T>> extends ElytraLayer<T, M> {
-        private final EntityModel<T> gliderModel;
-
-        public GliderLayer(RenderLayerParent<T, M> layerParent, EntityModelSet entityModelSet) {
-            super(layerParent, entityModelSet);
-            this.gliderModel = new ElytraModel<>(entityModelSet.bakeLayer(ModelLayers.ELYTRA));
-        }
-
-        @Override
-        public boolean shouldRender(ItemStack stack, T entity) {
-            return stack.is(BrassArmoryItems.GLIDER.get());
-        }
-
-        @Override
-        public @NotNull ResourceLocation getElytraTexture(ItemStack stack, T entity) {
-            return GLIDER_TEXTURE;
-        }
-
-        @Override
-        public void render(PoseStack stack, MultiBufferSource bufferSource, int light, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            ItemStack itemstack = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
-            if (shouldRender(itemstack, livingEntity)) {
-                ResourceLocation resourcelocation;
-                if (livingEntity instanceof AbstractClientPlayer abstractclientplayer) {
-                    if (abstractclientplayer.getSkin().elytraTexture() != null) {
-                        resourcelocation = abstractclientplayer.getSkin().elytraTexture();
-                    } else if (abstractclientplayer.getSkin().capeTexture() != null && abstractclientplayer.isModelPartShown(PlayerModelPart.CAPE)) {
-                        resourcelocation = abstractclientplayer.getSkin().capeTexture();
-                    } else {
-                        resourcelocation = getElytraTexture(itemstack, livingEntity);
-                    }
-                } else resourcelocation = getElytraTexture(itemstack, livingEntity);
-
-                stack.pushPose();
-                stack.translate(0.0D, 0.0D, 0.125D);
-                this.getParentModel().copyPropertiesTo(this.gliderModel);
-                this.gliderModel.setupAnim(livingEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferSource, RenderType.armorCutoutNoCull(resourcelocation), itemstack.hasFoil());
-
-
-                int i = DyedItemColor.getOrDefault(itemstack, 0xA06540);
-
-                this.gliderModel.renderToBuffer(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 0xFF000000 | i);
-                vertexconsumer = ItemRenderer.getArmorFoilBuffer(bufferSource, RenderType.armorCutoutNoCull(GLIDER_OVERLAY_TEXTURE), itemstack.hasFoil());
-                this.gliderModel.renderToBuffer(stack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
-                stack.popPose();
-            }
-        }
+    public static void registerProperties(net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent event) {
+        event.register(BrassArmory.locate("property"), ArmoryItemProperties.MAP_CODEC);
     }
 }

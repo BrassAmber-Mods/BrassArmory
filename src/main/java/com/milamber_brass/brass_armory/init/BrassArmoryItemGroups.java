@@ -1,5 +1,6 @@
 package com.milamber_brass.brass_armory.init;
 
+import com.milamber_brass.brass_armory.item.abstracts.ArmoryTieredItem;
 import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.behaviour.GunBehaviours;
 import com.milamber_brass.brass_armory.data.BrassArmoryTags;
@@ -10,7 +11,7 @@ import com.milamber_brass.brass_armory.util.PotionData;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -31,7 +32,7 @@ public class BrassArmoryItemGroups {
             .withLabelColor(16755200)
             .displayItems((parameters, output) -> {
                 List<KatanaItem> katanaItems = new ArrayList<>();
-                List<TieredItem> tieredItems = new ArrayList<>();
+                List<ArmoryTieredItem> tieredItems = new ArrayList<>();
                 List<BowItem> bowItems = new ArrayList<>();
                 List<FlintlockItem> gunItems = new ArrayList<>();
                 List<Item> ammoItems = new ArrayList<>();
@@ -46,7 +47,7 @@ public class BrassArmoryItemGroups {
                     if (item instanceof KatanaItem katanaItem) {
                         katanaItems.add(katanaItem);
                         return false;
-                    } else if (item instanceof TieredItem tieredItem) {
+                    } else if (item instanceof ArmoryTieredItem tieredItem) {
                         tieredItems.add(tieredItem);
                         return false;
                     } else if (item instanceof BowItem bowItem) {
@@ -82,14 +83,14 @@ public class BrassArmoryItemGroups {
 
                 //We sort the list like vanilla does, while also accounting for any possible addon items, just in case
                 tieredItems.stream().sorted(Comparator.comparingDouble(tieredItem -> {
-                    Tier tier = tieredItem.getTier();
-                    if (tier == Tiers.WOOD) return 0.1D;
-                    if (tier == Tiers.STONE) return 0.2D;
-                    if (tier == Tiers.GOLD) return 0.3D;
-                    if (tier == Tiers.IRON) return 0.4D;
-                    if (tier == Tiers.DIAMOND) return 0.5D;
-                    if (tier == Tiers.NETHERITE) return 0.6D;
-                    return tieredItem.getTier().getAttackDamageBonus();
+                    ToolMaterial tier = tieredItem.getTier();
+                    if (tier == ToolMaterial.WOOD) return 0.1D;
+                    if (tier == ToolMaterial.STONE) return 0.2D;
+                    if (tier == ToolMaterial.GOLD) return 0.3D;
+                    if (tier == ToolMaterial.IRON) return 0.4D;
+                    if (tier == ToolMaterial.DIAMOND) return 0.5D;
+                    if (tier == ToolMaterial.NETHERITE) return 0.6D;
+                    return tieredItem.getTier().attackDamageBonus();
                 })).forEach(output::accept);
 
                 katanaItems.forEach(output::accept);
@@ -120,7 +121,7 @@ public class BrassArmoryItemGroups {
                 output.accept(BrassArmoryItems.CARCASS_ROUND.get());
 
                 output.accept(Util.make(BrassArmoryItems.CARCASS_ROUND.get().getDefaultInstance(), stack -> ItemData.update(stack, tag -> tag.putBoolean("BADragonRound", true))));
-                for(var potion : BuiltInRegistries.POTION.holders().toList()) {
+                for(var potion : BuiltInRegistries.POTION.listElements().toList()) {
                     if (!potion.value().getEffects().isEmpty()) {
                         output.accept(PotionData.setPotion(BrassArmoryItems.CARCASS_ROUND.get().getDefaultInstance(), potion));
                     }

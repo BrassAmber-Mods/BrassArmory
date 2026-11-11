@@ -4,7 +4,6 @@ import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.capabilities.IEffectCapability;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,7 +12,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-@ParametersAreNonnullByDefault
 public class EffectPacket implements CustomPacketPayload {
     public static final Type<EffectPacket> TYPE = new Type<>(BrassArmory.locate("effectpacket"));
     public static final StreamCodec<RegistryFriendlyByteBuf, EffectPacket> STREAM_CODEC = StreamCodec.of((buf, packet) -> packet.encode(buf), EffectPacket::new);

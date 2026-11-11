@@ -1,7 +1,6 @@
 package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.entity.CannonEntity;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class CannonItem extends Item {
     public CannonItem(Properties properties) {
         super(properties);
@@ -42,7 +40,7 @@ public class CannonItem extends Item {
                 CannonEntity cannon = new CannonEntity(level, relative.getX() + 0.5D, relative.getY(), relative.getZ() + 0.5D);
 
                 float yRot = (float) Mth.floor((Mth.wrapDegrees(useOnContext.getRotation()) + 22.5F) / 90.0F) * 90.0F;
-                cannon.moveTo(cannon.getX(), cannon.getY(), cannon.getZ(), yRot, 0.0F);
+                cannon.snapTo(cannon.getX(), cannon.getY(), cannon.getZ(), yRot, 0.0F);
 
                 level.addFreshEntity(cannon);
                 level.gameEvent(useOnContext.getPlayer(), GameEvent.ENTITY_PLACE, relative);
@@ -54,7 +52,7 @@ public class CannonItem extends Item {
             }
 
             useOnContext.getItemInHand().shrink(1);
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
     }
 

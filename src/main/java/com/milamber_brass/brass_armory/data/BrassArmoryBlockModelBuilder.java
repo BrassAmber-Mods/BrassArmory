@@ -1,95 +1,442 @@
 package com.milamber_brass.brass_armory.data;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.milamber_brass.brass_armory.BrassArmory;
-import com.milamber_brass.brass_armory.block.RopeBlock;
-import com.milamber_brass.brass_armory.init.BrassArmoryBlocks;
-import net.minecraft.core.Direction;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import static net.minecraft.core.Direction.*;
+import net.minecraft.resources.Identifier;
 
-public class BrassArmoryBlockModelBuilder extends BlockStateProvider {
-    public static final ResourceLocation ROPE_ARROW_TEXTURE = BrassArmory.locate("entity/projectile/rope_arrow");
-    protected static final ResourceLocation SOLID = ResourceLocation.parse("solid");
-    protected static final ResourceLocation CUTOUT = ResourceLocation.parse("cutout");
+public class BrassArmoryBlockModelBuilder implements DataProvider {
+    public static final Identifier ROPE_ARROW_TEXTURE = BrassArmory.locate("entity/projectile/rope_arrow");
+    private final PackOutput output;
 
-    public BrassArmoryBlockModelBuilder(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, BrassArmory.MOD_ID, exFileHelper);
+    public BrassArmoryBlockModelBuilder(PackOutput output) {
+        this.output = output;
     }
 
     @Override
-    protected void registerStatesAndModels() {
-        DeferredHolder<Block, RopeBlock> block = BrassArmoryBlocks.EXPLORERS_ROPE_BLOCK;
-        String blockName = "block/" + block.getId().getPath();
-        ResourceLocation textureLocation = BrassArmory.locate("block/" + block.getId().getPath());
+    public CompletableFuture<?> run(CachedOutput cache) {
+        var writes = new ArrayList<CompletableFuture<?>>();
+        var models = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/block");
+        writes.add(DataProvider.saveStable(cache, JsonParser.parseString("""
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            14.0,
+            10.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#rope_texture",
+          "uv": [
+            8.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "north": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#rope_texture",
+          "uv": [
+            8.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        7,
+        0,
+        13
+      ],
+      "to": [
+        9,
+        16,
+        15
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            14.0,
+            10.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "north": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        6,
+        11,
+        12
+      ],
+      "to": [
+        10,
+        15,
+        16
+      ]
+    }
+  ],
+  "render_type": "minecraft:solid",
+  "textures": {
+    "particle": "#rope_texture",
+    "rope_texture": "brass_armory:block/explorers_rope"
+  }
+}
+"""), models.json(BrassArmory.locate("explorers_rope"))));
+        writes.add(DataProvider.saveStable(cache, JsonParser.parseString("""
+{
+  "parent": "minecraft:block/block",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            14.0,
+            10.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#rope_texture",
+          "uv": [
+            8.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "north": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#rope_texture",
+          "uv": [
+            8.0,
+            0.0,
+            10.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        7,
+        0,
+        13
+      ],
+      "to": [
+        9,
+        16,
+        15
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            14.0,
+            10.0,
+            16.0
+          ]
+        },
+        "east": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "north": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "south": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        },
+        "up": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            0.0,
+            10.0,
+            2.0
+          ]
+        },
+        "west": {
+          "texture": "#rope_texture",
+          "uv": [
+            6.0,
+            12.0,
+            10.0,
+            16.0
+          ]
+        }
+      },
+      "from": [
+        6,
+        11,
+        12
+      ],
+      "to": [
+        10,
+        15,
+        16
+      ]
+    },
+    {
+      "faces": {
+        "east": {
+          "rotation": 180,
+          "texture": "#arrow_texture",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            2.5
+          ]
+        },
+        "west": {
+          "texture": "#arrow_texture",
+          "uv": [
+            0.0,
+            0.0,
+            8.0,
+            2.5
+          ]
+        }
+      },
+      "from": [
+        8,
+        11,
+        5
+      ],
+      "to": [
+        8,
+        16,
+        21
+      ]
+    },
+    {
+      "faces": {
+        "down": {
+          "rotation": 90,
+          "texture": "#arrow_texture",
+          "uv": [
+            8.0,
+            5.0,
+            0.0,
+            7.5
+          ]
+        },
+        "up": {
+          "rotation": 270,
+          "texture": "#arrow_texture",
+          "uv": [
+            8.0,
+            2.5,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "from": [
+        5.5,
+        13.5,
+        5
+      ],
+      "to": [
+        10.5,
+        13.5,
+        21
+      ]
+    },
+    {
+      "faces": {
+        "north": {
+          "texture": "#arrow_texture",
+          "uv": [
+            0.0,
+            7.5,
+            2.5,
+            10.0
+          ]
+        },
+        "south": {
+          "texture": "#arrow_texture",
+          "uv": [
+            0.0,
+            7.5,
+            2.5,
+            10.0
+          ]
+        }
+      },
+      "from": [
+        5.5,
+        11,
+        6
+      ],
+      "to": [
+        10.5,
+        16,
+        6
+      ]
+    }
+  ],
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "arrow_texture": "brass_armory:entity/projectile/rope_arrow",
+    "particle": "#rope_texture",
+    "rope_texture": "brass_armory:block/explorers_rope"
+  }
+}
+"""), models.json(BrassArmory.locate("explorers_rope_arrow"))));
 
-        BlockModelBuilder rope = this.models().withExistingParent(blockName, "minecraft:block/block").texture("rope_texture", textureLocation).texture("particle", "#rope_texture").renderType(SOLID)
-                .element().from(7, 0, 13).to(9, 16, 15)
-                .face(NORTH).uvs(6, 0, 10, 16).texture("#rope_texture").end()
-                .face(EAST).uvs(8, 0, 10, 16).texture("#rope_texture").end()
-                .face(SOUTH).uvs(6, 0, 10, 16).texture("#rope_texture").end()
-                .face(WEST).uvs(8, 0, 10, 16).texture("#rope_texture").end()
-                .face(Direction.UP).uvs(6, 0, 10, 2).texture("#rope_texture").end()
-                .face(Direction.DOWN).uvs(6, 14, 10, 16).texture("#rope_texture").end()
-                .end()
-                .element().from(6, 11, 12).to(10, 15, 16)
-                .face(NORTH).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(EAST).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(SOUTH).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(WEST).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(Direction.UP).uvs(6, 0, 10, 2).texture("#rope_texture").end()
-                .face(Direction.DOWN).uvs(6, 14, 10, 16).texture("#rope_texture").end()
-                .end();
+        JsonObject variants = new JsonObject();
+        String[] directions = {"north", "east", "south", "west"};
+        for (int rotation = 0; rotation < directions.length; rotation++) {
+            for (boolean arrow : new boolean[]{false, true}) {
+                JsonObject model = new JsonObject();
+                model.addProperty("model", "brass_armory:block/explorers_rope" + (arrow ? "_arrow" : ""));
+                if (rotation != 0) model.addProperty("y", rotation * 90);
+                variants.add("facing=" + directions[rotation] + ",has_arrow=" + arrow, model);
+            }
+        }
+        JsonObject blockState = new JsonObject();
+        blockState.add("variants", variants);
+        writes.add(DataProvider.saveStable(cache, blockState, output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "blockstates").json(BrassArmory.locate("explorers_rope"))));
+        return CompletableFuture.allOf(writes.toArray(CompletableFuture[]::new));
+    }
 
-        BlockModelBuilder arrow = this.models().withExistingParent(blockName + "_arrow", "minecraft:block/block").texture("rope_texture", textureLocation).texture("particle", "#rope_texture").texture("arrow_texture", ROPE_ARROW_TEXTURE).renderType(CUTOUT)
-                .element().from(7, 0, 13).to(9, 16, 15)
-                .face(NORTH).uvs(6, 0, 10, 16).texture("#rope_texture").end()
-                .face(EAST).uvs(8, 0, 10, 16).texture("#rope_texture").end()
-                .face(SOUTH).uvs(6, 0, 10, 16).texture("#rope_texture").end()
-                .face(WEST).uvs(8, 0, 10, 16).texture("#rope_texture").end()
-                .face(Direction.UP).uvs(6, 0, 10, 2).texture("#rope_texture").end()
-                .face(Direction.DOWN).uvs(6, 14, 10, 16).texture("#rope_texture").end()
-                .end()
-                .element().from(6, 11, 12).to(10, 15, 16)
-                .face(NORTH).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(EAST).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(SOUTH).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(WEST).uvs(6, 12, 10, 16).texture("#rope_texture").end()
-                .face(Direction.UP).uvs(6, 0, 10, 2).texture("#rope_texture").end()
-                .face(Direction.DOWN).uvs(6, 14, 10, 16).texture("#rope_texture").end()
-                .end()
-
-                .element().from(8, 11, 5).to(8, 16, 21)
-                .face(EAST).uvs(0, 0, 8, 2.5F).texture("#arrow_texture").rotation(ModelBuilder.FaceRotation.UPSIDE_DOWN).end()
-                .face(WEST).uvs(0, 0, 8, 2.5F).texture("#arrow_texture").end()
-                .end()
-                .element().from(5.5F, 13.5F, 5).to(10.5F, 13.5F, 21)
-                .face(Direction.UP).uvs(8, 2.5F, 0, 0).texture("#arrow_texture").rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).end()
-                .face(Direction.DOWN).uvs(8, 5, 0, 7.5F).texture("#arrow_texture").rotation(ModelBuilder.FaceRotation.CLOCKWISE_90).end()
-                .end()
-                .element().from(5.5F, 11, 6).to(10.5F, 16, 6)
-                .face(NORTH).uvs(0, 7.5F, 2.5F, 10).texture("#arrow_texture").end()
-                .face(SOUTH).uvs(0, 7.5F, 2.5F, 10).texture("#arrow_texture").end()
-                .end();
-
-        getVariantBuilder(block.get()).forAllStates(s -> {
-            boolean has_arrow = s.getValue(RopeBlock.HAS_ARROW);
-            return switch (s.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
-                case NORTH -> ConfiguredModel.builder().modelFile(has_arrow ? arrow : rope).build();
-                case EAST -> ConfiguredModel.builder().modelFile(has_arrow ? arrow : rope).rotationY(90).build();
-                case SOUTH -> ConfiguredModel.builder().modelFile(has_arrow ? arrow : rope).rotationY(180).build();
-                case WEST -> ConfiguredModel.builder().modelFile(has_arrow ? arrow : rope).rotationY(270).build();
-                default -> throw new IllegalStateException("Unexpected value: " + s.getValue(HorizontalDirectionalBlock.FACING));
-            };
-        });
+    @Override
+    public String getName() {
+        return "Brass Armory block models";
     }
 }

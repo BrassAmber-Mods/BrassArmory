@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "B": {
-      "item": "minecraft:golden_axe"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    },
-    "T": {
-      "item": "brass_armory:golden_dagger"
-    }
+    "B": "minecraft:golden_axe",
+    "S": "#c:rods/wooden",
+    "T": "brass_armory:golden_dagger"
   },
   "pattern": [
     "T  ",

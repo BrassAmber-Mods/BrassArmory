@@ -4,30 +4,32 @@ import com.milamber_brass.brass_armory.BrassArmory;
 import com.milamber_brass.brass_armory.client.sound.CannonSoundInstance;
 import com.milamber_brass.brass_armory.entity.CannonEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryCapabilities;
+import com.milamber_brass.brass_armory.init.BrassArmoryEffects;
+import com.milamber_brass.brass_armory.init.BrassArmoryParticles;
 import com.milamber_brass.brass_armory.item.FlintlockItem;
 import com.milamber_brass.brass_armory.item.LongBowItem;
 import com.milamber_brass.brass_armory.item.MaceItem;
 import com.milamber_brass.brass_armory.item.WarpCrystalItem;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.item.interfaces.ICustomAnimationItem;
-import com.mojang.blaze3d.platform.Lighting;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
@@ -35,11 +37,23 @@ import net.neoforged.neoforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
-@OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
 @EventBusSubscriber(modid = BrassArmory.MOD_ID, value = Dist.CLIENT)
 public class ClientEventSubscriber {
+    @SubscribeEvent
+    public static void onBleedingTick(EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof LivingEntity living) || !living.level().isClientSide()) return;
+        var effect = living.getEffect(BrassArmoryEffects.BLEEDING);
+        if (effect == null) return;
+        int amplifier = effect.getAmplifier();
+        int count = amplifier > 100 ? 100 : (living.getRandom().nextInt(100) <= effect.getDuration() ? 1 : 0) + amplifier;
+        double y = living.isDeadOrDying() ? living.getY() + 0.15D : living.getRandomY() - 0.25D;
+        for (int i = 0; i < count; i++) {
+            living.level().addParticle(BrassArmoryParticles.BLOOD_FALL_PARTICLE.get(), living.getRandomX(0.5D), y, living.getRandomZ(0.5D), 0D, 0D, 0D);
+        }
+    }
+
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
         Minecraft mc = Minecraft.getInstance();
@@ -47,7 +61,7 @@ public class ClientEventSubscriber {
 
         if (player != null && player.isUsingItem()) {
             ItemStack eventItem = event.getItemStack();
-            if (eventItem.getItem() instanceof ICustomAnimationItem || eventItem.getItem() instanceof LongBowItem || (eventItem.getItem() instanceof AbstractThrownWeaponItem && eventItem.getItem().getUseAnimation(player.getUseItem()) == UseAnim.SPEAR)) {
+            if (eventItem.getItem() instanceof ICustomAnimationItem || eventItem.getItem() instanceof LongBowItem || (eventItem.getItem() instanceof AbstractThrownWeaponItem && eventItem.getItem().getUseAnimation(player.getUseItem()) == ItemUseAnimation.SPEAR)) {
                 event.setCanceled(true);
                 boolean doubleMace = player.getMainHandItem().getItem() instanceof MaceItem && player.getOffhandItem().getItem() instanceof MaceItem;
 
@@ -73,15 +87,15 @@ public class ClientEventSubscriber {
                         double sineWave = Math.sin(f8 * 75D) * 0.004D;
 
                         poseStack.translate(0, sineWave + m, m);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(-13.935F + m * 200F));
-                        poseStack.mulPose(Axis.YN.rotationDegrees(k * 9.7F));
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(k * -9.785F));
+                        poseStack.rotate(Axis.XP.rotationDegrees(-13.935F + m * 200F));
+                        poseStack.rotate(Axis.YN.rotationDegrees(k * 9.7F));
+                        poseStack.rotate(Axis.ZP.rotationDegrees(k * -9.785F));
                         poseStack.scale(1 + (float) sineWave, 1 + (float) sineWave, 1 + (float) sineWave);
                     } else if (itemStack.getItem() instanceof LongBowItem) {
                         poseStack.translate(k * -0.2785682F, 0.18344387F, 0.15731531F);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(-13.935F));
-                        poseStack.mulPose(Axis.YP.rotationDegrees(k * 35.3F));
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(k * -9.785F));
+                        poseStack.rotate(Axis.XP.rotationDegrees(-13.935F));
+                        poseStack.rotate(Axis.YP.rotationDegrees(k * 35.3F));
+                        poseStack.rotate(Axis.ZP.rotationDegrees(k * -9.785F));
                         float f12 = f9 / 30.0F;
                         f12 = (f12 * f12 + f12 * 2.0F) / 3.0F;
                         if (f12 > 1.0F) f12 = 1.0F;
@@ -95,12 +109,12 @@ public class ClientEventSubscriber {
 
                         poseStack.translate(f12 * 0.0F, f12 * 0.0F, f12 * 0.04F);
                         poseStack.scale(1.0F, 1.0F, 1.0F + f12 * 0.2F);
-                        poseStack.mulPose(Axis.YN.rotationDegrees(k * 45.0F));
+                        poseStack.rotate(Axis.YN.rotationDegrees(k * 45.0F));
                     } else {
                         poseStack.translate(k * -0.5F, 0.7F, 0.1F);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(-55.0F));
-                        poseStack.mulPose(Axis.YP.rotationDegrees(k * 35.3F));
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(k * -9.785F));
+                        poseStack.rotate(Axis.XP.rotationDegrees(-55.0F));
+                        poseStack.rotate(Axis.YP.rotationDegrees(k * 35.3F));
+                        poseStack.rotate(Axis.ZP.rotationDegrees(k * -9.785F));
                         float f11 = f9 / (eventItem.getItem() instanceof AbstractThrownWeaponItem item ? item.chargeDuration : 10.0F);
                         if (f11 > 1.0F) f11 = 1.0F;
 
@@ -113,11 +127,13 @@ public class ClientEventSubscriber {
 
                         poseStack.translate(0.0D, 0.0D, f11 * 0.2F);
                         poseStack.scale(1.0F, 1.0F, 1.0F + f11 * 0.2F);
-                        poseStack.mulPose(Axis.YN.rotationDegrees(k * 45.0F));
+                        poseStack.rotate(Axis.YN.rotationDegrees(k * 45.0F));
                     }
 
 
-                    mc.getEntityRenderDispatcher().getItemInHandRenderer().renderItem(player, itemStack, transformType, !rightHandFlag, poseStack, event.getMultiBufferSource(), event.getPackedLight());
+                    ItemStackRenderState itemState = new ItemStackRenderState();
+                    mc.getItemModelResolver().updateForLiving(itemState, itemStack, transformType, player);
+                    itemState.submit(poseStack, event.getSubmitNodeCollector(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, 0);
                     if (doubleMace) poseStack.popPose();
                 }
             } else if (eventItem.getItem() instanceof WarpCrystalItem) {
@@ -130,23 +146,20 @@ public class ClientEventSubscriber {
                 f1 = f1 > 1.0F ? 1.0F + (float)Math.sin(f1 * 7) * 0.0035F : (float)Math.pow(f1, 1.6D);
                 poseStack.translate(0F, 0F, -1F - f1 / 4F);
 
-                Lighting.setupFor3DItems();
-                mc.getEntityRenderDispatcher().getItemInHandRenderer().renderItem(player, eventItem.copy(), ItemDisplayContext.FIXED, rightHandFlag, poseStack, event.getMultiBufferSource(), 15728880);
+                ItemStackRenderState itemState = new ItemStackRenderState();
+                mc.getItemModelResolver().updateForLiving(itemState, eventItem, ItemDisplayContext.FIXED, player);
+                itemState.submit(poseStack, event.getSubmitNodeCollector(), 15728880, OverlayTexture.NO_OVERLAY, 0);
             }
         }
     }
 
     @SubscribeEvent
     public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
-        Player player = event.getEntity();
-        if (player.getMainHandItem().getItem() instanceof FlintlockItem && FlintlockItem.getLoad(player.getMainHandItem()) == 2) {
-            if (player.getMainArm() == HumanoidArm.RIGHT)
-                event.getRenderer().getModel().rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-            else event.getRenderer().getModel().leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-        } else if (player.getOffhandItem().getItem() instanceof FlintlockItem && FlintlockItem.getLoad(player.getOffhandItem()) == 2) {
-            if (player.getMainArm() == HumanoidArm.LEFT)
-                event.getRenderer().getModel().rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
-            else event.getRenderer().getModel().leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+        if (!(event.getRenderState() instanceof net.minecraft.client.renderer.entity.state.AvatarRenderState state)) return;
+        if (state.rightHandItemStack.getItem() instanceof FlintlockItem && FlintlockItem.getLoad(state.rightHandItemStack) == 2) {
+            state.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+        } else if (state.leftHandItemStack.getItem() instanceof FlintlockItem && FlintlockItem.getLoad(state.leftHandItemStack) == 2) {
+            state.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
         }
     }
 
@@ -193,7 +206,7 @@ public class ClientEventSubscriber {
     @SubscribeEvent
     public static void onEntityJoinWorldEvent(EntityJoinLevelEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof CannonEntity cannonEntity && cannonEntity.level().isClientSide) {
+        if (entity instanceof CannonEntity cannonEntity && cannonEntity.level().isClientSide()) {
             Minecraft.getInstance().getSoundManager().play(new CannonSoundInstance(cannonEntity));
         }
     }

@@ -1,9 +1,11 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.util.TierUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -12,29 +14,45 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrowableItemProjectile;
+import com.milamber_brass.brass_armory.item.abstracts.ArmoryTieredItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.IronBarsBlock;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import static net.minecraft.core.Direction.UP;
 
-@ParametersAreNonnullByDefault
 public abstract class AbstractRollableItemProjectileEntity extends ThrowableItemProjectile {
     private static final EntityDataAccessor<Float> DATA_RENDER_ROTATION = SynchedEntityData.defineId(AbstractRollableItemProjectileEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> DATA_RENDER_ROTATION0 = SynchedEntityData.defineId(AbstractRollableItemProjectileEntity.class, EntityDataSerializers.FLOAT);
@@ -47,12 +65,12 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
     }
 
     public AbstractRollableItemProjectileEntity(EntityType<? extends ThrowableItemProjectile> entityType, double x, double y, double z, Level level) {
-        super(entityType, x, y, z, level);
+        super(entityType, x, y, z, level, ItemStack.EMPTY);
         this.rotDirection = -10F;
     }
 
     public AbstractRollableItemProjectileEntity(EntityType<? extends ThrowableItemProjectile> entityType, LivingEntity living, Level level, @Nullable HumanoidArm arm) {
-        super(entityType, living, level);
+        super(entityType, living, level, ItemStack.EMPTY);
         this.rotDirection = arm == HumanoidArm.LEFT ? 10F : -10F;
     }
 
@@ -80,15 +98,14 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
         float length = (float)vec.length();
         this.setRotation0(this.getRotation());
         if (length > 0.01D) {
-            this.setRotation(this.getRotation() + this.rotDirection * length * (this.isInWaterOrBubble() ? 2F : 8F));
+            this.setRotation(this.getRotation() + this.rotDirection * length * (this.isInWater() ? 2F : 8F));
         } else vec.scale(0.0D);
         this.setDeltaMovement(vec);
         this.setOnGround(!flag);
     }
 
-    @Nonnull
-    @Override //Pick up if hand is empty
-    public InteractionResult interact(Player player, InteractionHand hand) {
+        @Override //Pick up if hand is empty
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (player.getItemInHand(hand).isEmpty()) {
             player.setItemInHand(hand, this.getItem());
             this.discard();
@@ -136,12 +153,12 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
     protected void onHitBlock(BlockHitResult blockHitResult) {
         if (this.hitPerTick == 0) onHitEffects();
         if (++this.hitPerTick > 8) {
-            this.kill();
+            if (this.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) this.kill(serverLevel);
             return;
         }
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState blockState = this.level().getBlockState(pos);
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierUtil.isCorrectTierForDrops(this.getItem().getItem() instanceof TieredItem tieredItem ? tieredItem.getTier() : Tiers.IRON, blockState)) {
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.BlockItems.GLASS_PANES.block()) && TierUtil.isCorrectTierForDrops(this.getItem().getItem() instanceof ArmoryTieredItem tieredItem ? tieredItem.getTier() : ToolMaterial.IRON, blockState)) {
             this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.85D));
             return;
@@ -161,8 +178,7 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
 
     protected abstract double getBounceMultiplier();
 
-    @Nonnull
-    public static Vec3 bounce(Vec3 deltaMovement, Direction.Axis axis, double multiplier) {
+        public static Vec3 bounce(Vec3 deltaMovement, Direction.Axis axis, double multiplier) {
         if (multiplier == 1F) return deltaMovement.multiply(axis.equals(Direction.Axis.X) ? -1 : 1, axis.equals(Direction.Axis.Y) ? -1 : 1, axis.equals(Direction.Axis.Z) ? -1 : 1);
         double newX = deltaMovement.x * (axis.equals(Direction.Axis.X) ? -multiplier : 0.75D);
         double newY = deltaMovement.y * (axis.equals(Direction.Axis.Y) ? -multiplier : 0.75D);
@@ -187,15 +203,15 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         compoundTag.putFloat("BARollableRotation", this.getRotation());
         super.addAdditionalSaveData(compoundTag);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.setRotation(compoundTag.getFloat("BARollableRotation"));
+        this.setRotation(compoundTag.getFloatOr("BARollableRotation", 0F));
         this.setRotation0(this.getRotation());
     }
 

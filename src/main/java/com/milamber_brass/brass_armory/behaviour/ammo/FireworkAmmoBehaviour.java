@@ -1,10 +1,9 @@
 package com.milamber_brass.brass_armory.behaviour.ammo;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.behaviour.powder.AbstractPowderBehaviour;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-@ParametersAreNonnullByDefault
 public class FireworkAmmoBehaviour extends AbstractAmmoBehaviour {
     public FireworkAmmoBehaviour() {
         super();
@@ -27,7 +25,7 @@ public class FireworkAmmoBehaviour extends AbstractAmmoBehaviour {
         super.onShoot(level, owner, shooter, ammoStack, powderBehaviour, gun);
         FireworkRocketEntity rocket = new FireworkRocketEntity(level, ammoStack, owner, shooter.getX(), shooter.getEyeY(), shooter.getZ(), true);
         if (powderBehaviour != null) powderBehaviour.applyEffect(rocket);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             float speed = gun.speed();
             Vec3 vec31 = shooter.getUpVector(1.0F);
             Quaternionf quaternion = (new Quaternionf()).setAngleAxis(0.0D, vec31.x, vec31.y, vec31.z);

@@ -1,15 +1,14 @@
 package com.milamber_brass.brass_armory.entity.projectile.arrow;
 
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.client.render.SpecialArrowRenderer;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpecialArrowEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -30,7 +29,6 @@ import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class FrostArrowEntity extends AbstractSpecialArrowEntity {
     public FrostArrowEntity(EntityType<? extends FrostArrowEntity> entityType, Level level) {
         super(entityType, level);
@@ -67,7 +65,7 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
     @Override
     protected void doPostHurtEffects(LivingEntity living) {
         super.doPostHurtEffects(living);
-        living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 70, 3));
+        living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 70, 3));
     }
 
     @Override
@@ -87,7 +85,7 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
 
                 if (flu.is(FluidTags.WATER) && flu.isSource() && level.getBlockState(blockpos).canBeReplaced() && blockstate.canSurvive(level, blockpos) && !EventHooks.onBlockPlace(entity, BlockSnapshot.create(level.dimension(), level, blockpos), Direction.UP)) {
                     level.setBlockAndUpdate(blockpos, blockstate);
-                    level.scheduleTick(blockpos, Blocks.FROSTED_ICE, Mth.nextInt(level.random, 60, 120));
+                    level.scheduleTick(blockpos, Blocks.FROSTED_ICE, Mth.nextInt(level.getRandom(), 60, 120));
                 }
             }
         }
@@ -106,7 +104,7 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.FROST_ARROW_TEXTURE;
     }
 }

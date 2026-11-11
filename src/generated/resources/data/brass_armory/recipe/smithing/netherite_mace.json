@@ -1,15 +1,9 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "minecraft:netherite_ingot"
-  },
-  "base": {
-    "item": "brass_armory:diamond_mace"
-  },
+  "addition": "minecraft:netherite_ingot",
+  "base": "brass_armory:diamond_mace",
   "result": {
     "id": "brass_armory:netherite_mace"
   },
-  "template": {
-    "item": "minecraft:netherite_upgrade_smithing_template"
-  }
+  "template": "minecraft:netherite_upgrade_smithing_template"
 }

@@ -5,7 +5,6 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractThrow
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -15,8 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Tiers;
+import com.milamber_brass.brass_armory.item.abstracts.ArmoryTieredItem;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
@@ -26,7 +25,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     public BattleaxeEntity(EntityType<BattleaxeEntity> entityType, Level level) {
         super(entityType, level);
@@ -39,7 +37,9 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         if (entityHitResult.getEntity() instanceof Player player) {
-            player.disableShield();
+            var blockingStack = player.getUseItem();
+            var blocksAttacks = blockingStack.get(net.minecraft.core.component.DataComponents.BLOCKS_ATTACKS);
+            if (blocksAttacks != null && player.level() instanceof net.minecraft.server.level.ServerLevel level) blocksAttacks.disable(level, player, 5F, blockingStack);
         }
         super.onHitEntity(entityHitResult);
     }
@@ -52,11 +52,11 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
     @Override
     protected void onHitBlock(BlockHitResult result) {
         ItemStack battleaxeStack = this.getItem();
-        if (battleaxeStack.getItem() instanceof TieredItem tieredItem) {
+        if (battleaxeStack.getItem() instanceof ArmoryTieredItem tieredItem) {
             BlockPos pos = result.getBlockPos();
             BlockState hitBlockState = this.level().getBlockState(pos);
             if (hitBlockState.getBlock() instanceof DoorBlock || hitBlockState.getBlock() instanceof TrapDoorBlock) {
-                if (tieredItem.getTier().getAttackDamageBonus() >= Tiers.DIAMOND.getAttackDamageBonus()) {
+                if (tieredItem.getTier().attackDamageBonus() >= ToolMaterial.DIAMOND.attackDamageBonus()) {
                     Vec3 deltaMovement = this.onHitDeltaMovement();
                     this.level().destroyBlock(pos, true, this.getOwner());
                     this.setDeltaMovement(deltaMovement);

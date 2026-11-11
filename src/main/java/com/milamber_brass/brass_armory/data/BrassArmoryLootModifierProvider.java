@@ -17,7 +17,7 @@ public class BrassArmoryLootModifierProvider extends GlobalLootModifierProvider 
 
     @Override
     protected void start() {
-        add("ender_pearl_warp_crystal", new WarpCrystalLootModifier(new LootItemCondition[]{ LootItemRandomChanceCondition.randomChance(0.5F).build() }, Items.ENDER_PEARL));
-        add("ender_eye_warp_crystal", new WarpCrystalLootModifier(new LootItemCondition[]{ LootItemRandomChanceCondition.randomChance(1.0F).build() }, Items.ENDER_EYE));
+        add("ender_pearl_warp_crystal", new WarpCrystalLootModifier(java.util.Optional.of(net.minecraft.core.Holder.direct(LootItemRandomChanceCondition.randomChance(0.5F).build())), 0, Items.ENDER_PEARL));
+        add("ender_eye_warp_crystal", new WarpCrystalLootModifier(java.util.Optional.of(net.minecraft.core.Holder.direct(LootItemRandomChanceCondition.randomChance(1.0F).build())), 0, Items.ENDER_EYE));
     }
 }

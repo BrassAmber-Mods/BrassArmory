@@ -4,8 +4,6 @@ import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractBulle
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
 import com.milamber_brass.brass_armory.util.TierUtil;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -13,10 +11,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.IronBarsBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,7 +24,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.Tags;
 
-@ParametersAreNonnullByDefault
 public class BulletEntity extends AbstractBulletEntity {
     private int hitPerTick;
 
@@ -42,7 +39,7 @@ public class BulletEntity extends AbstractBulletEntity {
     public void tick() {
         this.hitPerTick = 0;
         super.tick();
-        if (!this.isNoGravity() && !this.inGround && !this.isNoPhysics()) {
+        if (!this.isNoGravity() && !this.isInGround() && !this.isNoPhysics()) {
             this.setDeltaMovement(this.getDeltaMovement().add(0, 0.025D, 0));
         }
     }
@@ -66,7 +63,7 @@ public class BulletEntity extends AbstractBulletEntity {
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState blockState = this.level().getBlockState(pos);
 
-        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.Blocks.GLASS_PANES) && TierUtil.isCorrectTierForDrops(Tiers.IRON, blockState)) {
+        if (blockState.getBlock() instanceof IronBarsBlock && blockState.is(Tags.BlockItems.GLASS_PANES.block()) && TierUtil.isCorrectTierForDrops(ToolMaterial.IRON, blockState)) {
             this.level().destroyBlock(pos, true, this.getOwner());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.8D));
         } else {
@@ -85,8 +82,7 @@ public class BulletEntity extends AbstractBulletEntity {
         return BrassArmoryItems.MUSKET_BALL.get();
     }
 
-    @Nonnull
-    public static Vec3 ricochet(Vec3 deltaMovement, Direction.Axis axis, RandomSource random, double hardness) {
+        public static Vec3 ricochet(Vec3 deltaMovement, Direction.Axis axis, RandomSource random, double hardness) {
         double newX = deltaMovement.x * (axis.equals(Direction.Axis.X) ? -hardness : hardness);
         double newY = deltaMovement.y * (axis.equals(Direction.Axis.Y) ? -hardness : hardness);
         double newZ = deltaMovement.z * (axis.equals(Direction.Axis.Z) ? -hardness : hardness);
@@ -96,10 +92,10 @@ public class BulletEntity extends AbstractBulletEntity {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity target = entityHitResult.getEntity();
-        int invulnerableTime = target.invulnerableTime;
-        target.invulnerableTime = 0;
+        int invulnerableTime = target.getInvulnerableTime();
+        target.setInvulnerableTime(0);
         super.onHitEntity(entityHitResult);
-        target.invulnerableTime = invulnerableTime;
+        target.setInvulnerableTime(invulnerableTime);
         this.discard();
     }
 }

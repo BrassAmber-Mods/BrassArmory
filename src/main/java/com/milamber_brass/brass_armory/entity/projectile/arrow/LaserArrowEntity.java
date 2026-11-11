@@ -4,11 +4,10 @@ import com.milamber_brass.brass_armory.client.render.SpecialArrowRenderer;
 import com.milamber_brass.brass_armory.entity.projectile.abstracts.AbstractSpecialArrowEntity;
 import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public class LaserArrowEntity extends AbstractSpecialArrowEntity {
     public static final ParticleOptions REDSTONE_PARTICLE = new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState());
 
@@ -41,7 +39,7 @@ public class LaserArrowEntity extends AbstractSpecialArrowEntity {
 
     @Override
     public void tick() {
-        if (!this.inGround) {
+        if (!this.isInGround()) {
             Vec3 deltaMovement = this.getDeltaMovement();
             super.tick();
             if (this.isNoGravity()) {
@@ -49,7 +47,7 @@ public class LaserArrowEntity extends AbstractSpecialArrowEntity {
                 this.setDeltaMovement(deltaMovement);
             }
 
-            if (!this.level().hasChunk(this.chunkPosition().x, this.chunkPosition().z)) {
+            if (!this.level().hasChunk(this.chunkPosition().x(), this.chunkPosition().z())) {
                 this.remove(RemovalReason.UNLOADED_TO_CHUNK);
             }
         } else {
@@ -71,7 +69,7 @@ public class LaserArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     @Override
-    public ResourceLocation getTextureLocation() {
+    public Identifier getTextureLocation() {
         return SpecialArrowRenderer.LASER_ARROW_TEXTURE;
     }
 }

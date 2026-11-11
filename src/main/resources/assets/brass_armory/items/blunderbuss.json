@@ -1,0 +1,104 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "brass_armory:property",
+    "name": "minecraft:loaded",
+    "entries": [
+      {
+        "threshold": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "brass_armory:item/blunderbuss_loaded"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:range_dispatch",
+      "property": "brass_armory:property",
+      "name": "minecraft:loading",
+      "entries": [
+        {
+          "threshold": 1,
+          "model": {
+            "type": "minecraft:range_dispatch",
+            "property": "brass_armory:property",
+            "name": "minecraft:status",
+            "entries": [
+              {
+                "threshold": 1,
+                "model": {
+                  "type": "minecraft:model",
+                  "model": "brass_armory:item/blunderbuss"
+                }
+              }
+            ],
+            "fallback": {
+              "type": "minecraft:range_dispatch",
+              "property": "brass_armory:property",
+              "name": "minecraft:loading",
+              "entries": [
+                {
+                  "threshold": 1,
+                  "model": {
+                    "type": "minecraft:model",
+                    "model": "brass_armory:item/blunderbuss_loading_2"
+                  }
+                }
+              ],
+              "fallback": {
+                "type": "minecraft:range_dispatch",
+                "property": "brass_armory:property",
+                "name": "minecraft:menu",
+                "entries": [
+                  {
+                    "threshold": 1,
+                    "model": {
+                      "type": "minecraft:model",
+                      "model": "brass_armory:item/blunderbuss_loading_1"
+                    }
+                  }
+                ],
+                "fallback": {
+                  "type": "minecraft:model",
+                  "model": "brass_armory:item/blunderbuss"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:range_dispatch",
+        "property": "brass_armory:property",
+        "name": "minecraft:loading",
+        "entries": [
+          {
+            "threshold": 1,
+            "model": {
+              "type": "minecraft:model",
+              "model": "brass_armory:item/blunderbuss_loading_2"
+            }
+          }
+        ],
+        "fallback": {
+          "type": "minecraft:range_dispatch",
+          "property": "brass_armory:property",
+          "name": "minecraft:menu",
+          "entries": [
+            {
+              "threshold": 1,
+              "model": {
+                "type": "minecraft:model",
+                "model": "brass_armory:item/blunderbuss_loading_1"
+              }
+            }
+          ],
+          "fallback": {
+            "type": "minecraft:model",
+            "model": "brass_armory:item/blunderbuss"
+          }
+        }
+      }
+    }
+  }
+}

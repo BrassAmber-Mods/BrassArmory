@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "L": {
-      "tag": "minecraft:stone_tool_materials"
-    },
-    "M": {
-      "tag": "c:ingots/iron"
-    }
+    "L": "#minecraft:stone_tool_materials",
+    "M": "#c:ingots/iron"
   },
   "pattern": [
     " M ",

@@ -1,11 +1,10 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -13,7 +12,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public abstract class AbstractSpecialArrowEntity extends AbstractArrow {
     protected boolean dealtDamage = false;
 
@@ -46,17 +44,17 @@ public abstract class AbstractSpecialArrowEntity extends AbstractArrow {
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide) {
-            if (!this.inGround) this.spawnArrowParticles(2);
+        if (this.level().isClientSide()) {
+            if (!this.isInGround()) this.spawnArrowParticles(2);
             else if (this.inGroundTime % 20 == 0) this.spawnArrowParticles(1);
-        } else if (this.inGround && this.inGroundTime != 0 && this.inGroundTime >= 600) {
+        } else if (this.isInGround() && this.inGroundTime != 0 && this.inGroundTime >= 600) {
             this.level().broadcastEntityEvent(this, (byte)0);
         }
     }
 
     protected abstract void spawnArrowParticles(int particleCount);
 
-    public abstract ResourceLocation getTextureLocation();
+    public abstract Identifier getTextureLocation();
 
     @Override
     public @NotNull Component getName() {

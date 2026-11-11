@@ -3,48 +3,48 @@ package com.milamber_brass.brass_armory.client.render;
 import com.milamber_brass.brass_armory.entity.projectile.BoomerangEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.ThrownItemRenderState;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
-@ParametersAreNonnullByDefault
-public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity> {
-    private final ItemRenderer itemRenderer;
-
-    public BoomerangEntityRenderer(Context context) {
+public class BoomerangEntityRenderer extends EntityRenderer<BoomerangEntity, BoomerangEntityRenderer.State> {
+    private final ItemModelResolver resolver;
+    public static class State extends ThrownItemRenderState {
+        public float xRot, yRot, spin;
+        public boolean dagger, inGround, visible;
+    }
+    public BoomerangEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.itemRenderer = context.getItemRenderer();
-        this.shadowRadius = 0.3F;
-        this.shadowStrength = 0.75F;
+        resolver = context.getItemModelResolver();
+        shadowRadius = .3F;
+        shadowStrength = .75F;
     }
-
-    @Override //Pretty much like Thrown Item Renderer, just makes it spin and updates the fuse state
-    public void render(BoomerangEntity boomerangEntity, float v, float v1, PoseStack stack, MultiBufferSource bufferSource, int light) {
-        if (boomerangEntity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(boomerangEntity) < 12.25D)) {
-            stack.pushPose();
-            stack.translate(0D, 0.1D, 0D);
-            stack.mulPose(Axis.XP.rotationDegrees(90F));
-            float spin = Math.min((float) boomerangEntity.tickCount, boomerangEntity.spin) * 8F;
-            stack.mulPose(Axis.ZN.rotationDegrees(spin));
-            this.itemRenderer.renderStatic(boomerangEntity.getItem(), ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, stack, bufferSource, boomerangEntity.level(), boomerangEntity.getId());
-            stack.popPose();
-        }
-    }
-
-    @SuppressWarnings("deprecation")
     @Override
-    @Nonnull
-    public ResourceLocation getTextureLocation(BoomerangEntity bombEntity) {
-        return TextureAtlas.LOCATION_BLOCKS;
+    public State createRenderState() { return new State(); }
+    @Override
+    public void extractRenderState(BoomerangEntity entity, State state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        resolver.updateForNonLiving(state.item, entity.getItem(), ItemDisplayContext.FIXED, entity);
+        state.xRot = entity.getXRot(partialTicks);
+        state.yRot = entity.getYRot(partialTicks);
+        state.visible = entity.tickCount >= 2 || state.distanceToCameraSq >= 12.25;
+        state.spin = Math.min(entity.tickCount, entity.spin) * 8F;
+    }
+    @Override
+    public void submit(State state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (!state.visible) return;
+        pose.pushPose();
+        pose.translate(0, .1, 0);
+        pose.rotateDegrees(Axis.XP, 90);
+        pose.rotateDegrees(Axis.ZN, state.spin);
+        state.item.submit(pose, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        pose.popPose();
+        super.submit(state, pose, collector, camera);
     }
 }

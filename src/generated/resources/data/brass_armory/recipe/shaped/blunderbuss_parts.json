@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "F": {
-      "item": "minecraft:flint_and_steel"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "N": {
-      "tag": "c:nuggets/iron"
-    }
+    "F": "minecraft:flint_and_steel",
+    "I": "#c:ingots/iron",
+    "N": "#c:nuggets/iron"
   },
   "pattern": [
     "N  ",

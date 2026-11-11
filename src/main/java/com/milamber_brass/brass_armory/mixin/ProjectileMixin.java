@@ -20,6 +20,6 @@ public abstract class ProjectileMixin extends Entity {
 
     @Inject(method = "tick", at = @At(value = "HEAD"), remap = true)
     private void tick(CallbackInfo ci) {
-        if (!this.level().isClientSide && this.isAlive()) Optional.of(this.getData(BrassArmoryCapabilities.POWDER_CAPABILITY)).ifPresent(IPowderCapability::tick);
+        if (!this.level().isClientSide() && this.isAlive()) Optional.of(this.getData(BrassArmoryCapabilities.POWDER_CAPABILITY)).ifPresent(IPowderCapability::tick);
     }
 }

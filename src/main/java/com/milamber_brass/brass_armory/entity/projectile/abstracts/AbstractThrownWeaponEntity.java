@@ -1,12 +1,13 @@
 package com.milamber_brass.brass_armory.entity.projectile.abstracts;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import com.milamber_brass.brass_armory.item.abstracts.ArmoryTieredItem;
+import org.jetbrains.annotations.Nullable;
 import com.milamber_brass.brass_armory.item.abstracts.AbstractThrownWeaponItem;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
 import com.milamber_brass.brass_armory.util.ItemData;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -22,7 +23,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -33,7 +34,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
 public abstract class AbstractThrownWeaponEntity extends AbstractArrow implements ItemSupplier {
     protected static final EntityDataAccessor<ItemStack> DATA_ITEM_STACK = SynchedEntityData.defineId(AbstractThrownWeaponEntity.class, EntityDataSerializers.ITEM_STACK);
     protected static final EntityDataAccessor<Integer> DATA_LOYALTY_LEVEL = SynchedEntityData.defineId(AbstractThrownWeaponEntity.class, EntityDataSerializers.INT);
@@ -101,7 +101,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
                 Vec3 deltaDifference = entity.getEyePosition().subtract(this.position());
                 this.setDeltaMovement(this.getDeltaMovement().scale(Math.max(0D, 1D - loyaltyLevel / 10D)).add(deltaDifference.normalize().scale(loyaltyLevel / 10D)));
             } else {
-                if (!this.level().isClientSide && this.pickup == Pickup.ALLOWED) this.spawnAtLocation(this.getPickupItem(), 0.1F);
+                if (!this.level().isClientSide() && this.pickup == Pickup.ALLOWED) this.spawnAtLocation((net.minecraft.server.level.ServerLevel)this.level(), this.getPickupItem(), 0.1F);
                 this.discard();
             }
         }
@@ -110,12 +110,12 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     @Override
     public void lavaHurt() {
         ItemStack stack = this.getItem();
-        if (stack.getItem() instanceof TieredItem tieredItem) {
-            Tier tier = tieredItem.getTier();
-            if (tier != Tiers.NETHERITE && this.getOwner() instanceof LivingEntity livingOwner) {
-                stack.hurtAndBreak(tier != Tiers.WOOD ? 1 : 2, livingOwner, EquipmentSlot.MAINHAND);
+        if (stack.getItem() instanceof ArmoryTieredItem tieredItem) {
+            ToolMaterial tier = tieredItem.getTier();
+            if (tier != ToolMaterial.NETHERITE && this.getOwner() instanceof LivingEntity livingOwner) {
+                stack.hurtAndBreak(tier != ToolMaterial.WOOD ? 1 : 2, livingOwner, EquipmentSlot.MAINHAND);
             }
-            if (stack.getDamageValue() == stack.getMaxDamage()) this.kill();
+            if (stack.getDamageValue() == stack.getMaxDamage()) if (this.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) this.kill(serverLevel);
         }
         super.lavaHurt();
     }
@@ -141,8 +141,8 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         if (this.isCritArrow()) damage *= 1.5F;
         if (this.getItem().getItem() instanceof AbstractThrownWeaponItem item) damage *= this.getDeltaMovement().length() / item.getThrowMultiplier();
 
-        if (victimEntity.hurt(ArmoryUtil.getIndirectEntityDamageSource(this.level(), this.onHitDamageType(), this, this.getOwner()), damage)) {
-            if (victimEntity.getType() == EntityType.ENDERMAN) return;
+        if (victimEntity.hurtOrSimulate(ArmoryUtil.getIndirectEntityDamageSource(this.level(), this.onHitDamageType(), this, this.getOwner()), damage)) {
+            if (victimEntity.getType() == net.minecraft.world.entity.EntityTypes.ENDERMAN) return;
             if (this.isOnFire()) victimEntity.igniteForSeconds(40);
 
             if (victimEntity instanceof LivingEntity livingVictim) {
@@ -172,8 +172,7 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         return super.tryPickup(player) || this.isNoPhysics() && this.ownedBy(player) && player.getInventory().add(this.getPickupItem());
     }
 
-    @Nonnull
-    @Override
+        @Override
     protected abstract SoundEvent getDefaultHitGroundSoundEvent();
 
     @Override
@@ -187,25 +186,23 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
         return this.entityData.get(DATA_ITEM_STACK);
     }
 
-    @Nonnull
-    @Override
+        @Override
     protected ItemStack getPickupItem() {
         return this.getItem();
     }
 
     public void setItem(ItemStack weaponStack) {
-        weaponStack.setEntityRepresentation(this);
-        this.entityData.set(DATA_LOYALTY_LEVEL, EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOYALTY), weaponStack));
+        
+        this.entityData.set(DATA_LOYALTY_LEVEL, weaponStack.getEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOYALTY)));
         if (!weaponStack.is(this.getDefaultItem()) || !ItemData.getTag(weaponStack).isEmpty()) {
             this.entityData.set(DATA_ITEM_STACK, Util.make(weaponStack.copy(), (itemStack) -> itemStack.setCount(1)));
         }
     }
 
     @Override
-    @Nonnull
-    public ItemStack getItem() {
+        public ItemStack getItem() {
         ItemStack itemstack = this.getItemRaw();
-        itemstack.setEntityRepresentation(this);
+        
         return itemstack.isEmpty() ? new ItemStack(this.getDefaultItem()) : itemstack;
     }
 
@@ -223,14 +220,14 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     }
 
     public boolean isInGround() {
-        return this.inGround;
+        return this.isInGround();
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         ItemStack weaponStack = this.getItemRaw();
-        if (!weaponStack.isEmpty()) compoundTag.put("WeaponStack", weaponStack.save(ItemData.registries()));
+        if (!weaponStack.isEmpty()) compoundTag.store("WeaponStack", ItemStack.CODEC, weaponStack);
         compoundTag.putBoolean("DealtDamage", this.dealtDamage);
         compoundTag.putFloat("ThrownWeaponDamage", this.entityData.get(DATA_DAMAGE_VALUE));
         compoundTag.putInt("LoyaltyLevel", this.entityData.get(DATA_LOYALTY_LEVEL));
@@ -238,13 +235,13 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        this.setItem(ItemData.load(compoundTag.getCompound("WeaponStack")));
-        this.dealtDamage = compoundTag.getBoolean("DealtDamage");
-        this.entityData.set(DATA_DAMAGE_VALUE, compoundTag.getFloat("ThrownWeaponDamage"));
-        this.entityData.set(DATA_LOYALTY_LEVEL, compoundTag.getInt("LoyaltyLevel"));
-        this.setPower(compoundTag.getFloat("ThrownWeaponPower"));
+        this.setItem(compoundTag.read("WeaponStack", ItemStack.CODEC).orElse(ItemStack.EMPTY));
+        this.dealtDamage = compoundTag.getBooleanOr("DealtDamage", false);
+        this.entityData.set(DATA_DAMAGE_VALUE, compoundTag.getFloatOr("ThrownWeaponDamage", 0F));
+        this.entityData.set(DATA_LOYALTY_LEVEL, compoundTag.getIntOr("LoyaltyLevel", 0));
+        this.setPower(compoundTag.getFloatOr("ThrownWeaponPower", 0F));
     }
 
 

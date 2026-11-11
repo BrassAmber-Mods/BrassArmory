@@ -2,7 +2,6 @@ package com.milamber_brass.brass_armory.item;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryAdvancements;
 import com.milamber_brass.brass_armory.util.ItemData;
-import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -10,12 +9,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.EventHooks;
@@ -25,15 +23,14 @@ public class LongBowItem extends BowItem {
         super(properties);
     }
 
-    @ParametersAreNonnullByDefault
-    public void releaseUsing(ItemStack itemStack, Level level, LivingEntity living, int ticks) {
+        public boolean releaseUsing(ItemStack itemStack, Level level, LivingEntity living, int ticks) {
         if (living instanceof Player player) {
-            boolean flag = player.getAbilities().instabuild || EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.INFINITY), itemStack) > 0;
+            boolean flag = player.getAbilities().instabuild || itemStack.getEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.INFINITY)) > 0;
             ItemStack itemstack = player.getProjectile(itemStack);
 
             int i = this.getUseDuration(itemStack, living) - ticks;
-            i = EventHooks.onArrowLoose(itemStack, level, player, i, !itemstack.isEmpty() || flag);
-            if (i < 0) return;
+            i = EventHooks.onArrowLoose(itemStack, level, player, i);
+            if (i < 0) return false;
 
             if (!itemstack.isEmpty() || flag) {
                 if (itemstack.isEmpty()) {
@@ -43,14 +40,14 @@ public class LongBowItem extends BowItem {
                 float f = getPowerForTime(i);
                 if (!((double) f < 0.1D)) {
                     boolean flag1 = player.getAbilities().instabuild || (itemstack.getItem() instanceof ArrowItem && ((ArrowItem) itemstack.getItem()).isInfinite(itemstack, itemStack, player));
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         ArrowItem arrowitem = (ArrowItem) (itemstack.getItem() instanceof ArrowItem ? itemstack.getItem() : Items.ARROW);
                         AbstractArrow abstractarrow = arrowitem.createArrow(level, itemstack, player, itemStack);
                         abstractarrow = customArrow(abstractarrow, itemstack, itemStack);
                         abstractarrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 4.5F, 1.0F);
                         if (f == 1.0F) abstractarrow.setCritArrow(true);
 
-                        itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+                        itemStack.hurtAndBreak(1, player, player.getUsedItemHand());
                         if (flag1 || player.getAbilities().instabuild && (itemstack.is(Items.SPECTRAL_ARROW) || itemstack.is(Items.TIPPED_ARROW))) {
                             abstractarrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
@@ -71,6 +68,7 @@ public class LongBowItem extends BowItem {
                 }
             }
         }
+        return true;
     }
 
     public static float getPowerForTime(int duration) {

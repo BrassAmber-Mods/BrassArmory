@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "tag": "c:gunpowders"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "S": {
-      "tag": "c:strings"
-    }
+    "G": "#c:gunpowders",
+    "I": "#c:ingots/iron",
+    "S": "#c:strings"
   },
   "pattern": [
     " IS",
