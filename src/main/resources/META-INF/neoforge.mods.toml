@@ -4,7 +4,7 @@ license="All rights reserved."
 
 [[mods]]
     modId="brass_armory"
-    version="1.0.4"
+    version="1.0.5"
     displayName="Brass's Armory"
     logoFile="assets/brass_armory/textures/item/diamond/diamond_spear.png"
     credits="Inspired by Balkon's Weapons Mod, AdventureItems and Ropes+"

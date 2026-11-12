@@ -27,7 +27,6 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.*;
@@ -41,7 +40,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.neoforged.api.distmarker.Dist;
@@ -263,16 +261,7 @@ public class ClientEventBusSubscriber {
         public void render(PoseStack stack, MultiBufferSource bufferSource, int light, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             ItemStack itemstack = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
             if (shouldRender(itemstack, livingEntity)) {
-                ResourceLocation resourcelocation;
-                if (livingEntity instanceof AbstractClientPlayer abstractclientplayer) {
-                    if (abstractclientplayer.getSkin().elytraTexture() != null) {
-                        resourcelocation = abstractclientplayer.getSkin().elytraTexture();
-                    } else if (abstractclientplayer.getSkin().capeTexture() != null && abstractclientplayer.isModelPartShown(PlayerModelPart.CAPE)) {
-                        resourcelocation = abstractclientplayer.getSkin().capeTexture();
-                    } else {
-                        resourcelocation = getElytraTexture(itemstack, livingEntity);
-                    }
-                } else resourcelocation = getElytraTexture(itemstack, livingEntity);
+                ResourceLocation resourcelocation = getElytraTexture(itemstack, livingEntity);
 
                 stack.pushPose();
                 stack.translate(0.0D, 0.0D, 0.125D);
