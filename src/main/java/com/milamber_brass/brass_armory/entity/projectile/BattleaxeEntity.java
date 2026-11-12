@@ -8,6 +8,7 @@ import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -56,7 +57,9 @@ public class BattleaxeEntity extends AbstractThrownWeaponEntity {
             BlockPos pos = result.getBlockPos();
             BlockState hitBlockState = this.level().getBlockState(pos);
             if (hitBlockState.getBlock() instanceof DoorBlock || hitBlockState.getBlock() instanceof TrapDoorBlock) {
-                if (tieredItem.getTier().attackDamageBonus() >= ToolMaterial.DIAMOND.attackDamageBonus()) {
+                boolean woodenDoor = hitBlockState.is(BlockTags.WOODEN_DOORS) || hitBlockState.is(BlockTags.WOODEN_TRAPDOORS);
+                ToolMaterial requiredTier = woodenDoor ? ToolMaterial.IRON : ToolMaterial.DIAMOND;
+                if (tieredItem.getTier().attackDamageBonus() >= requiredTier.attackDamageBonus()) {
                     Vec3 deltaMovement = this.onHitDeltaMovement();
                     this.level().destroyBlock(pos, true, this.getOwner());
                     this.setDeltaMovement(deltaMovement);
