@@ -44,7 +44,7 @@ public class RopeArrowEntity extends AbstractSpecialArrowEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.isPlacingRope) {
+        if (!this.level().isClientSide() && this.isPlacingRope) {
             this.ticksSinceRope++; // Increase the counter for number of ticks since last placing a rope
             if (this.ticksSinceRope > 6) {
                 BlockPos newPos = currentRopePos.relative(Direction.DOWN, 1);
@@ -78,6 +78,7 @@ public class RopeArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     private void placeRopes(BlockHitResult result) {
+        if (this.level().isClientSide()) return;
         this.hitBlockFaceDirection = result.getDirection();
         if (!this.hitBlockFaceDirection.equals(Direction.DOWN) && !this.hitBlockFaceDirection.equals(Direction.UP)) {
             BlockPos hitPos = result.getBlockPos();

@@ -121,7 +121,7 @@ public class QuiverItem extends Item {
 
             int i = getContentWeight(stack);
             int j = getWeight(stack1);
-            int k = Math.min(stack1.getCount(), (MAX_WEIGHT - i) / j);
+            int k = Math.min(stack1.getCount(), Math.max(0, MAX_WEIGHT - i) / j);
             if (k == 0) return 0;
             else {
                 ListTag listtag = compoundTag.getList(TAG_ITEMS, 10);
@@ -185,7 +185,7 @@ public class QuiverItem extends Item {
                 }
             }
 
-            return 64 / stack.getMaxStackSize();
+            return Math.max(1, 64 / stack.getMaxStackSize());
         }
     }
 
@@ -234,7 +234,7 @@ public class QuiverItem extends Item {
         if (compoundtag == null) return Stream.empty();
         else {
             ListTag listtag = compoundtag.getList(TAG_ITEMS, 10);
-            return listtag.stream().map(CompoundTag.class::cast).map(ItemData::load);
+            return listtag.stream().filter(CompoundTag.class::isInstance).map(CompoundTag.class::cast).map(ItemData::load).filter(item -> !item.isEmpty());
         }
     }
 

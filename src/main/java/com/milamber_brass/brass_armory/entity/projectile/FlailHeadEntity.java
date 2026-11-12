@@ -49,7 +49,7 @@ import static net.minecraft.core.Direction.UP;
 public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     protected static final EntityDataAccessor<Integer> DATA_OWNER = SynchedEntityData.defineId(FlailHeadEntity.class, EntityDataSerializers.INT);
     protected int hitPerTick;
-    protected long hitTick;
+    protected long hitTick = Long.MAX_VALUE;
 
     public FlailHeadEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);
@@ -113,7 +113,7 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (!this.onGround() && entityHitResult.getEntity() instanceof LivingEntity living && this.getOwner() != null && this.getOwner().getUUID() != living.getUUID()) {
+        if (!this.onGround() && entityHitResult.getEntity() instanceof LivingEntity living && this.getOwner() != null && !this.ownedBy(living)) {
             super.onHitEntity(entityHitResult);
             living.knockback(this.getDeltaMovement().length() * 0.25D, this.getX() - living.getX(), this.getZ() - living.getZ());
         }
@@ -166,7 +166,7 @@ public class FlailHeadEntity extends AbstractThrownWeaponEntity {
     @Nullable
     @Override
     public Entity getOwner() {
-        return this.entityData.get(DATA_OWNER) != Integer.MAX_VALUE ? this.level().getEntity(this.entityData.get(DATA_OWNER)) : super.getOwner();
+        return this.level().isClientSide() && this.entityData.get(DATA_OWNER) != Integer.MAX_VALUE ? this.level().getEntity(this.entityData.get(DATA_OWNER)) : super.getOwner();
     }
 
     @NotNull

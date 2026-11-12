@@ -84,10 +84,10 @@ public class CannonBallEntity extends AbstractBulletEntity {
                 impact.explode();
                 impact.finalizeExplosion(true);
                 this.getEntityData().set(DATA_HITS, this.getEntityData().get(DATA_HITS) + 1);
-                Optional.of(this.getData(BrassArmoryCapabilities.POWDER_CAPABILITY)).ifPresent(iPowderCapability -> {
+                Optional.ofNullable(this.getData(BrassArmoryCapabilities.POWDER_CAPABILITY).getPowderBehaviour()).ifPresent(powderBehaviour -> {
                     for (BlockPos blockpos : impact.toBlow) {
                         BlockState blockstate = serverLevel.getBlockState(blockpos);
-                        if (!blockstate.isAir()) iPowderCapability.getPowderBehaviour().sendParticles(serverLevel, Vec3.atCenterOf(blockpos));
+                        if (!blockstate.isAir()) powderBehaviour.sendParticles(serverLevel, Vec3.atCenterOf(blockpos));
                     }
                 });
             }

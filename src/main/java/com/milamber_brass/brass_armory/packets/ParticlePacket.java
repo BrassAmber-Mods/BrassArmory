@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.packets;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import io.netty.handler.codec.DecoderException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 @ParametersAreNonnullByDefault
 public class ParticlePacket implements CustomPacketPayload {
+    private static final int MAX_PARTICLES = 4096;
     public static final Type<ParticlePacket> TYPE = new Type<>(BrassArmory.locate("particlepacket"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ParticlePacket> STREAM_CODEC = StreamCodec.of((buf, packet) -> packet.encode(buf), ParticlePacket::new);
     @Override
@@ -35,9 +37,10 @@ public class ParticlePacket implements CustomPacketPayload {
 	@SuppressWarnings("deprecation")
 	public ParticlePacket(RegistryFriendlyByteBuf buf) {
 		int size = buf.readInt();
+		if (size < 0 || size > MAX_PARTICLES) throw new DecoderException("Invalid particle count: " + size);
 		for (int i = 0; i < size; i++) {
 			ParticleType<?> type = BuiltInRegistries.PARTICLE_TYPE.byId(buf.readInt());
-			if (type == null) break;
+			if (type == null) throw new DecoderException("Unknown particle type");
 			this.queuedParticles.add(new QueuedParticle(readParticle(type, buf), buf.readBoolean(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble(), buf.readDouble()));
 		}
 	}
@@ -68,11 +71,12 @@ public class ParticlePacket implements CustomPacketPayload {
     }
 
 	public void queueParticle(ParticleOptions particleOptions, boolean b, double x, double y, double z, double x2, double y2, double z2) {
+		if (this.queuedParticles.size() >= MAX_PARTICLES) throw new IllegalStateException("Too many queued particles");
 		this.queuedParticles.add(new QueuedParticle(particleOptions, b, x, y, z, x2, y2, z2));
 	}
 
 	public void queueParticle(ParticleOptions particleOptions, boolean b, Vec3 xyz, Vec3 xyz2) {
-		this.queuedParticles.add(new QueuedParticle(particleOptions, b, xyz.x, xyz.y, xyz.z, xyz2.x, xyz2.y, xyz2.z));
+		this.queueParticle(particleOptions, b, xyz.x, xyz.y, xyz.z, xyz2.x, xyz2.y, xyz2.z);
 	}
 
 	private record QueuedParticle(ParticleOptions particleOptions, boolean b, double x, double y, double z, double x2, double y2, double z2) {

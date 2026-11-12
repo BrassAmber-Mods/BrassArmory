@@ -195,10 +195,9 @@ public abstract class AbstractThrownWeaponEntity extends AbstractArrow implement
 
     public void setItem(ItemStack weaponStack) {
         weaponStack.setEntityRepresentation(this);
-        this.entityData.set(DATA_LOYALTY_LEVEL, EnchantmentHelper.getItemEnchantmentLevel(ItemData.registries().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOYALTY), weaponStack));
-        if (!weaponStack.is(this.getDefaultItem()) || !ItemData.getTag(weaponStack).isEmpty()) {
-            this.entityData.set(DATA_ITEM_STACK, Util.make(weaponStack.copy(), (itemStack) -> itemStack.setCount(1)));
-        }
+        this.entityData.set(DATA_LOYALTY_LEVEL, EnchantmentHelper.getItemEnchantmentLevel(this.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.LOYALTY), weaponStack));
+        // Components such as damage and enchantments are not stored in CUSTOM_DATA.
+        this.entityData.set(DATA_ITEM_STACK, weaponStack.copyWithCount(1));
     }
 
     @Override

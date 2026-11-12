@@ -74,8 +74,9 @@ public class EffectCapabilityHandler implements IEffectCapability {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider registries, CompoundTag tag) {
-        this.setShake(tag.getDouble("BAShakeValue"));
-        this.setSlow(tag.getFloat("BASlowValue"));
+        // Loading an attachment must not send packets before it is installed on the player.
+        this.shake = tag.getDouble("BAShakeValue");
+        this.slow = tag.getFloat("BASlowValue");
     }
 
     public static void setShakePower(Player player, double shake) {

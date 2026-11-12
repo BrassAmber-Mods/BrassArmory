@@ -53,8 +53,8 @@ public class SlimeArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     private void spawnSmallSlime() {
-        if (this.isAlive()) {
-            if (this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+        if (this.isAlive() && this.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            if (serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
                 Slime slimeEntity = EntityType.SLIME.create(this.level());
                 if (slimeEntity == null) return;
                 slimeEntity.addTag("no_loot");

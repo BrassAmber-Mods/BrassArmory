@@ -50,7 +50,7 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
     @Override
     public void tick() {
         super.tick();
-        if (this.tickCount > 10 && this.getItem().getItem() instanceof SpikyBallItem spikyBallItem) {
+        if (!this.level().isClientSide() && this.tickCount > 10 && this.getItem().getItem() instanceof SpikyBallItem spikyBallItem) {
             for (Entity entity : this.level().getEntities(this, this.getBoundingBox(), Entity::isAlive)) {
                 if (entity instanceof LivingEntity living && living.hurt(ArmoryUtil.getDamageSource(this.level(), BrassArmoryDamageTypes.SPIKY_BALL), spikyBallItem.getTier().getAttackDamageBonus() + 1F) && this.hurt()) return;
             }
@@ -79,12 +79,16 @@ public class SpikyBallEntity extends AbstractRollableItemProjectileEntity {
     public InteractionResult interact(Player player, InteractionHand hand) {
         ItemStack handStack = player.getItemInHand(hand);
         if (handStack.isEmpty()) {
-            player.setItemInHand(hand, this.getItem());
-            this.discard();
+            if (!this.level().isClientSide()) {
+                player.setItemInHand(hand, this.getItem().copy());
+                this.discard();
+            }
             return InteractionResult.SUCCESS;
         } else if (handStack.is(this.getItem().getItem()) && handStack.getCount() < handStack.getMaxStackSize()) {
-            handStack.grow(1);
-            this.discard();
+            if (!this.level().isClientSide()) {
+                handStack.grow(1);
+                this.discard();
+            }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

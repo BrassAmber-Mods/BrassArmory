@@ -44,7 +44,11 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
     }
 
     public BombEntity(Level level, LivingEntity livingEntity, @Nullable HumanoidArm arm) {
-        super(BrassArmoryEntityTypes.BOMB.get(), livingEntity, level, arm);
+        this(BrassArmoryEntityTypes.BOMB.get(), level, livingEntity, arm);
+    }
+
+    protected BombEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level, LivingEntity livingEntity, @Nullable HumanoidArm arm) {
+        super(entityType, livingEntity, level, arm);
         this.setFuse(60);
         this.setOnGround(false);
         this.defused = false;
@@ -55,7 +59,11 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
     }
 
     public BombEntity(Level level, double x, double y, double z) {
-        super(BrassArmoryEntityTypes.BOMB.get(), x, y, z, level);
+        this(BrassArmoryEntityTypes.BOMB.get(), level, x, y, z);
+    }
+
+    protected BombEntity(EntityType<? extends ThrowableItemProjectile> entityType, Level level, double x, double y, double z) {
+        super(entityType, x, y, z, level);
         this.setFuse(60);
         this.setOnGround(false);
         this.defused = false;
@@ -114,7 +122,7 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
     @Nonnull
     @Override
     public ItemStack getItem() {
-        return Util.make(super.getItem(), stack -> {
+        return Util.make(super.getItem().copy(), stack -> {
             BombItem.setFuseLit(stack, true);
             BombItem.setFuseLength(stack, this.getFuse());
             stack.setEntityRepresentation(this);
@@ -163,11 +171,15 @@ public class BombEntity extends AbstractRollableItemProjectileEntity {
     }
 
     public void addAdditionalSaveData(CompoundTag compoundTag) {
+        super.addAdditionalSaveData(compoundTag);
         compoundTag.putShort("Fuse", (short)this.getFuse());
+        compoundTag.putBoolean("Defused", this.defused);
     }
 
     public void readAdditionalSaveData(CompoundTag compoundTag) {
+        super.readAdditionalSaveData(compoundTag);
         this.setFuse(compoundTag.getShort("Fuse"));
+        this.defused = compoundTag.getBoolean("Defused");
     }
 
     public void setFuse(int newFuse) {
