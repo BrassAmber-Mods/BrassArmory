@@ -77,6 +77,7 @@ public class FrostArrowEntity extends AbstractSpecialArrowEntity {
     }
 
     public static void freezeAOE(Level level, BlockPos pos, @Nullable Entity entity) {
+        if (level.isClientSide()) return;
         BlockState blockstate = Blocks.ICE.defaultBlockState();
 
         for (BlockPos blockpos : BlockPos.betweenClosed(pos.offset(-3, 0, -3), pos.offset(3, 0, 3))) {

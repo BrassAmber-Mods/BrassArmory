@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.inventory;
 
 import com.milamber_brass.brass_armory.BrassArmory;
+import com.milamber_brass.brass_armory.entity.CannonEntity;
 import com.milamber_brass.brass_armory.behaviour.iGun;
 import com.milamber_brass.brass_armory.init.BrassArmoryMenus;
 import com.milamber_brass.brass_armory.util.ArmoryUtil;
@@ -101,7 +102,9 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
         @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack retStack = ItemStack.EMPTY;
+        if (index < 0 || index >= this.slots.size()) return ItemStack.EMPTY;
         Slot slot = getSlot(index);
+        if (!slot.mayPickup(player) || !slot.allowModification(player)) return ItemStack.EMPTY;
         if (slot.hasItem()) {
             final ItemStack item = slot.getItem();
             retStack = item.copy();
@@ -132,12 +135,21 @@ public class GunContainer<T extends iGun> extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        return !(this.gun instanceof CannonEntity cannon) || (!cannon.isRemoved() && cannon.level() == player.level() && cannon.distanceToSqr(player) <= 64D && cannon.getFuse() == 0);
     }
 
     @Override
     public void removed(Player player) {
         super.removed(player);
+
+        if (player.level().isClientSide()) return;
+        if (this.gun instanceof CannonEntity cannon && cannon.isRemoved()) {
+            player.getInventory().placeItemBackInInventory(this.ammoSlot.getItem(), net.minecraft.util.Prediction.SERVER_ONLY);
+            player.getInventory().placeItemBackInInventory(this.powderSlot.getItem(), net.minecraft.util.Prediction.SERVER_ONLY);
+            this.ammoSlot.set(ItemStack.EMPTY);
+            this.powderSlot.set(ItemStack.EMPTY);
+            return;
+        }
 
         ArmoryUtil.clearStack(this.tag, gunAmmo);
         ItemStack ammoStack = this.ammoSlot.getItem();

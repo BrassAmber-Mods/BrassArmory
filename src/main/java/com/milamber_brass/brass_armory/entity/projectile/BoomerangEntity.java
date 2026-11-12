@@ -69,7 +69,7 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     @Override
     protected void loyaltyTick() {
         BlockPos pos = this.blockPosition();
-        if (this.level().getBlockState(pos).getBlock() == Blocks.COBWEB) {
+        if (!this.level().isClientSide() && this.level().getBlockState(pos).getBlock() == Blocks.COBWEB) {
             this.level().destroyBlock(pos, true, this.getOwner());
         }
 
@@ -90,8 +90,8 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
                 }
 
                 Vec3 deltaDifference = new Vec3(this.entityData.get(DATA_PLAYER_X), this.entityData.get(DATA_PLAYER_Y), this.entityData.get(DATA_PLAYER_Z));
-                double dif = newMovement.length() / deltaDifference.length();
-                newMovement = deltaDifference.scale(dif * (loyaltyLevel * 2));
+                // normalize() handles a missing owner or an owner at the return point without NaN velocity.
+                newMovement = deltaDifference.normalize().scale(newMovement.length() * loyaltyLevel * 2);
             } else if (this.tickCount >= 70) this.deltaFirstMovement = this.deltaFirstMovement.add(0D, 0.025D, 0D);
             this.setDeltaMovement(newMovement);
             this.spin++;
@@ -101,10 +101,10 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity hitResultEntity = entityHitResult.getEntity();
-        LivingEntity owner = (LivingEntity)this.getOwner();
+        Entity ownerEntity = this.getOwner();
 
-        if (!this.level().isClientSide() && hitResultEntity == owner ) {
-            ItemStack boomerangStack = this.getItem();
+        if (!this.level().isClientSide() && ownerEntity instanceof LivingEntity owner && hitResultEntity == owner) {
+            ItemStack boomerangStack = this.getItem().copy();
             float crit;
             if (!this.isNoGravity() || !this.dealtDamage || this.isNoPhysics()) crit = 0;
             else crit = BoomerangItem.getCrit(boomerangStack) + 20F;
@@ -167,9 +167,10 @@ public class BoomerangEntity extends AbstractThrownWeaponEntity {
     @Override
     public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        compoundTag.putDouble("BAX", this.deltaFirstMovement.x);
-        compoundTag.putDouble("BAY", this.deltaFirstMovement.y);
-        compoundTag.putDouble("BAZ", this.deltaFirstMovement.z);
+        Vec3 movement = this.deltaFirstMovement != null ? this.deltaFirstMovement : this.getDeltaMovement();
+        compoundTag.putDouble("BAX", movement.x);
+        compoundTag.putDouble("BAY", movement.y);
+        compoundTag.putDouble("BAZ", movement.z);
     }
 
     @Override

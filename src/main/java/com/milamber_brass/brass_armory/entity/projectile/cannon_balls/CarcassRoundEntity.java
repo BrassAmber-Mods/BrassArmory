@@ -62,7 +62,7 @@ public class CarcassRoundEntity extends AbstractBulletEntity {
     @Override
     public @NotNull ItemStack getItem() {
         if (!this.level().isClientSide()) return super.getItem();
-        else return Util.make(super.getItem(), stack -> PotionData.setPotion(stack, Potions.SLOW_FALLING));
+        else return Util.make(super.getItem().copy(), stack -> PotionData.setPotion(stack, Potions.SLOW_FALLING));
     }
 
     @Override

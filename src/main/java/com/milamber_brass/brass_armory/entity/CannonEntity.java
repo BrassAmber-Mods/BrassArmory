@@ -58,6 +58,7 @@ public class CannonEntity extends Entity implements iGun {
 
     protected static final EntityDataAccessor<Integer> DATA_MOVE_TICKS = SynchedEntityData.defineId(CannonEntity.class, EntityDataSerializers.INT);
     protected static final EntityDataAccessor<Integer> DATA_SOUND_TICKS = SynchedEntityData.defineId(CannonEntity.class, EntityDataSerializers.INT);
+    @Nullable private ServerPlayer inventoryViewer;
     public static final String uuid = "BAPlayerUUID";
 
     public CannonEntity(EntityType<?> entityType, Level level) {
@@ -94,6 +95,7 @@ public class CannonEntity extends Entity implements iGun {
     public void onLoad(Player owner, CompoundTag tag) {
         owner.level().playSound(null, owner, BrassArmorySounds.CANNON_CLOSE.get(), SoundSource.PLAYERS, 1.5F, this.level().getRandom().nextFloat() * 0.5F + 0.25F);
         this.reLoad(tag);
+        this.inventoryViewer = null;
     }
 
     public CompoundTag getTag() {
@@ -101,8 +103,7 @@ public class CannonEntity extends Entity implements iGun {
     }
 
     public void reLoad(CompoundTag tag) {
-        this.entityData.set(DATA_TAG, new CompoundTag());
-        this.entityData.set(DATA_TAG, tag);
+        this.entityData.set(DATA_TAG, tag.copy());
     }
 
     @Override
@@ -214,7 +215,7 @@ public class CannonEntity extends Entity implements iGun {
 
     @Override
     public void tick() {
-        if (!this.level().getBlockState(this.blockPosition().below()).isFaceSturdy(this.level(), this.blockPosition().below(), Direction.UP)) {
+        if (!this.level().isClientSide() && !this.level().getBlockState(this.blockPosition().below()).isFaceSturdy(this.level(), this.blockPosition().below(), Direction.UP)) {
             if (this.level() instanceof ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.ENTITY_DROPS)) {
                 this.dropItems();
             }
@@ -256,7 +257,7 @@ public class CannonEntity extends Entity implements iGun {
         }
 
         int fuse = this.getEntityData().get(DATA_FUSE);
-        if (fuse > 0) {
+        if (fuse > 0 && !this.level().isClientSide()) {
             CompoundTag compoundTag = this.entityData.get(DATA_TAG);
             if (compoundTag.contains(uuid)) {
                 Player player = this.level().getPlayerByUUID(compoundTag.read(uuid, net.minecraft.core.UUIDUtil.CODEC).orElse(new java.util.UUID(0L, 0L)));
@@ -271,7 +272,7 @@ public class CannonEntity extends Entity implements iGun {
                             ItemStack ammo = this.getAmmo();
                             GunBehaviours.getAmmoBehavior(ammo).ifPresent(ammoBehaviour -> {
                                 if (ammoBehaviour.onShoot(this.level(), player, this, ammo, powderBehaviour, this) && !this.level().isClientSide()) {
-                                    this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> {
+                                    this.reLoad(Util.make(this.entityData.get(DATA_TAG).copy(), tag -> {
                                         ArmoryUtil.clearStack(tag, GunContainer.gunAmmo);
                                         ArmoryUtil.clearStack(tag, GunContainer.gunPowder);
                                     }));
@@ -289,7 +290,7 @@ public class CannonEntity extends Entity implements iGun {
                 } else
                     this.playSound(BrassArmorySounds.CANNON_FUSE.get(), 0.03F, this.level().getRandom().nextFloat() * 0.6F + 1F);
                 this.getEntityData().set(DATA_FUSE, fuse + 1);
-            }
+            } else this.setFuse(0);
         }
 
         super.tick();
@@ -340,12 +341,12 @@ public class CannonEntity extends Entity implements iGun {
     @Override
     public @NotNull InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (player.isSecondaryUseActive()) {
-            if (this.entityData.get(DATA_FUSE) == 0 && !this.level().isClientSide()) this.openInventory((ServerPlayer) player);
+            if (this.entityData.get(DATA_FUSE) == 0 && player instanceof ServerPlayer serverPlayer) this.openInventory(serverPlayer);
             return InteractionResult.SUCCESS;
         } else if (ArmoryUtil.isFuseLighter(player.getItemInHand(hand))) {
-            if (this.entityData.get(DATA_FUSE) == 0) {
+            if (this.entityData.get(DATA_FUSE) == 0 && !this.isInventoryOpen()) {
                 if (!this.level().isClientSide()) {
-                    this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.store(uuid, net.minecraft.core.UUIDUtil.CODEC, player.getUUID())));
+                    this.reLoad(Util.make(this.entityData.get(DATA_TAG).copy(), tag -> tag.store(uuid, net.minecraft.core.UUIDUtil.CODEC, player.getUUID())));
                     this.getEntityData().set(DATA_FUSE, 1);
 
                     player.getItemInHand(hand).hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
@@ -355,15 +356,28 @@ public class CannonEntity extends Entity implements iGun {
         } else {
             player.setYRot(this.getYRot());
             player.setXRot(this.getXRot());
-            player.startRiding(this);
+            if (!this.level().isClientSide()) player.startRiding(this);
             return InteractionResult.SUCCESS;
         }
     }
 
     public void openInventory(ServerPlayer player) {
-        CompoundTag tag = this.entityData.get(DATA_TAG);
+        if (this.isRemoved() || this.getFuse() != 0 || this.isInventoryOpen() || player.distanceToSqr(this) > 64D) return;
+        CompoundTag tag = this.getTag().copy();
         ArmoryUtil.addStack(tag, BrassArmoryItems.CANNON.get().getDefaultInstance(), GunContainer.gunIcon);
         player.openMenu(new SimpleMenuProvider(GunContainer.getServerContainer(this, tag), Component.empty()));
+        if (player.containerMenu instanceof GunContainer<?> menu && menu.gun == this) {
+            this.inventoryViewer = player;
+            // The open menu owns these items until it closes, including if the cannon is destroyed.
+            CompoundTag unloaded = this.getTag().copy();
+            ArmoryUtil.clearStack(unloaded, GunContainer.gunAmmo);
+            ArmoryUtil.clearStack(unloaded, GunContainer.gunPowder);
+            this.reLoad(unloaded);
+        }
+    }
+
+    public boolean isInventoryOpen() {
+        return this.inventoryViewer != null && this.inventoryViewer.containerMenu instanceof GunContainer<?> menu && menu.gun == this;
     }
 
     @Override
@@ -372,8 +386,8 @@ public class CannonEntity extends Entity implements iGun {
             return false;
         } else if (!this.level().isClientSide() && !this.isRemoved()) {
 
-            if (source.getDirectEntity() instanceof Player p && ArmoryUtil.isFuseLighter(p.getMainHandItem()) && this.getFuse() == 0) {
-                this.reLoad(Util.make(this.entityData.get(DATA_TAG), tag -> tag.store(uuid, net.minecraft.core.UUIDUtil.CODEC, p.getUUID())));
+            if (source.getDirectEntity() instanceof Player p && ArmoryUtil.isFuseLighter(p.getMainHandItem()) && this.getFuse() == 0 && !this.isInventoryOpen()) {
+                this.reLoad(Util.make(this.entityData.get(DATA_TAG).copy(), tag -> tag.store(uuid, net.minecraft.core.UUIDUtil.CODEC, p.getUUID())));
                 this.getEntityData().set(DATA_FUSE, 1);
 
                 return true;

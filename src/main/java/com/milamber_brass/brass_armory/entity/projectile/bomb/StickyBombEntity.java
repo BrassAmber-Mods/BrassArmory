@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.entity.projectile.bomb;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +25,7 @@ public class StickyBombEntity extends BombEntity {
     }
 
     public StickyBombEntity(Level level, LivingEntity livingEntity, @Nullable HumanoidArm arm) {
-        super(level, livingEntity, arm);
+        super(BrassArmoryEntityTypes.STICKY_BOMB.get(), level, livingEntity, arm);
     }
 
     public StickyBombEntity(Level level, LivingEntity livingEntity) {
@@ -32,7 +33,7 @@ public class StickyBombEntity extends BombEntity {
     }
 
     public StickyBombEntity(Level level, double x, double y, double z) {
-        super(level, x, y, z);
+        super(BrassArmoryEntityTypes.STICKY_BOMB.get(), level, x, y, z);
     }
 
     @NotNull
@@ -81,14 +82,10 @@ public class StickyBombEntity extends BombEntity {
 
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
-        Vec3 movement = this.getDeltaMovement();
-        for (double d = 0D; true; d += 0.025D) {
-            Vec3 newMovement = movement.multiply(d, d, d);
-            if (this.isStuck(newMovement)) {
-                this.snapTo(this.position().add(newMovement));
-                break;
-            }
-        }
+        // Use the collision point directly; searching an unbounded ray can hang the server
+        // for stationary projectiles or when the struck block disappears.
+        this.snapTo(blockHitResult.getLocation());
+        this.isStuck(null);
         this.setDeltaMovement(0, 0, 0);
     }
 

@@ -107,8 +107,10 @@ public abstract class AbstractRollableItemProjectileEntity extends ThrowableItem
         @Override //Pick up if hand is empty
     public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
         if (player.getItemInHand(hand).isEmpty()) {
-            player.setItemInHand(hand, this.getItem());
-            this.discard();
+            if (!this.level().isClientSide()) {
+                player.setItemInHand(hand, this.getItem().copy());
+                this.discard();
+            }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;

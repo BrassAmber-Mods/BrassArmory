@@ -1,6 +1,7 @@
 package com.milamber_brass.brass_armory.entity.projectile.bomb;
 
 import com.milamber_brass.brass_armory.init.BrassArmoryItems;
+import com.milamber_brass.brass_armory.init.BrassArmoryEntityTypes;
 import com.milamber_brass.brass_armory.init.BrassArmorySounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +20,7 @@ public class BouncyBombEntity extends BombEntity {
     }
 
     public BouncyBombEntity(Level level, LivingEntity livingEntity, @Nullable HumanoidArm arm) {
-        super(level, livingEntity, arm);
+        super(BrassArmoryEntityTypes.BOUNCY_BOMB.get(), level, livingEntity, arm);
     }
 
     public BouncyBombEntity(Level level, LivingEntity livingEntity) {
@@ -27,7 +28,7 @@ public class BouncyBombEntity extends BombEntity {
     }
 
     public BouncyBombEntity(Level level, double x, double y, double z) {
-        super(level, x, y, z);
+        super(BrassArmoryEntityTypes.BOUNCY_BOMB.get(), level, x, y, z);
     }
 
     @NotNull
